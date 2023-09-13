@@ -1,7 +1,7 @@
 package com.duktown.domain.user.entity;
 
 import com.duktown.domain.BaseTimeEntity;
-import com.duktown.global.type.UserType;
+import com.duktown.global.type.RoleType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,5 +36,5 @@ public class User extends BaseTimeEntity {
 
     @Enumerated(value = STRING)
     @Column(nullable = false)
-    private UserType userType;
+    private RoleType roleType;
 }
