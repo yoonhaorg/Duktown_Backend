@@ -1,4 +1,4 @@
-package com.duktown.domain.likes.entity;
+package com.duktown.domain.like.entity;
 
 import com.duktown.domain.daily.entity.Daily;
 import com.duktown.domain.delivery.entity.Delivery;
@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.yaml.snakeyaml.error.Mark;
 
 import javax.persistence.*;
 
@@ -21,10 +20,11 @@ import static lombok.AccessLevel.PROTECTED;
 @Builder
 @AllArgsConstructor(access = PRIVATE)
 @NoArgsConstructor(access = PROTECTED)
-public class Likes {
+@Table(name = "likes")
+public class Like {
     @Id
     @GeneratedValue
-    @Column(name = "likes_id")
+    @Column(name = "like_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)

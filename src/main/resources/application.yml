@@ -1,0 +1,22 @@
+# DB
+spring:
+  datasource:
+    # local-h2-db-test
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:tcp://localhost/~/duktown
+    username: sa
+    password:
+  # JPA
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    hibernate:
+      ddl-auto: create
+
+# Logging level
+logging:
+  level:
+    com:
+      duktown: debug
