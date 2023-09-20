@@ -13,6 +13,11 @@ public class UserController {
 
     private final UserService userService;
 
+    @PostMapping("/email-duplicate")
+    public ResponseEntity<UserDto.EmailCheckResponse> emailCheck(@RequestBody final UserDto.EmailCheckRequest emailCheckRequest) {
+        return ResponseEntity.ok(userService.emailDuplicateCheck(emailCheckRequest));
+    }
+
     @PostMapping("/signup")
     public ResponseEntity<UserDto.SignUpResponse> signup(@RequestBody final UserDto.SignupRequest signupRequest) {
         return ResponseEntity.ok(userService.signup(signupRequest));

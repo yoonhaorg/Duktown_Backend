@@ -6,8 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
 public class UserDto {
 
+    // 회원가입 요청
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
@@ -24,6 +28,14 @@ public class UserDto {
                     .roleType(RoleType.USER)
                     .build();
         }
+    }
+
+    // 이메일 체크 요청
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class EmailCheckRequest {
+        private String email;
     }
 
     // 로그인 응답
@@ -43,4 +55,12 @@ public class UserDto {
         private String accessToken;
         private String refreshToken;
     }
+
+    // 이메일 체크 응답
+    @Getter
+    @AllArgsConstructor
+    public static class EmailCheckResponse {
+        private Boolean isDuplicated;
+    }
+
 }

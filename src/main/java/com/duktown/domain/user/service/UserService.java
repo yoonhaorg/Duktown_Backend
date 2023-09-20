@@ -21,6 +21,18 @@ public class UserService {
     private final JwtTokenProvider jwtService;
     private final PasswordEncoder passwordEncoder;
 
+    // 이메일 중복 체크 메서드
+    @Transactional(readOnly = true)
+    public UserDto.EmailCheckResponse emailDuplicateCheck(UserDto.EmailCheckRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElse(null);
+
+        if (user != null) {
+            return new UserDto.EmailCheckResponse(true);
+        }
+        return new UserDto.EmailCheckResponse(false);
+    }
+
     // 사용자 회원가입 메서드
     public UserDto.SignUpResponse signup(UserDto.SignupRequest signupRequest) {
         // 이메일 중복 체크
