@@ -3,11 +3,14 @@ package com.duktown.domain.user.service;
 import com.duktown.domain.user.dto.UserDto;
 import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
+import com.duktown.global.exception.CustomException;
 import com.duktown.global.security.service.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.duktown.global.exception.CustomErrorType.EMAIL_ALREADY_EXIST;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +24,7 @@ public class UserService {
     // 사용자 회원가입 메서드
     public UserDto.SignUpResponse signup(UserDto.SignupRequest signupRequest) {
         // 이메일 중복 체크
+        emailDuplicateCheck(signupRequest.getEmail());
 
         // 이메일 인증 여부 체크
 
@@ -35,5 +39,12 @@ public class UserService {
         String refreshToken = jwtService.createRefreshToken(user.getEmail(), user.getId(), user.getRoleType());
         user.updateRefreshToken(refreshToken);
         return new UserDto.SignUpResponse(accessToken, refreshToken);
+    }
+
+    private void emailDuplicateCheck(String email) {
+        userRepository.findByEmail(email)
+                .ifPresent(user -> {
+                    throw new CustomException(EMAIL_ALREADY_EXIST);
+                });
     }
 }

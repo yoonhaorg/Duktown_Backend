@@ -27,7 +27,8 @@ public enum CustomErrorType {
 
     // User (3xxxx)
     LOGIN_FAILED(UNAUTHORIZED, 30001, "이메일 또는 비밀번호가 일치하지 않습니다."),
-    USER_NOT_FOUND(NOT_FOUND, 30002, "사용자를 찾을 수 없습니다.");
+    USER_NOT_FOUND(NOT_FOUND, 30002, "사용자를 찾을 수 없습니다."),
+    EMAIL_ALREADY_EXIST(CONFLICT, 30003, "이미 존재하는 이메일입니다.");
 
     private final HttpStatus httpStatus;
     private final int code;
