@@ -37,4 +37,10 @@ public class User extends BaseTimeEntity {
     @Enumerated(value = STRING)
     @Column(nullable = false)
     private RoleType roleType;
+
+    private String refreshToken;
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }

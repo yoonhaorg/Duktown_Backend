@@ -25,4 +25,22 @@ public class UserDto {
                     .build();
         }
     }
+
+    // 로그인 응답
+    @Getter
+    @AllArgsConstructor
+    public static class UserTokenResponse {
+        private RoleType roleType;
+        private String accessToken;
+        private String refreshToken;
+    }
+
+    // 회원가입 응답 (최초 회원가입시 역할은 무조건 USER, 따라서 반환 x)
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class SignUpResponse {
+        private String accessToken;
+        private String refreshToken;
+    }
 }

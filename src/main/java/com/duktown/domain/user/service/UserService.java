@@ -3,19 +3,23 @@ package com.duktown.domain.user.service;
 import com.duktown.domain.user.dto.UserDto;
 import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
+import com.duktown.global.security.service.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
+    private final JwtTokenProvider jwtService;
     private final PasswordEncoder passwordEncoder;
 
     // 사용자 회원가입 메서드
-    public void signup(UserDto.SignupRequest signupRequest) {
+    public UserDto.SignUpResponse signup(UserDto.SignupRequest signupRequest) {
         // 이메일 중복 체크
 
         // 이메일 인증 여부 체크
@@ -27,6 +31,9 @@ public class UserService {
         User user = signupRequest.toEntity(encodedPassword);
         userRepository.save(user);
 
-        // TODO: 회원가입 응답 반환 로직 (현재 void 메서드)
+        String accessToken = jwtService.createAccessToken(user.getEmail(), user.getId(), user.getRoleType());
+        String refreshToken = jwtService.createRefreshToken(user.getEmail(), user.getId(), user.getRoleType());
+        user.updateRefreshToken(refreshToken);
+        return new UserDto.SignUpResponse(accessToken, refreshToken);
     }
 }
