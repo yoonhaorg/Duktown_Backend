@@ -29,10 +29,10 @@ public class CustomUserDetails implements UserDetails {
         return user.getPassword();
     }
 
-    // 사용자 식별 가능한 속성 반환(이메일)
+    // 사용자 식별 가능한 속성 반환(사용자 로그인 아이디)
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return user.getLoginId();
     }
 
     // 계정 만료 여부 반환

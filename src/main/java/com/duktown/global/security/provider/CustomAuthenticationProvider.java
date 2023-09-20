@@ -24,13 +24,13 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     // 입력정보, 실제 사용자 비교
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        String email = authentication.getName();
+        String loginId = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(email);
+        CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(loginId);
 
         if (userDetails == null || !passwordEncoder.matches(password, userDetails.getPassword())) {
-            throw new BadCredentialsException("이메일 또는 비밀번호가 일치하지 않습니다.");
+            throw new BadCredentialsException("아이디 또는 비밀번호가 일치하지 않습니다.");
         }
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

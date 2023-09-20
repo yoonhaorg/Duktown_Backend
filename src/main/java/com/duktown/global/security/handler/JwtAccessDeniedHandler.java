@@ -19,7 +19,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 
     // 엔드포인트에 대해 접근 권한 존재하지 않는 경우 동작하는 Handler
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
 
         response.setStatus(ACCESS_DENIED.getStatusCode());
         response.setContentType(APPLICATION_JSON_VALUE);

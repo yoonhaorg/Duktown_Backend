@@ -20,7 +20,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     // 인증이 필요한 엔드포인트에 대해 인증되지 않았을 때 동작하는 Handler
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         response.setStatus(AUTHENTICATION_REQUIRED.getStatusCode());
         response.setContentType(APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("utf-8");

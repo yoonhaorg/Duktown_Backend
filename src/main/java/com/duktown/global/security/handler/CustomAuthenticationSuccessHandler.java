@@ -29,15 +29,15 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
     @Transactional
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        User user = userRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("가입된 이메일이 존재하지 않습니다."));
+        User user = userRepository.findByLoginId(userDetails.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("가입된 아이디가 존재하지 않습니다."));
 
         // JWT Token 생성, 응답
-        String accessToken = jwtService.createAccessToken(user.getEmail(), user.getId(), user.getRoleType());
-        String refreshToken = jwtService.createRefreshToken(user.getEmail(), user.getId(), user.getRoleType());
+        String accessToken = jwtService.createAccessToken(user.getLoginId(), user.getId(), user.getRoleType());
+        String refreshToken = jwtService.createRefreshToken(user.getLoginId(), user.getId(), user.getRoleType());
 
         user.updateRefreshToken(refreshToken);
         response.setContentType(APPLICATION_JSON_VALUE);
