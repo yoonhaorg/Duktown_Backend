@@ -62,10 +62,9 @@ public class JwtTokenProvider {
     // TODO: 추후 Delete 필드 추가 시 사용자 조회 메서드 교체
     // Access Token에 해당하는 사용자에 대한 Authentication 객체 반환 메서드
     public Authentication getAuthentication(String accessToken) {
-        String email = getEmail(accessToken);
-        RoleType roleType = getRoleType(accessToken);
+        String loginId = getLoginId(accessToken);
         Long userId = getUserId(accessToken);
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByIdAndLoginId(userId, loginId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         UserDetails userDetails = new CustomUserDetails(user);
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
@@ -81,10 +80,10 @@ public class JwtTokenProvider {
     }
 
     // Access Token 생성 메서드
-    public String createAccessToken(String email, Long userId, RoleType roleType) {
+    public String createAccessToken(String loginId, Long userId, RoleType roleType) {
         return Jwts.builder()
                 .setHeaderParam("typ", "JWT")
-                .setSubject(email)
+                .setSubject(loginId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXP_TIME))
                 .claim(CLAIM_ID, userId)
@@ -94,10 +93,10 @@ public class JwtTokenProvider {
     }
 
     // Refresh Token 생성 메서드
-    public String createRefreshToken(String email, Long userId, RoleType roleType) {
+    public String createRefreshToken(String loginId, Long userId, RoleType roleType) {
         return Jwts.builder()
                 .setHeaderParam("typ", "JWT")
-                .setSubject(email)
+                .setSubject(loginId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXP_TIME))
                 .claim(CLAIM_ID, userId)
@@ -116,7 +115,7 @@ public class JwtTokenProvider {
     }
 
     // Token에서 사용자 email 추출 메서드
-    public String getEmail(String token) {
+    public String getLoginId(String token) {
         return getClaim(token).getSubject();
     }
 
