@@ -1,7 +1,7 @@
 package com.duktown.global.security.filter;
 
 import com.duktown.global.exception.ErrorResponse;
-import com.duktown.global.security.service.JwtTokenProvider;
+import com.duktown.global.security.provider.JwtTokenProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

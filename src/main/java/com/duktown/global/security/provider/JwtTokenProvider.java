@@ -1,8 +1,9 @@
-package com.duktown.global.security.service;
+package com.duktown.global.security.provider;
 
 import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.exception.CustomException;
+import com.duktown.global.security.service.CustomUserDetails;
 import com.duktown.global.type.RoleType;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

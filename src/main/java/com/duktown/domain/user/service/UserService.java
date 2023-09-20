@@ -4,7 +4,7 @@ import com.duktown.domain.user.dto.UserDto;
 import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.exception.CustomException;
-import com.duktown.global.security.service.JwtTokenProvider;
+import com.duktown.global.security.provider.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
