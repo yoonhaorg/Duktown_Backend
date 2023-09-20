@@ -40,7 +40,8 @@ public class SecurityConfig {
     private static final String[] AUTH_WHITE_LIST = {
             "/auth/signup",
             "/auth/login",
-            "/auth/email-duplicate"
+            "/auth/email-duplicate",
+            "/auth/id-duplicate"
     };
 
     @Bean

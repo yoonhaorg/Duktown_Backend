@@ -18,14 +18,21 @@ public class UserDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class SignupRequest {
-        private String name;
+        @NotEmpty(message = "이메일은 필수 값입니다.")
+        @Email(message = "이메일 형식이 올바르지 않습니다.")
+        @Pattern(regexp = "[A-Za-z0-9+_.-]+@duksung.ac.kr", message = "이메일은 반드시 덕성 메일이어야 합니다.")
         private String email;
+
+        @NotEmpty(message = "아이디는 필수 값입니다.")
+        private String loginId;
+
+        @NotEmpty(message = "비밀번호는 필수 값입니다.")
         private String password;
 
         public User toEntity(String encodedPassword){
             return User.builder()
-                    .name(this.name)
                     .email(this.email)
+                    .loginId(this.loginId)
                     .password(encodedPassword)
                     .roleType(RoleType.USER)
                     .build();
@@ -37,10 +44,19 @@ public class UserDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class EmailCheckRequest {
-        @NotEmpty(message = "이메일은 필수적으로 입력해야 합니다.")
+        @NotEmpty(message = "이메일은 필수 값입니다.")
         @Email(message = "이메일 형식이 올바르지 않습니다.")
         @Pattern(regexp = "[A-Za-z0-9+_.-]+@duksung.ac.kr", message = "덕성 메일을 입력해주세요.")
         private String email;
+    }
+
+    // 아이디 중복 체크 요청
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class IdCheckRequest {
+        @NotEmpty(message = "아이디는 필수 값입니다.")
+        private String loginId;
     }
 
     // 로그인 응답
@@ -68,4 +84,10 @@ public class UserDto {
         private Boolean isDuplicated;
     }
 
+    // 아이디 체크 응답
+    @Getter
+    @AllArgsConstructor
+    public static class IdCheckResponse {
+        private Boolean isDuplicated;
+    }
 }

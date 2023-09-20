@@ -17,7 +17,12 @@ public class UserController {
 
     @PostMapping("/email-duplicate")
     public ResponseEntity<UserDto.EmailCheckResponse> emailCheck(@Valid @RequestBody final UserDto.EmailCheckRequest emailCheckRequest) {
-        return ResponseEntity.ok(userService.emailDuplicateCheck(emailCheckRequest));
+        return ResponseEntity.ok(userService.emailCheck(emailCheckRequest));
+    }
+
+    @PostMapping("/id-duplicate")
+    public ResponseEntity<UserDto.IdCheckResponse> idCheck(@Valid @RequestBody final UserDto.IdCheckRequest idCheckRequest) {
+        return ResponseEntity.ok(userService.idCheck(idCheckRequest));
     }
 
     @PostMapping("/signup")
