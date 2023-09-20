@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RequestMapping("/auth")
 @RestController
 @RequiredArgsConstructor
@@ -14,7 +16,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/email-duplicate")
-    public ResponseEntity<UserDto.EmailCheckResponse> emailCheck(@RequestBody final UserDto.EmailCheckRequest emailCheckRequest) {
+    public ResponseEntity<UserDto.EmailCheckResponse> emailCheck(@Valid @RequestBody final UserDto.EmailCheckRequest emailCheckRequest) {
         return ResponseEntity.ok(userService.emailDuplicateCheck(emailCheckRequest));
     }
 

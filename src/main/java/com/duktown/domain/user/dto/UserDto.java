@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 
 public class UserDto {
 
@@ -35,6 +37,9 @@ public class UserDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class EmailCheckRequest {
+        @NotEmpty(message = "이메일은 필수적으로 입력해야 합니다.")
+        @Email(message = "이메일 형식이 올바르지 않습니다.")
+        @Pattern(regexp = "[A-Za-z0-9+_.-]+@duksung.ac.kr", message = "덕성 메일을 입력해주세요.")
         private String email;
     }
 
