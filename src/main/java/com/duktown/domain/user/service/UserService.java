@@ -19,7 +19,7 @@ import static com.duktown.global.exception.CustomErrorType.LOGIN_ID_ALREADY_EXIS
 public class UserService {
 
     private final UserRepository userRepository;
-    private final JwtTokenProvider jwtService;
+    private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
 
     // 이메일 중복 체크 메서드
@@ -68,8 +68,8 @@ public class UserService {
         User user = signupRequest.toEntity(encodedPassword);
         userRepository.save(user);
 
-        String accessToken = jwtService.createAccessToken(user.getEmail(), user.getId(), user.getRoleType());
-        String refreshToken = jwtService.createRefreshToken(user.getEmail(), user.getId(), user.getRoleType());
+        String accessToken = jwtTokenProvider.createAccessToken(user.getEmail(), user.getId(), user.getRoleType());
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getEmail(), user.getId(), user.getRoleType());
         user.updateRefreshToken(refreshToken);
         return new UserDto.SignUpResponse(accessToken, refreshToken);
     }
