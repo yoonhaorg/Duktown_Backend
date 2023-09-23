@@ -20,3 +20,9 @@ logging:
   level:
     com:
       duktown: debug
+
+# JWT
+custom:
+  jwt:
+    secret-key:
+      custom_jwt_secret_key_for_local_test_secret_key_secret_secret_key

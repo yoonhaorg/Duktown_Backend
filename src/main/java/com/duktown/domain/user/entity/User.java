@@ -1,7 +1,7 @@
 package com.duktown.domain.user.entity;
 
 import com.duktown.domain.BaseTimeEntity;
-import com.duktown.global.type.UserType;
+import com.duktown.global.type.RoleType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,16 +25,24 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
+    private String loginId;
+
+    @Column(nullable = false)
     private String password;
 
     @Enumerated(value = STRING)
     @Column(nullable = false)
-    private UserType userType;
+    private RoleType roleType;
+
+    private String refreshToken;
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }
