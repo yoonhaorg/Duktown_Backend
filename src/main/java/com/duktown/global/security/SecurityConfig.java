@@ -1,6 +1,6 @@
 package com.duktown.global.security;
 
-import com.duktown.global.security.filter.CustomAuthenticationFilter;
+import com.duktown.global.security.filter.JwtAuthenticationFilter;
 import com.duktown.global.security.filter.JwtAuthorizationFilter;
 import com.duktown.global.security.handler.JwtAccessDeniedHandler;
 import com.duktown.global.security.handler.JwtAuthenticationEntryPoint;
@@ -47,8 +47,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        CustomAuthenticationFilter authenticationFilter =
-                new CustomAuthenticationFilter(authenticationManagerBuilder.getOrBuild());
+        JwtAuthenticationFilter authenticationFilter =
+                new JwtAuthenticationFilter(authenticationManagerBuilder.getOrBuild());
 
         authenticationFilter.setFilterProcessesUrl("/auth/login");
         authenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);

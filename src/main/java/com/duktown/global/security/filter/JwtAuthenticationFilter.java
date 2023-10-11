@@ -9,13 +9,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotEmpty;
 
 // 인증 필터 : HTTP Request를 낚아챔
 // 요청의 username과 password를 이용해 토큰 생성
 // 토큰을 AuthenticationManager가 받아 AuthenticationProvider에게 넘겨준다
 @RequiredArgsConstructor
-public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
 
