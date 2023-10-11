@@ -13,7 +13,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -22,10 +21,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Component
 @RequiredArgsConstructor
-public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private final UserRepository userRepository;
-    private final JwtTokenProvider jwtService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     @Override
@@ -36,8 +35,8 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                 .orElseThrow(() -> new UsernameNotFoundException("가입된 아이디가 존재하지 않습니다."));
 
         // JWT Token 생성, 응답
-        String accessToken = jwtService.createAccessToken(user.getLoginId(), user.getId(), user.getRoleType());
-        String refreshToken = jwtService.createRefreshToken(user.getLoginId(), user.getId(), user.getRoleType());
+        String accessToken = jwtTokenProvider.createAccessToken(user.getLoginId(), user.getId(), user.getRoleType());
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getLoginId(), user.getId(), user.getRoleType());
 
         user.updateRefreshToken(refreshToken);
         response.setContentType(APPLICATION_JSON_VALUE);
