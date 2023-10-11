@@ -122,12 +122,12 @@ public class JwtTokenProvider {
 
     // Token에서 사용자 ID 추출 메서드
     public Long getUserId(String token) {
-        return (Long) getClaim(token).get(CLAIM_ID);
+        return getClaim(token).get(CLAIM_ID, Long.class);
     }
 
     // Token에서 사용자 RoleType 추출 메서드
     public RoleType getRoleType(String token) {
-        return (RoleType) getClaim(token).get(CLAIM_ROLE);
+        return getClaim(token).get(CLAIM_ROLE, RoleType.class);
     }
 
     // Token 유효성 검증 메서드
