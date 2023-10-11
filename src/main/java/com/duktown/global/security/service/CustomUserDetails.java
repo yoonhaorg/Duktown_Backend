@@ -58,4 +58,8 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;   // 사용 가능
     }
+
+    public Long getId() {
+        return user.getId();
+    }
 }
