@@ -4,7 +4,7 @@ import com.duktown.domain.user.controller.UserController;
 import com.duktown.domain.user.dto.UserDto;
 import com.duktown.domain.user.service.UserService;
 import com.duktown.global.security.SecurityConfig;
-import com.duktown.global.security.filter.JwtAuthenticationFilter;
+import com.duktown.global.security.filter.JwtAuthorizationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 type = FilterType.ASSIGNABLE_TYPE,
                 classes = {
                         SecurityConfig.class,
-                        JwtAuthenticationFilter.class
+                        JwtAuthorizationFilter.class
                 }
         )
 )

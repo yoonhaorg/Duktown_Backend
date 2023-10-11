@@ -1,7 +1,7 @@
 package com.duktown.global.security;
 
 import com.duktown.global.security.filter.CustomAuthenticationFilter;
-import com.duktown.global.security.filter.JwtAuthenticationFilter;
+import com.duktown.global.security.filter.JwtAuthorizationFilter;
 import com.duktown.global.security.handler.JwtAccessDeniedHandler;
 import com.duktown.global.security.handler.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.*;
 public class SecurityConfig {
 
     private final AuthenticationProvider authenticationProvider;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthorizationFilter jwtAuthorizationFilter;
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
     private final AuthenticationFailureHandler authenticationFailureHandler;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -62,7 +62,7 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(STATELESS)   // 세션 사용 x
                 .and()
                 .addFilter(authenticationFilter)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(authenticationProvider)
                 .authorizeHttpRequests((auth) -> {
                     Arrays.stream(AUTH_WHITE_LIST)
