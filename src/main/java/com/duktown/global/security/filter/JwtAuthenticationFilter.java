@@ -1,51 +1,43 @@
 package com.duktown.global.security.filter;
 
-import com.duktown.global.exception.ErrorResponse;
-import com.duktown.global.security.provider.JwtTokenProvider;
+import com.duktown.global.exception.CustomException;
+import com.duktown.global.security.dto.LoginRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
-import static com.duktown.global.exception.CustomErrorType.*;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static com.duktown.global.exception.CustomErrorType.SERVER_INTERNAL_ERROR;
 
-// 모든 엔드포인트에 대해 accessToken 확인하는 필터
-@Slf4j
-@Component
+// 인증 필터 : HTTP Request를 낚아챔
+// 요청의 username과 password를 이용해 토큰 생성
+// 토큰을 AuthenticationManager가 받아 AuthenticationProvider에게 넘겨준다
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationManager authenticationManager;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = jwtTokenProvider.getToken(request);
-
-        if (accessToken != null) {
-            try {
-                jwtTokenProvider.validateToken(accessToken);
-                Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-            // TODO: ExceptionHandling 수정
-            catch (Exception e) {
-                response.setStatus(UNHANDLED_TOKEN_ERROR.getStatusCode());
-                response.setContentType(APPLICATION_JSON_VALUE);
-                response.setCharacterEncoding("utf-8");
-                ErrorResponse errorResponse = new ErrorResponse(UNHANDLED_TOKEN_ERROR);
-                new ObjectMapper().writeValue(response.getWriter(), errorResponse);
-            }
+    public Authentication attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws AuthenticationException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        LoginRequestDto loginRequestDto;
+        try {
+            loginRequestDto = objectMapper.readValue(httpServletRequest.getInputStream(), LoginRequestDto.class);
+        } catch (Exception e) {
+            throw new CustomException(SERVER_INTERNAL_ERROR);   // TODO: CustomException ErrorResponse 처리
         }
-        filterChain.doFilter(request, response);
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                loginRequestDto.getLoginId(),
+                loginRequestDto.getPassword()
+        );
+
+        return authenticationManager.authenticate(authentication);
     }
 }

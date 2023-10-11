@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 // UserDetails 객체 반환
 @Component
 @RequiredArgsConstructor
-public class CustomAuthenticationProvider implements AuthenticationProvider {
+public class UserAuthenticationProvider implements AuthenticationProvider {
 
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
@@ -29,8 +29,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(loginId);
 
-        if (userDetails == null || !passwordEncoder.matches(password, userDetails.getPassword())) {
-            throw new BadCredentialsException("아이디 또는 비밀번호가 일치하지 않습니다.");
+        if (!passwordEncoder.matches(password, userDetails.getPassword())) {
+            throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
         }
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

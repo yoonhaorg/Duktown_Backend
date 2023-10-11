@@ -1,7 +1,7 @@
 package com.duktown.global.security;
 
-import com.duktown.global.security.filter.CustomAuthenticationFilter;
 import com.duktown.global.security.filter.JwtAuthenticationFilter;
+import com.duktown.global.security.filter.JwtAuthorizationFilter;
 import com.duktown.global.security.handler.JwtAccessDeniedHandler;
 import com.duktown.global.security.handler.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.*;
 public class SecurityConfig {
 
     private final AuthenticationProvider authenticationProvider;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthorizationFilter jwtAuthorizationFilter;
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
     private final AuthenticationFailureHandler authenticationFailureHandler;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -39,7 +39,6 @@ public class SecurityConfig {
     // TODO: 인증에 예외를 둘 로직 추가
     private static final String[] AUTH_WHITE_LIST = {
             "/auth/signup",
-            "/auth/login",
             "/auth/email-duplicate",
             "/auth/id-duplicate"
     };
@@ -47,24 +46,28 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        CustomAuthenticationFilter authenticationFilter =
-                new CustomAuthenticationFilter(authenticationManagerBuilder.getOrBuild());
+        JwtAuthenticationFilter authenticationFilter =
+                new JwtAuthenticationFilter(authenticationManagerBuilder.getOrBuild());
 
         authenticationFilter.setFilterProcessesUrl("/auth/login");
         authenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
         authenticationFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
 
-        http.exceptionHandling()
+        http
+                .exceptionHandling()
                 .accessDeniedHandler(jwtAccessDeniedHandler)
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)  // exception handling
                 .and()
                 .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(STATELESS)   // 세션 사용 x
+                .formLogin().disable()
+                .httpBasic().disable()
+                .sessionManagement().sessionCreationPolicy(STATELESS)   // jwt
                 .and()
                 .addFilter(authenticationFilter)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(authenticationProvider)
                 .authorizeHttpRequests((auth) -> {
+                    // whitelist에 있는 endpoint만 인증 제외
                     Arrays.stream(AUTH_WHITE_LIST)
                             .forEach(authWhiteListElem -> auth.mvcMatchers(authWhiteListElem).permitAll());
                     auth.anyRequest().authenticated();
@@ -75,9 +78,7 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> {
-            web.httpFirewall(defaultHttpFirewall());
-        };
+        return web -> web.httpFirewall(defaultHttpFirewall());
     }
 
     @Bean

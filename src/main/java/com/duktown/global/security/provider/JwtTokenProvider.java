@@ -7,6 +7,7 @@ import com.duktown.global.security.service.CustomUserDetails;
 import com.duktown.global.type.RoleType;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -84,7 +85,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setHeaderParam("typ", "JWT")
                 .setSubject(loginId)
-                .setIssuedAt(new Date())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXP_TIME))
                 .claim(CLAIM_ID, userId)
                 .claim(CLAIM_ROLE, roleType.getKey())
@@ -97,7 +98,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setHeaderParam("typ", "JWT")
                 .setSubject(loginId)
-                .setIssuedAt(new Date())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXP_TIME))
                 .claim(CLAIM_ID, userId)
                 .claim(CLAIM_ROLE, roleType.getKey())
@@ -121,12 +122,12 @@ public class JwtTokenProvider {
 
     // Token에서 사용자 ID 추출 메서드
     public Long getUserId(String token) {
-        return (Long) getClaim(token).get(CLAIM_ID);
+        return getClaim(token).get(CLAIM_ID, Long.class);
     }
 
     // Token에서 사용자 RoleType 추출 메서드
     public RoleType getRoleType(String token) {
-        return (RoleType) getClaim(token).get(CLAIM_ROLE);
+        return getClaim(token).get(CLAIM_ROLE, RoleType.class);
     }
 
     // Token 유효성 검증 메서드
@@ -141,7 +142,7 @@ public class JwtTokenProvider {
                     .setSigningKey(jwtSecretKey)
                     .build()
                     .parseClaimsJws(token);
-        } catch (IllegalArgumentException | UnsupportedJwtException | MalformedJwtException e) {
+        } catch (SignatureException | IllegalArgumentException | UnsupportedJwtException | MalformedJwtException e) {
             throw new CustomException(INVALID_TOKEN);
         } catch (ExpiredJwtException e) {
             throw new CustomException(ACCESS_TOKEN_EXPIRED);
