@@ -1,5 +1,6 @@
 package com.duktown.domain.daily.entity;
 
+import com.duktown.domain.BaseTimeEntity;
 import com.duktown.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Builder
 @AllArgsConstructor(access = PRIVATE)
 @NoArgsConstructor(access = PROTECTED)
-public class Daily {
+public class Daily extends BaseTimeEntity {
     @Id
     @GeneratedValue
     @Column(name = "daily_id")
@@ -32,4 +33,9 @@ public class Daily {
 
     @Column(nullable = false, columnDefinition = "longtext")
     private String content;
+
+    public void update(String title, String content){
+        this.title =title;
+        this.content =content;
+    }
 }
