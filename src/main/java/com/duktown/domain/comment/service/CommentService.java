@@ -68,30 +68,27 @@ public class CommentService {
     }
 
     // TODO: queryDsl 도입해 대댓글 조회 기능 수정
-    /*
-    문제점 : 댓글에 대댓글을 달았을 경우 다음과 같이 조회됨
-    댓글 id : 1
-    ㄴ 대댓글 id : 2
-    댓글 id : 2 (대댓글과 동일)
-     */
     @Transactional(readOnly = true)
     public CommentDto.ListResponse getCommentList(Long userId, Long deliveryId, Long dailyId, Long marketId){
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         List<Comment> comments;
+        Long commentCount;
 
         if(deliveryId != null){
             comments = commentRepository.findAllByDeliveryId(deliveryId);
-            return CommentDto.ListResponse.from(comments);
+            commentCount = commentRepository.countByDeliveryId(deliveryId);
         } else if (dailyId != null) {
             comments = commentRepository.findAllByDailyId(dailyId);
+            commentCount = commentRepository.countByDailyId(dailyId);
         } else if (marketId != null) {
             comments = commentRepository.findAllByMarketId(marketId);
+            commentCount = commentRepository.countByMarketId(marketId);
         } else {
             throw new CustomException(COMMENT_TARGET_NOT_SELECTED);
         }
 
-        return CommentDto.ListResponse.from(comments);
+        return CommentDto.ListResponse.from(commentCount, comments);
     }
 
     public void updateComment(Long userId, Long commentId, CommentDto.UpdateRequest request){

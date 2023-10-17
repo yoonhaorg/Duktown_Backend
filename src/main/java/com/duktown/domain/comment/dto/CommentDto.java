@@ -45,15 +45,15 @@ public class CommentDto {
     @Getter
     @AllArgsConstructor
     public static class ListResponse {
-        private Integer commentCount;
+        private Long commentCount;
         private List<ParentResponse> content;
 
-        public static ListResponse from(List<Comment> comments){
+        public static ListResponse from(Long commentCount, List<Comment> comments){
             List<ParentResponse> content = comments.stream()
                     .map(ParentResponse::from)
                     .collect(Collectors.toList());
             return ListResponse.builder()
-                    .commentCount(comments.size())
+                    .commentCount(commentCount)
                     .content(content)
                     .build();
         }
