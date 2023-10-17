@@ -30,6 +30,7 @@ public enum CustomErrorType {
     USER_NOT_FOUND(NOT_FOUND, 30002, "사용자를 찾을 수 없습니다."),
     EMAIL_ALREADY_EXIST(CONFLICT, 30003, "이미 존재하는 이메일입니다."),
     LOGIN_ID_ALREADY_EXIST(CONFLICT, 30004, "이미 존재하는 아이디입니다."),
+    HAVE_NO_PERMISSION(FORBIDDEN, 30005, "수정 및 삭제에 대한 권한이 없습니다."),
 
     // Delivery (4xxxx)
     DELIVERY_NOT_FOUND(NOT_FOUND, 40001, "존재하지 않는 배달팟입니다."),

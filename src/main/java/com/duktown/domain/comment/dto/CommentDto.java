@@ -103,4 +103,12 @@ public class CommentDto {
                     .build();
         }
     }
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UpdateRequest {
+        @NotBlank(message = "댓글의 내용은 필수 값입니다.")
+        private String content;
+    }
 }

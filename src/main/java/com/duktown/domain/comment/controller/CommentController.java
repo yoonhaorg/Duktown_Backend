@@ -36,4 +36,14 @@ public class CommentController {
                 commentService.getCommentList(customUserDetails.getId(), deliveryId, dailyId, marketId)
         );
     }
+
+    @PatchMapping("/{commentId}")
+    public ResponseEntity<Void> updateComment(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable Long commentId,
+            @Valid @RequestBody CommentDto.UpdateRequest request
+    ) {
+        commentService.updateComment(customUserDetails.getId(), commentId, request);
+        return ResponseEntity.ok().build();
+    }
 }

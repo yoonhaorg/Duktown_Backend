@@ -93,4 +93,19 @@ public class CommentService {
 
         return CommentDto.ListResponse.from(comments);
     }
+
+    public void updateComment(Long userId, Long commentId, CommentDto.UpdateRequest request){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
+
+        // 본인 댓글인지 확인
+        if(!comment.getUser().getId().equals(user.getId())){
+            throw new CustomException(HAVE_NO_PERMISSION);
+        }
+
+        comment.update(request.getContent());
+    }
 }

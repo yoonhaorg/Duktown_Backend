@@ -58,4 +58,8 @@ public class Comment extends BaseTimeEntity {
 
     @Column(nullable = false)
     private Boolean deleted;
+
+    public void update(String content) {
+        this.content = content;
+    }
 }
