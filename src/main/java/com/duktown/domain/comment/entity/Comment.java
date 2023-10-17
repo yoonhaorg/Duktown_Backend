@@ -31,15 +31,15 @@ public class Comment {
     private User user;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "delivery_id", nullable = false)
+    @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "daily_id", nullable = false)
+    @JoinColumn(name = "daily_id")
     private Daily daily;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "market_id", nullable = false)
+    @JoinColumn(name = "market_id")
     private Market market;
 
     @ManyToOne(fetch = LAZY)
