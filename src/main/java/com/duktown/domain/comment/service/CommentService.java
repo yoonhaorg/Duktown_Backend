@@ -108,4 +108,33 @@ public class CommentService {
 
         comment.update(request.getContent());
     }
+
+    public void deleteComment(Long userId, Long commentId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
+
+        // 본인 댓글인지 확인
+        if (!comment.getUser().getId().equals(user.getId())) {
+            throw new CustomException(HAVE_NO_PERMISSION);
+        }
+
+        // 대댓글이 있는 상위 댓글이면 내용만 삭제됨으로 변경, 하위 댓글이면 삭제
+        if(commentRepository.existsByParentCommentId(commentId)){
+            comment.deleteWithChildComment();
+        } else {
+            Comment parentComment = comment.getParentComment();
+            commentRepository.delete(comment);
+
+            // 하위 댓글 삭제 시 더이상 상위 댓글이 존재하지 않으면 상위 댓글도 완전히 삭제
+            if (parentComment != null
+                    && !commentRepository.existsByParentCommentId(parentComment.getId())
+                    && parentComment.getDeleted()
+            ) {
+                commentRepository.delete(parentComment);
+            }
+        }
+    }
 }

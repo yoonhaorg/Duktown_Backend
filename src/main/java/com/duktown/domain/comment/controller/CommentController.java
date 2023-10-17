@@ -46,4 +46,13 @@ public class CommentController {
         commentService.updateComment(customUserDetails.getId(), commentId, request);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> deleteComment(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable Long commentId
+    ) {
+        commentService.deleteComment(customUserDetails.getId(), commentId);
+        return ResponseEntity.ok().build();
+    }
 }
