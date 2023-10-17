@@ -16,11 +16,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static com.duktown.global.exception.CustomErrorType.*;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class CommentService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
@@ -28,7 +30,6 @@ public class CommentService {
     private final DailyRepository dailyRepository;
     private final MarketRepository marketRepository;
 
-    @Transactional
     public void createComment(Long userId, CommentDto.CreateRequest request){
         // 사용자
         User user = userRepository.findById(userId)
@@ -39,6 +40,11 @@ public class CommentService {
         if(request.getParentCommentId() != null) {
             parentComment = commentRepository.findById(request.getParentCommentId())
                     .orElseThrow(() -> new CustomException(PARENT_COMMENT_NOT_FOUND));
+
+            // TODO: 이부분 지우고 나중에 따로 commit
+            if(parentComment.getParentComment() != null){
+                throw new CustomException(COMMENT_DEPTH_ERROR);
+            }
         }
 
         Delivery delivery = null;
@@ -59,5 +65,32 @@ public class CommentService {
 
         Comment comment = request.toEntity(user, delivery, daily, market, parentComment);
         commentRepository.save(comment);
+    }
+
+    // TODO: queryDsl 도입해 대댓글 조회 기능 수정
+    /*
+    문제점 : 댓글에 대댓글을 달았을 경우 다음과 같이 조회됨
+    댓글 id : 1
+    ㄴ 대댓글 id : 2
+    댓글 id : 2 (대댓글과 동일)
+     */
+    @Transactional(readOnly = true)
+    public CommentDto.ListResponse getCommentList(Long userId, Long deliveryId, Long dailyId, Long marketId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        List<Comment> comments;
+
+        if(deliveryId != null){
+            comments = commentRepository.findAllByDeliveryId(deliveryId);
+            return CommentDto.ListResponse.from(comments);
+        } else if (dailyId != null) {
+            comments = commentRepository.findAllByDailyId(dailyId);
+        } else if (marketId != null) {
+            comments = commentRepository.findAllByMarketId(marketId);
+        } else {
+            throw new CustomException(COMMENT_TARGET_NOT_SELECTED);
+        }
+
+        return CommentDto.ListResponse.from(comments);
     }
 }
