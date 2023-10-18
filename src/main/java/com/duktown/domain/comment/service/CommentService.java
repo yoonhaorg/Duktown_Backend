@@ -41,7 +41,6 @@ public class CommentService {
             parentComment = commentRepository.findById(request.getParentCommentId())
                     .orElseThrow(() -> new CustomException(PARENT_COMMENT_NOT_FOUND));
 
-            // TODO: 이부분 지우고 나중에 따로 commit
             if(parentComment.getParentComment() != null){
                 throw new CustomException(COMMENT_DEPTH_ERROR);
             }

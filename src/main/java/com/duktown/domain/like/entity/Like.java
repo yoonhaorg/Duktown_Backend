@@ -1,5 +1,7 @@
 package com.duktown.domain.like.entity;
 
+import com.duktown.domain.BaseTimeEntity;
+import com.duktown.domain.comment.entity.Comment;
 import com.duktown.domain.daily.entity.Daily;
 import com.duktown.domain.delivery.entity.Delivery;
 import com.duktown.domain.market.entity.Market;
@@ -21,7 +23,7 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor(access = PRIVATE)
 @NoArgsConstructor(access = PROTECTED)
 @Table(name = "likes")
-public class Like {
+public class Like extends BaseTimeEntity {
     @Id
     @GeneratedValue
     @Column(name = "like_id")
@@ -32,14 +34,18 @@ public class Like {
     private User user;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "delivery_id", nullable = false)
+    @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "daily_id", nullable = false)
+    @JoinColumn(name = "daily_id")
     private Daily daily;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "market_id", nullable = false)
+    @JoinColumn(name = "market_id")
     private Market market;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 }
