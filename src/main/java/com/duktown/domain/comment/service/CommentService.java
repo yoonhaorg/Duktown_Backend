@@ -67,6 +67,7 @@ public class CommentService {
     }
 
     // TODO: queryDsl 도입해 대댓글 조회 기능 수정
+    // TODO: 현재 로그인한 사용자가 좋아요한 댓글 표시
     @Transactional(readOnly = true)
     public CommentDto.ListResponse getCommentList(Long userId, Long deliveryId, Long dailyId, Long marketId){
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));

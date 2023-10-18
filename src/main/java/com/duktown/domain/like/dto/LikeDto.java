@@ -23,11 +23,19 @@ public class LikeDto {
 
         public static Like toEntity(User user, Delivery delivery, Daily daily, Market market, Comment comment) {
             return Like.builder()
+                    .user(user)
                     .delivery(delivery)
                     .daily(daily)
                     .market(market)
                     .comment(comment)
                     .build();
         }
+    }
+
+    // TODO: 게시글 관련 타 dto에 likeCount와 liked 필드 추가하기
+    @AllArgsConstructor
+    @Getter
+    public static class LikeResponse {
+        private Boolean liked;
     }
 }

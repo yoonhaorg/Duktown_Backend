@@ -13,13 +13,10 @@ import com.duktown.domain.market.entity.Market;
 import com.duktown.domain.market.entity.MarketRepository;
 import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
-import com.duktown.global.exception.CustomErrorType;
 import com.duktown.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.servlet.http.HttpServletRequest;
 
 import static com.duktown.global.exception.CustomErrorType.*;
 
@@ -34,27 +31,48 @@ public class LikeService {
     private final MarketRepository marketRepository;
     private final CommentRepository commentRepository;
 
-    // 좋아요 추가
-    public void createLike(Long userId, Long deliveryId, Long dailyId, Long marketId, Long commentId) {
+    // 좋아요 추가, 취소
+    public LikeDto.LikeResponse like(Long userId, LikeDto.LikeRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
+        // 좋아요 존재 시 취소
+        Like findLike = null;
+
+        if(request.getDeliveryId() != null) {
+            findLike = likeRepository.findByUserIdAndDeliveryId(userId, request.getDeliveryId());
+        } else if (request.getDailyId() != null) {
+            findLike = likeRepository.findByUserIdAndDailyId(userId, request.getDailyId());
+        } else if (request.getMarketId() != null) {
+            findLike = likeRepository.findByUserIdAndMarketId(userId, request.getMarketId());
+        } else if (request.getCommentId() != null) {
+            findLike = likeRepository.findByUserIdAndCommentId(userId, request.getCommentId());
+        } else {
+            throw new CustomException(LIKE_TARGET_NOT_SELECTED);
+        }
+
+        if (findLike != null) {
+            likeRepository.delete(findLike);
+            return new LikeDto.LikeResponse(false);
+        }
+
+        // 좋아요 존재하지 않으면 추가
         Delivery delivery = null;
         Daily daily = null;
         Market market = null;
         Comment comment = null;
 
-        if (deliveryId != null) {
-            delivery = deliveryRepository.findById(deliveryId)
+        if (request.getDeliveryId() != null) {
+            delivery = deliveryRepository.findById(request.getDeliveryId())
                     .orElseThrow(() -> new CustomException(DELIVERY_NOT_FOUND));
-        } else if (dailyId != null) {
-            daily = dailyRepository.findById(dailyId)
+        } else if (request.getDailyId() != null) {
+            daily = dailyRepository.findById(request.getDailyId())
                     .orElseThrow(() -> new CustomException(DAILY_NOT_FOUND));
-        } else if (marketId != null) {
-            market = marketRepository.findById(marketId)
+        } else if (request.getMarketId() != null) {
+            market = marketRepository.findById(request.getMarketId())
                     .orElseThrow(() -> new CustomException(MARKET_NOT_FOUND));
-        } else if (commentId != null) {
-            comment = commentRepository.findById(commentId)
+        } else if (request.getCommentId() != null) {
+            comment = commentRepository.findById(request.getCommentId())
                     .orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
         } else {
             throw new CustomException(LIKE_TARGET_NOT_SELECTED);
@@ -62,5 +80,7 @@ public class LikeService {
 
         Like like = LikeDto.LikeRequest.toEntity(user, delivery, daily, market, comment);
         likeRepository.save(like);
+
+        return new LikeDto.LikeResponse(true);
     }
 }
