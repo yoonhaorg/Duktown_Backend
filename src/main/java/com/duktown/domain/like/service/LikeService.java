@@ -37,7 +37,7 @@ public class LikeService {
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         // 좋아요 존재 시 취소
-        Like findLike = null;
+        Like findLike;
 
         if(request.getDeliveryId() != null) {
             findLike = likeRepository.findByUserIdAndDeliveryId(userId, request.getDeliveryId());
@@ -74,6 +74,9 @@ public class LikeService {
         } else if (request.getCommentId() != null) {
             comment = commentRepository.findById(request.getCommentId())
                     .orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
+            if(comment.getDeleted()) {
+                throw new CustomException(COMMENT_NOT_FOUND);
+            }
         } else {
             throw new CustomException(LIKE_TARGET_NOT_SELECTED);
         }
