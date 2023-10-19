@@ -7,6 +7,8 @@ import com.duktown.domain.daily.entity.Daily;
 import com.duktown.domain.daily.entity.DailyRepository;
 import com.duktown.domain.delivery.entity.Delivery;
 import com.duktown.domain.delivery.entity.DeliveryRepository;
+import com.duktown.domain.like.entity.Like;
+import com.duktown.domain.like.entity.LikeRepository;
 import com.duktown.domain.market.entity.Market;
 import com.duktown.domain.market.entity.MarketRepository;
 import com.duktown.domain.user.entity.User;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.duktown.global.exception.CustomErrorType.*;
 
@@ -29,6 +32,7 @@ public class CommentService {
     private final DeliveryRepository deliveryRepository;
     private final DailyRepository dailyRepository;
     private final MarketRepository marketRepository;
+    private final LikeRepository likeRepository;
 
     public void createComment(Long userId, CommentDto.CreateRequest request){
         // 사용자
@@ -67,28 +71,49 @@ public class CommentService {
     }
 
     // TODO: queryDsl 도입해 대댓글 조회 기능 수정
-    // TODO: 현재 로그인한 사용자가 좋아요한 댓글 표시
     @Transactional(readOnly = true)
     public CommentDto.ListResponse getCommentList(Long userId, Long deliveryId, Long dailyId, Long marketId){
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         List<Comment> comments;
         Long commentCount;
+        List<Like> likes;
 
         if(deliveryId != null){
-            comments = commentRepository.findAllByDeliveryId(deliveryId);
+            comments = commentRepository.findParentCommentsByDeliveryId(deliveryId);
             commentCount = commentRepository.countByDeliveryId(deliveryId);
+            likes = likeRepository
+                    .findAllByUserAndCommentIn(
+                            userId,
+                            commentRepository.findAllByDeliveryId(deliveryId)
+                                    .stream().map(Comment::getId)
+                                    .collect(Collectors.toList())
+                    );
         } else if (dailyId != null) {
-            comments = commentRepository.findAllByDailyId(dailyId);
+            comments = commentRepository.findParentCommentsByDailyId(dailyId);
             commentCount = commentRepository.countByDailyId(dailyId);
+            likes = likeRepository
+                    .findAllByUserAndCommentIn(
+                            userId,
+                            commentRepository.findAllByDailyId(dailyId)
+                                    .stream().map(Comment::getId)
+                                    .collect(Collectors.toList())
+                    );
         } else if (marketId != null) {
-            comments = commentRepository.findAllByMarketId(marketId);
+            comments = commentRepository.findParentCommentsByMarketId(marketId);
             commentCount = commentRepository.countByMarketId(marketId);
+            likes = likeRepository
+                    .findAllByUserAndCommentIn(
+                            userId,
+                            commentRepository.findAllByMarketId(marketId)
+                                    .stream().map(Comment::getId)
+                                    .collect(Collectors.toList())
+                    );
         } else {
             throw new CustomException(COMMENT_TARGET_NOT_SELECTED);
         }
 
-        return CommentDto.ListResponse.from(commentCount, comments);
+        return CommentDto.ListResponse.from(commentCount, comments, likes);
     }
 
     public void updateComment(Long userId, Long commentId, CommentDto.UpdateRequest request){

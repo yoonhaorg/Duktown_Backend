@@ -10,13 +10,17 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query(value = "select c from Comment as c where c.parentComment.id is null and c.delivery.id = :delivery_id")
-    List<Comment> findAllByDeliveryId(@Param("delivery_id") Long deliveryId);
+    List<Comment> findParentCommentsByDeliveryId(@Param("delivery_id") Long deliveryId);
 
     @Query(value = "select c from Comment as c where c.parentComment.id is null and c.daily.id = :daily_id")
-    List<Comment> findAllByDailyId(@Param("daily_id") Long dailyId);
+    List<Comment> findParentCommentsByDailyId(@Param("daily_id") Long dailyId);
 
     @Query(value = "select c from Comment as c where c.parentComment.id is null and c.market.id = :market_id")
-    List<Comment> findAllByMarketId(@Param("market_id") Long marketId);
+    List<Comment> findParentCommentsByMarketId(@Param("market_id") Long marketId);
+
+    List<Comment> findAllByDeliveryId(Long deliveryId);
+    List<Comment> findAllByDailyId(Long dailyId);
+    List<Comment> findAllByMarketId(Long marketId);
 
     Boolean existsByParentCommentId(Long parentCommentId);
 
