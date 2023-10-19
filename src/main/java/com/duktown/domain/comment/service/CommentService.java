@@ -136,6 +136,9 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
 
+        // 좋아요 삭제
+        likeRepository.deleteByCommentId(commentId);
+
         // 본인 댓글인지 확인
         if (!comment.getUser().getId().equals(user.getId())) {
             throw new CustomException(HAVE_NO_PERMISSION);

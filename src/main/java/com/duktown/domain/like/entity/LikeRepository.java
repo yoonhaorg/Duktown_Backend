@@ -24,5 +24,5 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
             "and l.comment.id in :commentIds")
     List<Like> findAllByUserAndCommentIn(@Param("userId") Long userId, @Param("commentIds") List<Long> commentIds);
 
-
+    void deleteByCommentId(Long commentId);
 }
