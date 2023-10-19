@@ -73,8 +73,6 @@ public class CommentService {
     // TODO: queryDsl 도입해 대댓글 조회 기능 수정
     @Transactional(readOnly = true)
     public CommentDto.ListResponse getCommentList(Long userId, Long deliveryId, Long dailyId, Long marketId){
-        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-
         List<Comment> comments;
         Long commentCount;
         List<Like> likes;
