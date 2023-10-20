@@ -3,6 +3,7 @@ package com.duktown.domain.comment.entity;
 import com.duktown.domain.BaseTimeEntity;
 import com.duktown.domain.daily.entity.Daily;
 import com.duktown.domain.delivery.entity.Delivery;
+import com.duktown.domain.like.entity.Like;
 import com.duktown.domain.market.entity.Market;
 import com.duktown.domain.user.entity.User;
 import lombok.AllArgsConstructor;
@@ -55,6 +56,9 @@ public class Comment extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String content; // 255자 최대
+
+    @OneToMany(mappedBy = "comment")
+    private List<Like> likes = new ArrayList<>();
 
     @Column(nullable = false)
     private Boolean deleted;

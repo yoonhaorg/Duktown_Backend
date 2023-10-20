@@ -7,6 +7,8 @@ import com.duktown.domain.daily.entity.Daily;
 import com.duktown.domain.daily.entity.DailyRepository;
 import com.duktown.domain.delivery.entity.Delivery;
 import com.duktown.domain.delivery.entity.DeliveryRepository;
+import com.duktown.domain.like.entity.Like;
+import com.duktown.domain.like.entity.LikeRepository;
 import com.duktown.domain.market.entity.Market;
 import com.duktown.domain.market.entity.MarketRepository;
 import com.duktown.domain.user.entity.User;
@@ -17,6 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.duktown.global.exception.CustomErrorType.*;
 
@@ -29,8 +34,19 @@ public class CommentService {
     private final DeliveryRepository deliveryRepository;
     private final DailyRepository dailyRepository;
     private final MarketRepository marketRepository;
+    private final LikeRepository likeRepository;
 
     public void createComment(Long userId, CommentDto.CreateRequest request){
+        // null이 아닌 필드가 여러 개일 때(대댓글 경우 제외) -> 잘못된 댓글 요청
+        if (Stream.of(
+                        request.getDeliveryId(),
+                        request.getDailyId(),
+                        request.getMarketId())
+                .filter(Objects::nonNull)
+                .count() >= 2) {
+            throw new CustomException(COMMENT_TARGET_ERROR);
+        }
+
         // 사용자
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
@@ -41,7 +57,6 @@ public class CommentService {
             parentComment = commentRepository.findById(request.getParentCommentId())
                     .orElseThrow(() -> new CustomException(PARENT_COMMENT_NOT_FOUND));
 
-            // TODO: 이부분 지우고 나중에 따로 commit
             if(parentComment.getParentComment() != null){
                 throw new CustomException(COMMENT_DEPTH_ERROR);
             }
@@ -70,25 +85,55 @@ public class CommentService {
     // TODO: queryDsl 도입해 대댓글 조회 기능 수정
     @Transactional(readOnly = true)
     public CommentDto.ListResponse getCommentList(Long userId, Long deliveryId, Long dailyId, Long marketId){
-        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        // null이 아닌 필드가 여러 개일 때(대댓글 경우 제외) -> 잘못된 댓글 요청
+        if (Stream.of(
+                        deliveryId,
+                        dailyId,
+                        marketId)
+                .filter(Objects::nonNull)
+                .count() >= 2) {
+            throw new CustomException(COMMENT_TARGET_ERROR);
+        }
 
         List<Comment> comments;
         Long commentCount;
+        List<Like> likes;
 
         if(deliveryId != null){
-            comments = commentRepository.findAllByDeliveryId(deliveryId);
+            comments = commentRepository.findParentCommentsByDeliveryId(deliveryId);
             commentCount = commentRepository.countByDeliveryId(deliveryId);
+            likes = likeRepository
+                    .findAllByUserAndCommentIn(
+                            userId,
+                            commentRepository.findAllByDeliveryId(deliveryId)
+                                    .stream().map(Comment::getId)
+                                    .collect(Collectors.toList())
+                    );
         } else if (dailyId != null) {
-            comments = commentRepository.findAllByDailyId(dailyId);
+            comments = commentRepository.findParentCommentsByDailyId(dailyId);
             commentCount = commentRepository.countByDailyId(dailyId);
+            likes = likeRepository
+                    .findAllByUserAndCommentIn(
+                            userId,
+                            commentRepository.findAllByDailyId(dailyId)
+                                    .stream().map(Comment::getId)
+                                    .collect(Collectors.toList())
+                    );
         } else if (marketId != null) {
-            comments = commentRepository.findAllByMarketId(marketId);
+            comments = commentRepository.findParentCommentsByMarketId(marketId);
             commentCount = commentRepository.countByMarketId(marketId);
+            likes = likeRepository
+                    .findAllByUserAndCommentIn(
+                            userId,
+                            commentRepository.findAllByMarketId(marketId)
+                                    .stream().map(Comment::getId)
+                                    .collect(Collectors.toList())
+                    );
         } else {
             throw new CustomException(COMMENT_TARGET_NOT_SELECTED);
         }
 
-        return CommentDto.ListResponse.from(commentCount, comments);
+        return CommentDto.ListResponse.from(commentCount, comments, likes);
     }
 
     public void updateComment(Long userId, Long commentId, CommentDto.UpdateRequest request){
@@ -112,6 +157,9 @@ public class CommentService {
 
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
+
+        // 좋아요 삭제
+        likeRepository.deleteByCommentId(commentId);
 
         // 본인 댓글인지 확인
         if (!comment.getUser().getId().equals(user.getId())) {
