@@ -1,6 +1,7 @@
 package com.duktown.domain.daily.entity;
 
 import com.duktown.domain.BaseTimeEntity;
+import com.duktown.domain.comment.entity.Comment;
 import com.duktown.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PRIVATE;
@@ -33,6 +37,9 @@ public class Daily extends BaseTimeEntity {
 
     @Column(nullable = false, columnDefinition = "longtext")
     private String content;
+
+    @OneToMany(mappedBy = "daily")
+    private List<Comment> Comments = new ArrayList<>();
 
     public void update(String title, String content){
         this.title =title;
