@@ -18,6 +18,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+import java.util.stream.Stream;
+
 import static com.duktown.global.exception.CustomErrorType.*;
 
 @Service
@@ -33,6 +36,17 @@ public class LikeService {
 
     // 좋아요 추가, 취소
     public LikeDto.LikeResponse like(Long userId, LikeDto.LikeRequest request) {
+        // null이 아닌 필드가 여러 개일 때 -> 잘못된 좋아요 요청
+        if (Stream.of(
+                        request.getDeliveryId(),
+                        request.getDailyId(),
+                        request.getMarketId(),
+                        request.getCommentId())
+                .filter(Objects::nonNull)
+                .count() >= 2) {
+            throw new CustomException(LIKE_TARGET_ERROR);
+        }
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 

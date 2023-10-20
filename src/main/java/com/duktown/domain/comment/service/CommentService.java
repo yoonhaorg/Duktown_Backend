@@ -19,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.duktown.global.exception.CustomErrorType.*;
 
@@ -35,6 +37,16 @@ public class CommentService {
     private final LikeRepository likeRepository;
 
     public void createComment(Long userId, CommentDto.CreateRequest request){
+        // null이 아닌 필드가 여러 개일 때(대댓글 경우 제외) -> 잘못된 댓글 요청
+        if (Stream.of(
+                        request.getDeliveryId(),
+                        request.getDailyId(),
+                        request.getMarketId())
+                .filter(Objects::nonNull)
+                .count() >= 2) {
+            throw new CustomException(COMMENT_TARGET_ERROR);
+        }
+
         // 사용자
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
@@ -73,6 +85,16 @@ public class CommentService {
     // TODO: queryDsl 도입해 대댓글 조회 기능 수정
     @Transactional(readOnly = true)
     public CommentDto.ListResponse getCommentList(Long userId, Long deliveryId, Long dailyId, Long marketId){
+        // null이 아닌 필드가 여러 개일 때(대댓글 경우 제외) -> 잘못된 댓글 요청
+        if (Stream.of(
+                        deliveryId,
+                        dailyId,
+                        marketId)
+                .filter(Objects::nonNull)
+                .count() >= 2) {
+            throw new CustomException(COMMENT_TARGET_ERROR);
+        }
+
         List<Comment> comments;
         Long commentCount;
         List<Like> likes;
