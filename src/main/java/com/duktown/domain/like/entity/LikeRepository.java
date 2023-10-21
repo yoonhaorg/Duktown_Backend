@@ -13,9 +13,7 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
 
     Like findByUserIdAndDeliveryId(Long userId, Long deliveryId);
 
-    Like findByUserIdAndDailyId(Long userId, Long dailyId);
-
-    Like findByUserIdAndMarketId(Long userId, Long marketId);
+    Like findByUserIdAndPostId(Long userId, Long postId);
 
     Like findByUserIdAndCommentId(Long userId, Long commentId);
 

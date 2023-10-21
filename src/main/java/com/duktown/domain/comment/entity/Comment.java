@@ -1,10 +1,9 @@
 package com.duktown.domain.comment.entity;
 
 import com.duktown.domain.BaseTimeEntity;
-import com.duktown.domain.daily.entity.Daily;
+import com.duktown.domain.post.entity.Post;
 import com.duktown.domain.delivery.entity.Delivery;
 import com.duktown.domain.like.entity.Like;
-import com.duktown.domain.market.entity.Market;
 import com.duktown.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,12 +39,8 @@ public class Comment extends BaseTimeEntity {
     private Delivery delivery;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "daily_id")
-    private Daily daily;
-
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "market_id")
-    private Market market;
+    @JoinColumn(name = "post_id")
+    private Post post;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "parent_comment_id")

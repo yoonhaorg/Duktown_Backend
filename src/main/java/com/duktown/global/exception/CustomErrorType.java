@@ -35,8 +35,9 @@ public enum CustomErrorType {
     // Delivery (4xxxx)
     DELIVERY_NOT_FOUND(NOT_FOUND, 40001, "존재하지 않는 배달팟입니다."),
 
-    // Daily (5xxxx)
-    DAILY_NOT_FOUND(NOT_FOUND, 50001, "존재하지 않는 일상글입니다."),
+    // Post (5xxxx)
+    POST_NOT_FOUND(NOT_FOUND, 50001, "존재하지 않는 게시글입니다."),
+    INVALID_POST_CATEGORY_VALUE(BAD_REQUEST,50002, "잘못된 카테고리입니다."),
 
     // Market(6xxxx)
     MARKET_NOT_FOUND(NOT_FOUND, 60001, "존재하지 않는 장터글입니다."),
