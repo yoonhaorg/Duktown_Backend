@@ -12,24 +12,18 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query(value = "select c from Comment as c where c.parentComment.id is null and c.delivery.id = :delivery_id")
     List<Comment> findParentCommentsByDeliveryId(@Param("delivery_id") Long deliveryId);
 
-    @Query(value = "select c from Comment as c where c.parentComment.id is null and c.daily.id = :daily_id")
-    List<Comment> findParentCommentsByDailyId(@Param("daily_id") Long dailyId);
-
-    @Query(value = "select c from Comment as c where c.parentComment.id is null and c.market.id = :market_id")
-    List<Comment> findParentCommentsByMarketId(@Param("market_id") Long marketId);
+    @Query(value = "select c from Comment as c where c.parentComment.id is null and c.post.id = :post_id")
+    List<Comment> findParentCommentsByPostId(@Param("post_id") Long postId);
 
     List<Comment> findAllByDeliveryId(Long deliveryId);
-    List<Comment> findAllByDailyId(Long dailyId);
-    List<Comment> findAllByMarketId(Long marketId);
+
+    List<Comment> findAllByPostId(Long postId);
 
     Boolean existsByParentCommentId(Long parentCommentId);
 
     @Query(value = "select count(*) from comment where delivery_id = :delivery_id and comment.deleted = false", nativeQuery = true)
     Long countByDeliveryId(@Param("delivery_id") Long deliveryId);
 
-    @Query(value = "select count(*) from comment where daily_id = :daily_id and comment.deleted = false", nativeQuery = true)
-    Long countByDailyId(@Param("daily_id") Long dailyId);
-
-    @Query(value = "select count(*) from comment where market_id = :market_id and comment.deleted = false", nativeQuery = true)
-    Long countByMarketId(@Param("market_id") Long marketId);
+    @Query(value = "select count(*) from comment where post_id = :post_id and comment.deleted = false", nativeQuery = true)
+    Long countByPostId(@Param("post_id") Long postId);
 }
