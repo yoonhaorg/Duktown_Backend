@@ -4,8 +4,6 @@ import com.duktown.domain.comment.entity.Comment;
 import com.duktown.domain.comment.entity.CommentRepository;
 import com.duktown.domain.post.entity.Post;
 import com.duktown.domain.post.entity.PostRespository;
-import com.duktown.domain.delivery.entity.Delivery;
-import com.duktown.domain.delivery.entity.DeliveryRepository;
 import com.duktown.domain.like.dto.LikeDto;
 import com.duktown.domain.like.entity.Like;
 import com.duktown.domain.like.entity.LikeRepository;
@@ -27,7 +25,6 @@ import static com.duktown.global.exception.CustomErrorType.*;
 public class LikeService {
     private final LikeRepository likeRepository;
     private final UserRepository userRepository;
-    private final DeliveryRepository deliveryRepository;
     private final PostRespository postRespository;
     private final CommentRepository commentRepository;
 
@@ -35,7 +32,6 @@ public class LikeService {
     public LikeDto.LikeResponse like(Long userId, LikeDto.LikeRequest request) {
         // null이 아닌 필드가 여러 개일 때 -> 잘못된 좋아요 요청
         if (Stream.of(
-                        request.getDeliveryId(),
                         request.getPostId(),
                         request.getCommentId())
                 .filter(Objects::nonNull)
@@ -49,9 +45,7 @@ public class LikeService {
         // 좋아요 존재 시 취소
         Like findLike;
 
-        if(request.getDeliveryId() != null) {
-            findLike = likeRepository.findByUserIdAndDeliveryId(userId, request.getDeliveryId());
-        } else if (request.getPostId() != null) {
+        if (request.getPostId() != null) {
             findLike = likeRepository.findByUserIdAndPostId(userId, request.getPostId());
         } else if (request.getCommentId() != null) {
             findLike = likeRepository.findByUserIdAndCommentId(userId, request.getCommentId());
@@ -65,14 +59,10 @@ public class LikeService {
         }
 
         // 좋아요 존재하지 않으면 추가
-        Delivery delivery = null;
         Post post = null;
         Comment comment = null;
 
-        if (request.getDeliveryId() != null) {
-            delivery = deliveryRepository.findById(request.getDeliveryId())
-                    .orElseThrow(() -> new CustomException(DELIVERY_NOT_FOUND));
-        } else if (request.getPostId() != null) {
+        if (request.getPostId() != null) {
             post = postRespository.findById(request.getPostId())
                     .orElseThrow(() -> new CustomException(POST_NOT_FOUND));
         } else if (request.getCommentId() != null) {
@@ -85,7 +75,7 @@ public class LikeService {
             throw new CustomException(LIKE_TARGET_NOT_SELECTED);
         }
 
-        Like like = LikeDto.LikeRequest.toEntity(user, delivery, post, comment);
+        Like like = LikeDto.LikeRequest.toEntity(user, post, comment);
         likeRepository.save(like);
 
         return new LikeDto.LikeResponse(true);

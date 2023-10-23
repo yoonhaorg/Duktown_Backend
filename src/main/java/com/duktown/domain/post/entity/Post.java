@@ -2,6 +2,7 @@ package com.duktown.domain.post.entity;
 
 import com.duktown.domain.BaseTimeEntity;
 import com.duktown.domain.comment.entity.Comment;
+import com.duktown.domain.like.entity.Like;
 import com.duktown.domain.user.entity.User;
 import com.duktown.global.type.Category;
 import lombok.AllArgsConstructor;
@@ -45,7 +46,10 @@ public class Post extends BaseTimeEntity {
     private String content;
 
     @OneToMany(mappedBy = "post")
-    private List<Comment> Comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post")
+    private List<Like> likes = new ArrayList<>();
 
     public void update(String title, String content){
         this.title =title;

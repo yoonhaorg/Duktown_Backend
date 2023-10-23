@@ -1,6 +1,9 @@
 package com.duktown.domain.post.service;
 
+import com.duktown.domain.comment.entity.Comment;
 import com.duktown.domain.comment.entity.CommentRepository;
+import com.duktown.domain.like.entity.Like;
+import com.duktown.domain.like.entity.LikeRepository;
 import com.duktown.domain.post.dto.PostDto;
 import com.duktown.domain.post.entity.Post;
 import com.duktown.domain.post.entity.PostRespository;
@@ -25,6 +28,7 @@ public class PostService {
     private final PostRespository postRespository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final LikeRepository likeRepository;
 
     // 생성
     public void createPost(Long userId, PostDto.PostRequest request){
@@ -41,21 +45,32 @@ public class PostService {
 
     // 상세 조회
     @Transactional(readOnly = true)
-    public PostDto.PostResponse getPost(Long id){
-        Post post = postRespository.findById(id).orElseThrow(() -> new CustomException(POST_NOT_FOUND));
-        return new PostDto.PostResponse(post);
+    public PostDto.PostResponse getPost(Long userId, Long postId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        Post post = postRespository.findById(postId).orElseThrow(() -> new CustomException(POST_NOT_FOUND));
+        List<Like> likes = likeRepository.findAllByUserAndPost(user, post);
+        return new PostDto.PostResponse(post, likes);
     }
 
     // 목록 조회
     @Transactional(readOnly = true)
-    public PostDto.PostListResponse getPostList(Integer category) {
+    public PostDto.PostListResponse getPostList(Long userId, Integer category) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
         Category findCategory = Arrays.stream(Category.values())
                 .filter(c -> c.getValue() == category)
                 .findAny().orElseThrow(() -> new CustomException(INVALID_POST_CATEGORY_VALUE));
 
         List<Post> posts = postRespository.findAllByCategory(findCategory);
+        List<Like> likes = likeRepository
+                .findAllByUserAndPostIn(
+                        user.getId(),
+                        posts.stream().map(Post::getId)
+                                .collect(Collectors.toList())
+                );
+
         List<PostDto.PostResponse> postListResponses = posts.stream()
-                .map(PostDto.PostResponse::new)
+                .map(p -> new PostDto.PostResponse(p, likes))
                 .collect(Collectors.toList());
 
         return new PostDto.PostListResponse(postListResponses);
@@ -75,8 +90,8 @@ public class PostService {
         postRespository.save(updatePost);
     }
 
-    public void deletePost(Long userId, Long id) {
-        Post deletePost = postRespository.findById(id).orElseThrow(() -> new CustomException(POST_NOT_FOUND));
+    public void deletePost(Long userId, Long postId) {
+        Post deletePost = postRespository.findById(postId).orElseThrow(() -> new CustomException(POST_NOT_FOUND));
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
@@ -86,8 +101,16 @@ public class PostService {
             throw new CustomException(HAVE_NO_PERMISSION);
         }
 
+        // 좋아요 먼저 삭제
+        likeRepository.deleteByPostId(deletePost.getId());
+
         // 댓글 먼저 삭제
-        commentRepository.deleteAll(deletePost.getComments());
+        List<Comment> comments = commentRepository.findAllByPostId(deletePost.getId());
+        if (comments != null) {
+            List<Long> commentIds = comments.stream().map(Comment::getId).collect(Collectors.toList());
+            likeRepository.deleteByCommentIn(commentIds);
+            commentRepository.deleteAll();
+        }
 
         // 게시글 삭제
         postRespository.delete(deletePost);

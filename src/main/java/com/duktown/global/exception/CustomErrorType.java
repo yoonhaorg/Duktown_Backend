@@ -39,8 +39,7 @@ public enum CustomErrorType {
     POST_NOT_FOUND(NOT_FOUND, 50001, "존재하지 않는 게시글입니다."),
     INVALID_POST_CATEGORY_VALUE(BAD_REQUEST,50002, "잘못된 카테고리입니다."),
 
-    // Market(6xxxx)
-    MARKET_NOT_FOUND(NOT_FOUND, 60001, "존재하지 않는 장터글입니다."),
+    // (6xxxx)
 
     // Comment(7xxxx)
     COMMENT_NOT_FOUND(NOT_FOUND, 70001, "존재하지 않는 댓글입니다."),

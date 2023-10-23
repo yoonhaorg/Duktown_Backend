@@ -77,6 +77,8 @@ public class CommentService {
     // TODO: queryDsl 도입해 대댓글 조회 기능 수정
     @Transactional(readOnly = true)
     public CommentDto.ListResponse getCommentList(Long userId, Long deliveryId, Long postId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
         // null이 아닌 필드가 여러 개일 때(대댓글 경우 제외) -> 잘못된 댓글 요청
         if (Stream.of(
                         deliveryId,
@@ -95,7 +97,7 @@ public class CommentService {
             commentCount = commentRepository.countByDeliveryId(deliveryId);
             likes = likeRepository
                     .findAllByUserAndCommentIn(
-                            userId,
+                            user.getId(),
                             commentRepository.findAllByDeliveryId(deliveryId)
                                     .stream().map(Comment::getId)
                                     .collect(Collectors.toList())
@@ -105,7 +107,7 @@ public class CommentService {
             commentCount = commentRepository.countByPostId(postId);
             likes = likeRepository
                     .findAllByUserAndCommentIn(
-                            userId,
+                            user.getId(),
                             commentRepository.findAllByPostId(postId)
                                     .stream().map(Comment::getId)
                                     .collect(Collectors.toList())

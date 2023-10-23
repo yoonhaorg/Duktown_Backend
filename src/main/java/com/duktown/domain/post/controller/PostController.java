@@ -26,14 +26,18 @@ public class PostController {
 
     @GetMapping
     public ResponseEntity<PostDto.PostListResponse> getPostList(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestParam(value = "category") Integer category
     ){
-        return ResponseEntity.ok().body(postService.getPostList(category));
+        return ResponseEntity.ok().body(
+                postService.getPostList(customUserDetails.getId(), category));
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostDto.PostResponse> getPost(@PathVariable("postId") Long id){
-        return ResponseEntity.ok().body(postService.getPost(id));
+    public ResponseEntity<PostDto.PostResponse> getPost(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable("postId") Long postId){
+        return ResponseEntity.ok().body(postService.getPost(customUserDetails.getId(), postId));
     }
 
     @PutMapping("/{postId}")
@@ -48,8 +52,8 @@ public class PostController {
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @PathVariable("postId") Long id){
-        postService.deletePost(customUserDetails.getId(), id);
+            @PathVariable("postId") Long postId){
+        postService.deletePost(customUserDetails.getId(), postId);
         return ResponseEntity.ok().build();
     }
 
