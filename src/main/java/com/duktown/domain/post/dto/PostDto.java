@@ -1,6 +1,5 @@
 package com.duktown.domain.post.dto;
 
-import com.duktown.domain.comment.entity.Comment;
 import com.duktown.domain.like.entity.Like;
 import com.duktown.domain.post.entity.Post;
 import com.duktown.domain.user.entity.User;
