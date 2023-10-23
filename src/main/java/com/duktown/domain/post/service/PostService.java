@@ -1,5 +1,6 @@
 package com.duktown.domain.post.service;
 
+import com.duktown.domain.comment.entity.Comment;
 import com.duktown.domain.comment.entity.CommentRepository;
 import com.duktown.domain.like.entity.Like;
 import com.duktown.domain.like.entity.LikeRepository;
@@ -89,8 +90,8 @@ public class PostService {
         postRespository.save(updatePost);
     }
 
-    public void deletePost(Long userId, Long id) {
-        Post deletePost = postRespository.findById(id).orElseThrow(() -> new CustomException(POST_NOT_FOUND));
+    public void deletePost(Long userId, Long postId) {
+        Post deletePost = postRespository.findById(postId).orElseThrow(() -> new CustomException(POST_NOT_FOUND));
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
@@ -100,8 +101,16 @@ public class PostService {
             throw new CustomException(HAVE_NO_PERMISSION);
         }
 
+        // 좋아요 먼저 삭제
+        likeRepository.deleteByPostId(deletePost.getId());
+
         // 댓글 먼저 삭제
-        commentRepository.deleteAll(deletePost.getComments());
+        List<Comment> comments = commentRepository.findAllByPostId(deletePost.getId());
+        if (comments != null) {
+            List<Long> commentIds = comments.stream().map(Comment::getId).collect(Collectors.toList());
+            likeRepository.deleteByCommentIn(commentIds);
+            commentRepository.deleteAll();
+        }
 
         // 게시글 삭제
         postRespository.delete(deletePost);
