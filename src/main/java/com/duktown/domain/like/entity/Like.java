@@ -3,7 +3,6 @@ package com.duktown.domain.like.entity;
 import com.duktown.domain.BaseTimeEntity;
 import com.duktown.domain.comment.entity.Comment;
 import com.duktown.domain.post.entity.Post;
-import com.duktown.domain.delivery.entity.Delivery;
 import com.duktown.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,10 +30,6 @@ public class Like extends BaseTimeEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "delivery_id")
-    private Delivery delivery;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "daily_id")

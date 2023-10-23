@@ -13,8 +13,6 @@ import java.util.List;
 @Repository
 public interface LikeRepository extends JpaRepository<Like, Long> {
 
-    Like findByUserIdAndDeliveryId(Long userId, Long deliveryId);
-
     Like findByUserIdAndPostId(Long userId, Long postId);
 
     Like findByUserIdAndCommentId(Long userId, Long commentId);
