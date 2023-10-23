@@ -1,5 +1,6 @@
 package com.duktown.domain.post.dto;
 
+import com.duktown.domain.comment.entity.Comment;
 import com.duktown.domain.like.entity.Like;
 import com.duktown.domain.post.entity.Post;
 import com.duktown.domain.user.entity.User;
@@ -49,9 +50,10 @@ public class PostDto {
         private String content;
         private Boolean liked;
         private Integer likeCount;
+        private Long commentCount;
         private String datetime;
 
-        public PostResponse(Post post, List<Like> likes){
+        public PostResponse(Post post, List<Like> likes, Long commentCount){
             this.id = post.getId();
             this.userId = post.getUser().getId();
             this.category = post.getCategory().getValue();
@@ -59,6 +61,7 @@ public class PostDto {
             this.content = post.getContent();
             this.liked = likes.stream().anyMatch(l -> l.getPost().getId().equals(post.getId()));
             this.likeCount = post.getLikes().size();
+            this.commentCount = commentCount;
             this.datetime = DateUtil.convert(post.getCreatedAt());
         }
     }
