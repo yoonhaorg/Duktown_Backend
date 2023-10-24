@@ -38,6 +38,7 @@ public class SleepoverApplyController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long sleepoverApplyId
     ){
+        sleepoverApplyService.approveSleepoverApply(sleepoverApplyId);
         return ResponseEntity.ok().build();
     }
 

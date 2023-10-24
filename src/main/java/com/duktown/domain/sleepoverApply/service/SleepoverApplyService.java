@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
+import static com.duktown.global.exception.CustomErrorType.SLEEP_OVER_APPLY_NOT_FOUND;
 import static com.duktown.global.exception.CustomErrorType.USER_NOT_FOUND;
 
 @Service
@@ -33,7 +36,9 @@ public class SleepoverApplyService {
     }
 
     public void approveSleepoverApply(Long sleepoverApplyId){
-       //sleepoverApplyRepository.update();
+        SleepoverApply sleepoverApply = sleepoverApplyRepository.findById(sleepoverApplyId)
+                .orElseThrow(()->new CustomException(SLEEP_OVER_APPLY_NOT_FOUND));
+        sleepoverApply.approve(true);
     }
 
 }

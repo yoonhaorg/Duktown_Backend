@@ -44,7 +44,7 @@ public class SleepoverApply {
 
     private Boolean approved; //승인 여부
 
-    public  void approve(boolean approved){
+    public void approve(boolean approved){
         this.approved = approved;
     }
 }
