@@ -6,10 +6,7 @@ import com.duktown.global.security.service.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -27,5 +24,21 @@ public class SleepoverApplyController {
          return ResponseEntity.ok().build();
     }
 
+
+    @GetMapping("/{sleepoverId}")
+    public ResponseEntity<SleepoverApplyDto.ResponseGetSleepoverApply> getList(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable Long sleepoverId
+    ){
+        return ResponseEntity.ok(sleepoverApplyService.getSleepoverApply(sleepoverId));
+    }
+
+    @PatchMapping("/{sleepoverApplyId}")
+    public  ResponseEntity<?> updateList(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable Long sleepoverApplyId
+    ){
+        return ResponseEntity.ok().build();
+    }
 
 }

@@ -30,8 +30,7 @@ public class CommentController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestParam(value = "deliveryId", required = false) Long deliveryId,
             @RequestParam(value = "dailyId", required = false) Long dailyId,
-            @RequestParam(value = "marketId", required = false) Long marketId
-    ) {
+            @RequestParam(value = "marketId", required = false) Long marketId) {
         return ResponseEntity.ok(
                 commentService.getCommentList(customUserDetails.getId(), deliveryId, dailyId, marketId)
         );

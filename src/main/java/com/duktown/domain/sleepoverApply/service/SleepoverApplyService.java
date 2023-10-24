@@ -26,5 +26,14 @@ public class SleepoverApplyService {
          sleepoverApplyRepository.save(sleepoverApply);
     }
 
+    @Transactional(readOnly = true)
+    public SleepoverApplyDto.ResponseGetSleepoverApply getSleepoverApply(Long sleepoverApplyId){
+       SleepoverApply getSleepoverApply = sleepoverApplyRepository.findById(sleepoverApplyId).get();
+        return new SleepoverApplyDto.ResponseGetSleepoverApply(getSleepoverApply);
+    }
+
+    public void approveSleepoverApply(Long sleepoverApplyId){
+       //sleepoverApplyRepository.update();
+    }
 
 }

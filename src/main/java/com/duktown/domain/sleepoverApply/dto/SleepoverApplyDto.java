@@ -41,6 +41,34 @@ public class SleepoverApplyDto {
                     .reason(reason)
                     .build();
         }
-
     }
+
+    @Getter
+    @AllArgsConstructor
+    public static class ResponseGetSleepoverApply{
+        private Long userId;
+        private LocalDate startDate;
+        private LocalDate endDate;
+        private Integer period; //외박 일 수
+        private String address; // 머무르는 주소
+        private String reason; //사유
+
+       public ResponseGetSleepoverApply(SleepoverApply sleepoverApply){
+           startDate = sleepoverApply.getStartDate();
+           endDate= sleepoverApply.getEndDate();
+           period= sleepoverApply.getPeriod();
+           address=  sleepoverApply.getAddress();
+           userId= sleepoverApply.getUser().getId();
+           reason =sleepoverApply.getReason();
+
+        }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class RequestApproveSleepoverApply{
+        private Boolean approved;
+    }
+
 }
