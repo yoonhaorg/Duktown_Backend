@@ -33,6 +33,7 @@ public class PostController {
                 postService.getPostList(customUserDetails.getId(), category));
     }
 
+    @GetMapping("/{postId}")
     public ResponseEntity<PostDto.PostResponse> getPost(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable("postId") Long postId){
