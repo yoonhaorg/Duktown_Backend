@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 import static javax.persistence.FetchType.*;
+import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PRIVATE;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -19,7 +20,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Table(name = "sleepover_apply")
 public class SleepoverApply {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "sleepover_apply_id")
     private Long id;
 
