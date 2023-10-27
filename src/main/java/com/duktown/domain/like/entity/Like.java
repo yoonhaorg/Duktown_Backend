@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PRIVATE;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -23,7 +24,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Table(name = "likes")
 public class Like extends BaseTimeEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "like_id")
     private Long id;
 
