@@ -6,7 +6,6 @@ import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.domain.user.service.UserService;
 import com.duktown.global.exception.CustomException;
 import com.duktown.global.security.provider.JwtTokenProvider;
-import com.duktown.global.type.RoleType;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -125,12 +124,12 @@ public class UserServiceTest {
 
         UserDto.SignupRequest request =
                 new UserDto.SignupRequest(
-                        "dskim@duksung.ac.kr", "dskim", encoder.encode("1234"));
+                        "김덕성", "dskim@duksung.ac.kr", "dskim", encoder.encode("1234"));
 
         doReturn(
                 new UserDto.SignUpResponse(
-                        tokenProvider.createAccessToken(request.getLoginId(), 1L, RoleType.USER),
-                        tokenProvider.createRefreshToken(request.getLoginId(), 1L, RoleType.USER)
+                        tokenProvider.createAccessToken(request.getLoginId(), 1L),
+                        tokenProvider.createRefreshToken(request.getLoginId(), 1L)
                 )
         )
                 .when(userService)
@@ -149,7 +148,7 @@ public class UserServiceTest {
     void signup_duplicatedEmailExist_fail() {
         // given
         given(userRepository.findByEmail(any())).willReturn(Optional.of(createMockUser(1L)));
-        UserDto.SignupRequest request = new UserDto.SignupRequest("dskim@duksung.ac.kr", "dskim", "1234");
+        UserDto.SignupRequest request = new UserDto.SignupRequest("김덕성", "dskim@duksung.ac.kr", "dskim", "1234");
 
         // when & then
         CustomException e = assertThrows(CustomException.class, () -> userService.signup(request));
@@ -162,7 +161,7 @@ public class UserServiceTest {
         // given
         given(userRepository.findByEmail(any())).willReturn(Optional.empty());
         given(userRepository.findByLoginId(any())).willReturn(Optional.of(createMockUser(1L)));
-        UserDto.SignupRequest request = new UserDto.SignupRequest("dskim@duksung.ac.kr", "dskim", "1234");
+        UserDto.SignupRequest request = new UserDto.SignupRequest("김덕성", "dskim@duksung.ac.kr", "dskim", "1234");
 
         // when & then
         CustomException e = assertThrows(CustomException.class, () -> userService.signup(request));

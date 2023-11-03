@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
@@ -18,6 +17,9 @@ public class UserDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class SignupRequest {
+        @NotEmpty(message = "이름은 필수 값입니다.")
+        private String name;
+
         @NotEmpty(message = "이메일은 필수 값입니다.")
         @Email(message = "이메일 형식이 올바르지 않습니다.")
         @Pattern(regexp = "[A-Za-z0-9+_.-]+@duksung.ac.kr", message = "이메일은 반드시 덕성 메일이어야 합니다.")
@@ -31,6 +33,7 @@ public class UserDto {
 
         public User toEntity(String encodedPassword){
             return User.builder()
+                    .name(this.name)
                     .email(this.email)
                     .loginId(this.loginId)
                     .password(encodedPassword)

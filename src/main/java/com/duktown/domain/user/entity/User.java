@@ -25,6 +25,7 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_id")
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
@@ -44,5 +45,9 @@ public class User extends BaseTimeEntity {
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public void updateRoleType(RoleType roleType){
+        this.roleType = roleType;
     }
 }

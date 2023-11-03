@@ -35,8 +35,8 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
                 .orElseThrow(() -> new UsernameNotFoundException("가입된 아이디가 존재하지 않습니다."));
 
         // JWT Token 생성, 응답
-        String accessToken = jwtTokenProvider.createAccessToken(user.getLoginId(), user.getId(), user.getRoleType());
-        String refreshToken = jwtTokenProvider.createRefreshToken(user.getLoginId(), user.getId(), user.getRoleType());
+        String accessToken = jwtTokenProvider.createAccessToken(user.getLoginId(), user.getId());
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getLoginId(), user.getId());
 
         user.updateRefreshToken(refreshToken);
         response.setContentType(APPLICATION_JSON_VALUE);

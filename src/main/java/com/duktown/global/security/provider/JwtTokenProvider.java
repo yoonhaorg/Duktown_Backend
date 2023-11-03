@@ -4,7 +4,6 @@ import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.exception.CustomException;
 import com.duktown.global.security.service.CustomUserDetails;
-import com.duktown.global.type.RoleType;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -51,7 +50,6 @@ public class JwtTokenProvider {
 
     // Claim
     public static final String CLAIM_ID = "id";
-    public static final String CLAIM_ROLE = "role";
 
     private final UserRepository userRepository;
 
@@ -81,27 +79,25 @@ public class JwtTokenProvider {
     }
 
     // Access Token 생성 메서드
-    public String createAccessToken(String loginId, Long userId, RoleType roleType) {
+    public String createAccessToken(String loginId, Long userId) {
         return Jwts.builder()
                 .setHeaderParam("typ", "JWT")
                 .setSubject(loginId)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXP_TIME))
                 .claim(CLAIM_ID, userId)
-                .claim(CLAIM_ROLE, roleType.getKey())
                 .signWith(jwtSecretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
     // Refresh Token 생성 메서드
-    public String createRefreshToken(String loginId, Long userId, RoleType roleType) {
+    public String createRefreshToken(String loginId, Long userId) {
         return Jwts.builder()
                 .setHeaderParam("typ", "JWT")
                 .setSubject(loginId)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXP_TIME))
                 .claim(CLAIM_ID, userId)
-                .claim(CLAIM_ROLE, roleType.getKey())
                 .signWith(jwtSecretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -123,11 +119,6 @@ public class JwtTokenProvider {
     // Token에서 사용자 ID 추출 메서드
     public Long getUserId(String token) {
         return getClaim(token).get(CLAIM_ID, Long.class);
-    }
-
-    // Token에서 사용자 RoleType 추출 메서드
-    public RoleType getRoleType(String token) {
-        return getClaim(token).get(CLAIM_ROLE, RoleType.class);
     }
 
     // Token 유효성 검증 메서드

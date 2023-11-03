@@ -68,8 +68,8 @@ public class UserService {
         User user = signupRequest.toEntity(encodedPassword);
         userRepository.save(user);
 
-        String accessToken = jwtTokenProvider.createAccessToken(user.getLoginId(), user.getId(), user.getRoleType());
-        String refreshToken = jwtTokenProvider.createRefreshToken(user.getLoginId(), user.getId(), user.getRoleType());
+        String accessToken = jwtTokenProvider.createAccessToken(user.getLoginId(), user.getId());
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getLoginId(), user.getId());
         user.updateRefreshToken(refreshToken);
         return new UserDto.SignUpResponse(accessToken, refreshToken);
     }
