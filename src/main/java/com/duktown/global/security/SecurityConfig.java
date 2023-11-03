@@ -36,11 +36,16 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    // TODO: 인증에 예외를 둘 로직 추가
+    // TODO: 인증에 예외를 둘 엔드포인트 추가
     private static final String[] AUTH_WHITE_LIST = {
             "/auth/signup",
             "/auth/email-duplicate",
             "/auth/id-duplicate"
+    };
+
+    // TODO: 관리자만 접근 가능한 엔드포인트 추가
+    private static final String[] MANAGER_ENDPOINT_LIST = {
+            "/dormCerts/check/**"
     };
 
     @Bean
@@ -70,6 +75,9 @@ public class SecurityConfig {
                     // whitelist에 있는 endpoint만 인증 제외
                     Arrays.stream(AUTH_WHITE_LIST)
                             .forEach(authWhiteListElem -> auth.mvcMatchers(authWhiteListElem).permitAll());
+                    // managerEndpointList에 있는 endPoint는 관리자 역할만 접근 가능
+                    Arrays.stream(MANAGER_ENDPOINT_LIST)
+                            .forEach(melElem -> auth.mvcMatchers(melElem).hasRole("MANAGER"));
                     auth.anyRequest().authenticated();
                 });
 

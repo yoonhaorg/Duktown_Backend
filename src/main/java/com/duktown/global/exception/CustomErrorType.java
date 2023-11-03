@@ -39,7 +39,14 @@ public enum CustomErrorType {
     POST_NOT_FOUND(NOT_FOUND, 50001, "존재하지 않는 게시글입니다."),
     INVALID_POST_CATEGORY_VALUE(BAD_REQUEST,50002, "잘못된 카테고리입니다."),
 
-    // (6xxxx)
+    // DormCert (6xxxx) TODO: 수정
+    INVALID_CERT_REQUEST_TYPE_VALUE(BAD_REQUEST, 60001, "잘못된 인증요청 타입을 입력했습니다."),
+    INVALID_HALL_NAME_VALUE(BAD_REQUEST, 60002, "잘못된 기숙사 관명을 입력했습니다."),
+    CERT_IMG_UPLOAD_ERROR(INTERNAL_SERVER_ERROR, 60003, "파일 업로드에 실패했습니다."),
+    DORM_CERT_NOT_FOUND(NOT_FOUND, 60004, "존재하지 않는 기숙사 인증 요청입니다."),
+    SELF_DORM_CERT_NOT_ALLOWED(FORBIDDEN, 60005, "자기 자신의 인증요청은 처리할 수 없습니다."),
+    CERT_ALREADY_CHECKED(CONFLICT, 60006, "이미 처리된 인증요청입니다."),
+    CERT_IMG_FOLDER_CREATION_ERROR(INTERNAL_SERVER_ERROR, 60007, "인증 이미지 저장 폴더 생성에 실패했습니다."),    // TODO: s3 service 사용 시 삭제
 
     // Comment(7xxxx)
     COMMENT_NOT_FOUND(NOT_FOUND, 70001, "존재하지 않는 댓글입니다."),

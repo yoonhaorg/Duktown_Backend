@@ -1,6 +1,7 @@
 package com.duktown.domain.dormCert.entity;
 
 import com.duktown.domain.user.entity.User;
+import com.duktown.global.type.CertRequestType;
 import com.duktown.global.type.HallName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,18 +32,37 @@ public class DormCert {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    // 인증 종류
+    @Enumerated(STRING)
+    @Column(nullable = false)
+    private CertRequestType certRequestType;
+
+    // 이미지
     @Column(nullable = false)
     private String imgUrl;
 
-    private Boolean certified;
-
+    // 학번
     @Column(nullable = false)
     private String studentId;
 
+    // 기숙사 정보
     @Enumerated(value = STRING)
     @Column(nullable = false)
     private HallName hallName;
 
     @Column(nullable = false)
-    private String unit;
+    private Integer floorNumber;
+
+    @Column(nullable = false)
+    private Integer buildingNumber;
+
+    @Column(nullable = false)
+    private Integer roomNumber;
+
+    // 인증 여부
+    private Boolean certified;
+
+    public void update(Boolean certified){
+        this.certified = certified;
+    }
 }
