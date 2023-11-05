@@ -35,20 +35,26 @@ public enum CustomErrorType {
     // Delivery (4xxxx)
     DELIVERY_NOT_FOUND(NOT_FOUND, 40001, "존재하지 않는 배달팟입니다."),
 
-    // Daily (5xxxx)
-    DAILY_NOT_FOUND(NOT_FOUND, 50001, "존재하지 않는 일상글입니다."),
+    // Post (5xxxx)
+    POST_NOT_FOUND(NOT_FOUND, 50001, "존재하지 않는 게시글입니다."),
+    INVALID_POST_CATEGORY_VALUE(BAD_REQUEST,50002, "잘못된 카테고리입니다."),
 
-    // Market(6xxxx)
-    MARKET_NOT_FOUND(NOT_FOUND, 60001, "존재하지 않는 장터글입니다."),
+    // (6xxxx)
 
     // Comment(7xxxx)
     COMMENT_NOT_FOUND(NOT_FOUND, 70001, "존재하지 않는 댓글입니다."),
     PARENT_COMMENT_NOT_FOUND(NOT_FOUND, 70002, "존재하지 않는 상위 댓글입니다."),
-    COMMENT_TARGET_NOT_SELECTED(BAD_REQUEST, 70003, "댓글을 달 대상이 선택되지 않았습니다."),
-    COMMENT_DEPTH_ERROR(BAD_REQUEST, 70004, "대댓글에 대댓글을 달 수 없습니다."),
 
-    // SleepoverApply(8XXXX)
-    SLEEP_OVER_APPLY_NOT_FOUND(NOT_FOUND,80001,"존재하지 않는 외박신청입니다.");
+    COMMENT_TARGET_NOT_SELECTED(BAD_REQUEST, 70003, "댓글을 생성하거나 조회할 대상이 선택되지 않았습니다."),
+    COMMENT_DEPTH_ERROR(BAD_REQUEST, 70004, "대댓글에 대댓글을 달 수 없습니다."),
+    COMMENT_TARGET_ERROR(BAD_REQUEST, 70005, "댓글을 생성하거나 조회할 대상은 하나만 선택할 수 있습니다."),
+
+    // Like(8xxxx)
+    LIKE_TARGET_NOT_SELECTED(BAD_REQUEST, 80001, "좋아요할 대상이 선택되지 않았습니다."),
+    LIKE_TARGET_ERROR(BAD_REQUEST, 80002, "좋아요할 대상은 하나만 선택할 수 있습니다."),
+
+    // SleepoverApply(9XXXX)
+    SLEEP_OVER_APPLY_NOT_FOUND(NOT_FOUND,90001,"존재하지 않는 외박신청입니다.");
 
     private final HttpStatus httpStatus;
     private final int code;

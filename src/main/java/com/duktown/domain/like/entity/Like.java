@@ -1,8 +1,8 @@
 package com.duktown.domain.like.entity;
 
-import com.duktown.domain.daily.entity.Daily;
-import com.duktown.domain.delivery.entity.Delivery;
-import com.duktown.domain.market.entity.Market;
+import com.duktown.domain.BaseTimeEntity;
+import com.duktown.domain.comment.entity.Comment;
+import com.duktown.domain.post.entity.Post;
 import com.duktown.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PRIVATE;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -21,9 +22,9 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor(access = PRIVATE)
 @NoArgsConstructor(access = PROTECTED)
 @Table(name = "likes")
-public class Like {
+public class Like extends BaseTimeEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "like_id")
     private Long id;
 
@@ -32,14 +33,10 @@ public class Like {
     private User user;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "delivery_id", nullable = false)
-    private Delivery delivery;
+    @JoinColumn(name = "daily_id")
+    private Post post;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "daily_id", nullable = false)
-    private Daily daily;
-
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "market_id", nullable = false)
-    private Market market;
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 }

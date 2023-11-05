@@ -11,6 +11,7 @@ import javax.persistence.*;
 
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PRIVATE;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -22,7 +23,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Table(name = "repair_apply")
 public class RepairApply {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "repair_apply_id")
     private Long id;
 

@@ -1,9 +1,9 @@
 package com.duktown.domain.comment.dto;
 
 import com.duktown.domain.comment.entity.Comment;
-import com.duktown.domain.daily.entity.Daily;
+import com.duktown.domain.post.entity.Post;
 import com.duktown.domain.delivery.entity.Delivery;
-import com.duktown.domain.market.entity.Market;
+import com.duktown.domain.like.entity.Like;
 import com.duktown.domain.user.entity.User;
 import com.duktown.global.util.DateUtil;
 import lombok.AllArgsConstructor;
@@ -22,18 +22,16 @@ public class CommentDto {
     @Getter
     public static class CreateRequest{
         private Long deliveryId;
-        private Long dailyId;
-        private Long marketId;
+        private Long postId;
         private Long parentCommentId;
         @NotBlank(message = "댓글 내용은 필수 값입니다.")
         private String content;
 
-        public Comment toEntity(User user, Delivery delivery, Daily daily, Market market, Comment parentComment) {
+        public Comment toEntity(User user, Delivery delivery, Post post, Comment parentComment) {
             return Comment.builder()
                     .user(user)
                     .delivery(delivery)
-                    .daily(daily)
-                    .market(market)
+                    .post(post)
                     .parentComment(parentComment)
                     .content(content)
                     .deleted(false)
@@ -48,9 +46,9 @@ public class CommentDto {
         private Long commentCount;
         private List<ParentResponse> content;
 
-        public static ListResponse from(Long commentCount, List<Comment> comments){
+        public static ListResponse from(Long commentCount, List<Comment> comments, List<Like> likes){
             List<ParentResponse> content = comments.stream()
-                    .map(ParentResponse::from)
+                    .map(c -> ParentResponse.from(c, likes))
                     .collect(Collectors.toList());
             return ListResponse.builder()
                     .commentCount(commentCount)
@@ -66,18 +64,22 @@ public class CommentDto {
         private Long commentId;
         private Long userId;
         private String content;
+        private Boolean liked;
+        private Integer likeCount;
         private String dateTime;
         private Boolean deleted;
         private List<ChildResponse> childComments;
 
-        public static ParentResponse from(Comment comment) {
+        public static ParentResponse from(Comment comment, List<Like> likes) {
             List<ChildResponse> childComments = comment.getChildComments().stream()
-                    .map(ChildResponse::from)
+                    .map(c -> ChildResponse.from(c, likes))
                     .collect(Collectors.toList());
             return ParentResponse.builder()
                     .commentId(comment.getId())
                     .userId(comment.getUser().getId())
                     .content(comment.getContent())
+                    .liked(likes.stream().anyMatch(l -> l.getComment().getId().equals(comment.getId())))
+                    .likeCount(comment.getLikes().size())
                     .dateTime(DateUtil.convert(comment.getCreatedAt()))
                     .deleted(comment.getDeleted())
                     .childComments(childComments)
@@ -92,13 +94,17 @@ public class CommentDto {
         private Long commentId;
         private Long userId;
         private String content;
+        private Boolean liked;
+        private Integer likeCount;
         private String dateTime;
 
-        public static ChildResponse from(Comment comment) {
+        public static ChildResponse from(Comment comment, List<Like> likes) {
             return ChildResponse.builder()
                     .commentId(comment.getId())
                     .userId(comment.getUser().getId())
                     .content(comment.getContent())
+                    .liked(likes.stream().anyMatch(l -> l.getComment().getId().equals(comment.getId())))
+                    .likeCount(comment.getLikes().size())
                     .dateTime(DateUtil.convert(comment.getCreatedAt()))
                     .build();
         }

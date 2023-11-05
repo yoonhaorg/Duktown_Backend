@@ -29,10 +29,11 @@ public class CommentController {
     public ResponseEntity<CommentDto.ListResponse> getCommentList(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestParam(value = "deliveryId", required = false) Long deliveryId,
-            @RequestParam(value = "dailyId", required = false) Long dailyId,
-            @RequestParam(value = "marketId", required = false) Long marketId) {
+            @RequestParam(value = "postId", required = false) Long postId
+    ) {
+
         return ResponseEntity.ok(
-                commentService.getCommentList(customUserDetails.getId(), deliveryId, dailyId, marketId)
+                commentService.getCommentList(customUserDetails.getId(), deliveryId, postId)
         );
     }
 
