@@ -14,9 +14,6 @@ public class DailyDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class DailyRequest{
-        //private User user;
-        //private Long userId;
-//        private String accessToken;
 
         @NotBlank(message = "제목은 필수 입력값입니다.")
         private String title;

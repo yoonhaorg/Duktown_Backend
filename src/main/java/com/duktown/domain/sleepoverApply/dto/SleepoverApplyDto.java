@@ -3,6 +3,7 @@ package com.duktown.domain.sleepoverApply.dto;
 import com.duktown.domain.sleepoverApply.entity.SleepoverApply;
 import com.duktown.domain.user.entity.User;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +11,9 @@ import javax.persistence.Column;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
+import java.util.List;
 
 public class SleepoverApplyDto {
 
@@ -42,6 +45,22 @@ public class SleepoverApplyDto {
                     .build();
         }
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class ResponseGetListSleepoverApply{
+        private Integer sleepoverApplyCount;
+        private List<ResponseGetSleepoverApply> listSleepoverApply;
+
+        public static ResponseGetListSleepoverApply from(List<ResponseGetSleepoverApply> getSleepoverApplyList){
+            return ResponseGetListSleepoverApply.builder()
+                    .sleepoverApplyCount(getSleepoverApplyList.size())
+                    .listSleepoverApply(getSleepoverApplyList)
+                    .build();
+        }
+    }
+
 
     @Getter
     @AllArgsConstructor
