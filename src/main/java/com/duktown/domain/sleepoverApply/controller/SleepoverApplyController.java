@@ -22,7 +22,7 @@ public class SleepoverApplyController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @Valid @RequestBody SleepoverApplyDto.RequestSleepoverApplyDto request){
          sleepoverApplyService.createSleepoverApply(customUserDetails.getId(),request);
-         return ResponseEntity.ok(HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     //    public ResponseEntity<?> updateSleepoverApply(Long sleepoverApplyId){
