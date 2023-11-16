@@ -1,5 +1,7 @@
 package com.duktown.domain.user.controller;
 
+import com.duktown.domain.emailCert.dto.EmailCertDto;
+import com.duktown.domain.emailCert.service.EmailCertService;
 import com.duktown.domain.user.dto.UserDto;
 import com.duktown.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -15,10 +17,17 @@ import javax.validation.Valid;
 public class UserController {
 
     private final UserService userService;
+    private final EmailCertService emailCertService;
 
-    @PostMapping("/email-duplicate")
-    public ResponseEntity<UserDto.EmailCheckResponse> emailCheck(@Valid @RequestBody final UserDto.EmailCheckRequest emailCheckRequest) {
-        return ResponseEntity.ok(userService.emailCheck(emailCheckRequest));
+    @PostMapping("/email-cert")
+    public ResponseEntity<EmailCertDto.EmailResponse> emailCert(@Valid @RequestBody final EmailCertDto.EmailRequest request) {
+        return ResponseEntity.ok(emailCertService.emailSend(request));
+    }
+
+    @PostMapping("/email-cert/check")
+    public ResponseEntity<Void> emailCertCheck(@Valid @RequestBody final EmailCertDto.CertRequest request) {
+        emailCertService.emailCert(request);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/id-duplicate")

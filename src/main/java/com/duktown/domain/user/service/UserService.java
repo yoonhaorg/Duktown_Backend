@@ -1,8 +1,11 @@
 package com.duktown.domain.user.service;
 
+import com.duktown.domain.emailCert.entity.EmailCert;
+import com.duktown.domain.emailCert.entity.EmailCertRepository;
 import com.duktown.domain.user.dto.UserDto;
 import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
+import com.duktown.global.exception.CustomErrorType;
 import com.duktown.global.exception.CustomException;
 import com.duktown.global.security.provider.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -19,20 +22,9 @@ import static com.duktown.global.exception.CustomErrorType.LOGIN_ID_ALREADY_EXIS
 public class UserService {
 
     private final UserRepository userRepository;
+    private final EmailCertRepository emailCertRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
-
-    // 이메일 중복 체크 메서드
-    @Transactional(readOnly = true)
-    public UserDto.EmailCheckResponse emailCheck(UserDto.EmailCheckRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElse(null);
-
-        if (user != null) {
-            return new UserDto.EmailCheckResponse(true);
-        }
-        return new UserDto.EmailCheckResponse(false);
-    }
 
     // 아이디 중복 체크 메서드
     @Transactional(readOnly = true)
@@ -59,7 +51,14 @@ public class UserService {
         // 아이디 중복 체크
         idDuplicateCheck(signupRequest.getLoginId());
 
-        // TODO: 이메일 인증 여부 체크
+        // 이메일 인증 여부 체크
+//        EmailCert emailCert = emailCertRepository.findByEmail(signupRequest.getEmail()).orElseThrow(
+//                () -> new CustomException(CustomErrorType.EMAIL_CERT_NOT_FOUND)
+//        );
+//
+//        if (!emailCert.getCertified()) {
+//            throw new CustomException(CustomErrorType.EMAIL_CERT_FAILED);
+//        }
 
         // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());

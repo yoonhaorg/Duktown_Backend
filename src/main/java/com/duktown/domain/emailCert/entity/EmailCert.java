@@ -30,5 +30,14 @@ public class EmailCert {
     @Column(nullable = false)
     private String certCode;
 
+    @Column(nullable = false)
     private Boolean certified;
+
+    public void updateCertCode(String certCode) {
+        this.certCode = certCode;
+    }
+
+    public void updateCertified(Boolean certified) {
+        this.certified = certified;
+    }
 }

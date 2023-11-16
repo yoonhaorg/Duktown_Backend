@@ -39,7 +39,10 @@ public enum CustomErrorType {
     POST_NOT_FOUND(NOT_FOUND, 50001, "존재하지 않는 게시글입니다."),
     INVALID_POST_CATEGORY_VALUE(BAD_REQUEST,50002, "잘못된 카테고리입니다."),
 
-    // (6xxxx)
+    // Cert (6xxxx) 인증 오류
+    UNABLE_TO_SEND_EMAIL(INTERNAL_SERVER_ERROR, 60001, "이메일을 전송할 수 없습니다."),
+    EMAIL_CERT_NOT_FOUND(NOT_FOUND, 60002, "이메일 인증 내역이 존재하지 않습니다."),
+    EMAIL_CERT_FAILED(UNAUTHORIZED, 60003, "인증번호가 일치하지 않습니다."),
 
     // Comment(7xxxx)
     COMMENT_NOT_FOUND(NOT_FOUND, 70001, "존재하지 않는 댓글입니다."),
