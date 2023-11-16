@@ -50,6 +50,9 @@ dependencies {
 
     // MySQL Database
     runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // email
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 tasks.named('test') {
