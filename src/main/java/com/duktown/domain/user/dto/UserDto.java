@@ -39,17 +39,6 @@ public class UserDto {
         }
     }
 
-    // 이메일 체크 요청
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class EmailCheckRequest {
-        @NotEmpty(message = "이메일은 필수 값입니다.")
-        @Email(message = "이메일 형식이 올바르지 않습니다.")
-        @Pattern(regexp = "[A-Za-z0-9+_.-]+@duksung.ac.kr", message = "덕성 메일을 입력해주세요.")
-        private String email;
-    }
-
     // 아이디 중복 체크 요청
     @Getter
     @AllArgsConstructor
@@ -75,13 +64,6 @@ public class UserDto {
     public static class SignUpResponse {
         private String accessToken;
         private String refreshToken;
-    }
-
-    // 이메일 체크 응답
-    @Getter
-    @AllArgsConstructor
-    public static class EmailCheckResponse {
-        private Boolean isDuplicated;
     }
 
     // 아이디 체크 응답

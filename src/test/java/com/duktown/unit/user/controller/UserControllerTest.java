@@ -1,9 +1,10 @@
 package com.duktown.unit.user.controller;
 
+import com.duktown.domain.emailCert.dto.EmailCertDto;
 import com.duktown.domain.user.controller.UserController;
 import com.duktown.domain.user.dto.UserDto;
 import com.duktown.domain.user.service.UserService;
-import com.duktown.global.security.SecurityConfig;
+import com.duktown.global.config.SecurityConfig;
 import com.duktown.global.security.filter.JwtAuthorizationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -45,94 +46,7 @@ public class UserControllerTest {
     @MockBean
     private UserService userService;
 
-    @DisplayName("이메일 중복 체크 성공")
-    @WithMockUser
-    @Test
-    void emailDuplicateCheck_success() throws Exception {
-        // given
-        final String url = "/auth/email-duplicate";
-        final String email = "dskim@duksung.ac.kr";
-        UserDto.EmailCheckRequest request = new UserDto.EmailCheckRequest(email);
-        String body = new ObjectMapper().writeValueAsString(request);   // serialize
-
-        // when & then
-        mockMvc.perform(post(url)
-                        .contentType(APPLICATION_JSON_VALUE)
-                        .content(body)
-                        .with(csrf()))  // csrf token
-                .andExpect(status().isOk())
-                .andDo(print());    // 처리 내용 출력
-    }
-
-    @DisplayName("이메일 중복 체크 api에서 requestBody가 없으면 실패")
-    @WithMockUser
-    @Test
-    void emailDuplicateCheck_noBody_fail() throws Exception {
-        // given
-        final String url = "/auth/email-duplicate";
-
-        // when & then
-        mockMvc.perform(post(url)
-                .with(csrf()))
-                .andExpect(status().isInternalServerError())
-                .andDo(print());
-    }
-
-    @DisplayName("이메일 중복 체크 api에서 이메일 입력하지 않으면 실패")
-    @WithMockUser
-    @Test
-    void emailDuplicateCheck_noEmail_fail() throws Exception {
-        // given
-        final String url = "/auth/email-duplicate";
-        UserDto.EmailCheckRequest request = new UserDto.EmailCheckRequest();
-        String body = new ObjectMapper().writeValueAsString(request);
-
-        // when & then
-        mockMvc.perform(post(url)
-                        .contentType(APPLICATION_JSON_VALUE)
-                        .content(body)
-                        .with(csrf()))
-                .andExpect(status().is4xxClientError())
-                .andDo(print());
-    }
-
-    @DisplayName("이메일 중복 체크 api에서 덕성 이메일 아닐 시 실패")
-    @WithMockUser
-    @Test
-    void emailDuplicateCheck_notDuksungEmail_fail() throws Exception {
-        // given
-        final String url = "/auth/email-duplicate";
-        final String email = "dskim@gmail.com";
-        UserDto.EmailCheckRequest request = new UserDto.EmailCheckRequest(email);
-        String body = new ObjectMapper().writeValueAsString(request);
-
-        // when & then
-        mockMvc.perform(post(url)
-                        .contentType(APPLICATION_JSON_VALUE)
-                        .content(body)
-                        .with(csrf()))
-                .andExpect(status().is4xxClientError())
-                .andDo(print());
-    }
-
-    @DisplayName("이메일 중복 체크 api에서 이메일 유효하지 않을 시 실패")
-    @WithMockUser
-    @Test
-    void emailDuplicateCheck_notValidEmail_fail() throws Exception {
-        // given
-        final String url = "/auth/email-duplicate";
-        final String email = "@duksung.ac.kr";
-        UserDto.EmailCheckRequest request = new UserDto.EmailCheckRequest(email);
-        String body = new ObjectMapper().writeValueAsString(request);
-
-        // when & then
-        mockMvc.perform(post(url)
-                        .contentType(APPLICATION_JSON_VALUE)
-                        .content(body)
-                        .with(csrf()))
-                .andExpect(status().is4xxClientError())
-                .andDo(print());
-    }
+    // TODO: 이메일 인증 테스트 추가
 
     @DisplayName("아이디 중복 체크 성공")
     @WithMockUser
