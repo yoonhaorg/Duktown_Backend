@@ -29,19 +29,23 @@ public class SleepoverApply {
     private User user;
 
     @Column(nullable = false)
-    private LocalDate startDate;
+    private LocalDate startDate; //외박 시작 날짜
 
     @Column(nullable = false)
-    private LocalDate endDate;
+    private LocalDate endDate; //돌아오는 날짜
 
     @Column(nullable = false)
-    private Integer period;
+    private Integer period; //외박 일 수
 
     @Column(nullable = false)
-    private String address;
+    private String address; // 머무르는 주소
 
     @Column(nullable = false)
-    private String reason;
+    private String reason; //사유
 
-    private Boolean approved;
+    private Boolean approved; //승인 여부
+
+    public void approve(boolean approved){
+        this.approved = approved;
+    }
 }

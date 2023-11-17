@@ -31,6 +31,7 @@ public class CommentController {
             @RequestParam(value = "deliveryId", required = false) Long deliveryId,
             @RequestParam(value = "postId", required = false) Long postId
     ) {
+
         return ResponseEntity.ok(
                 commentService.getCommentList(customUserDetails.getId(), deliveryId, postId)
         );
