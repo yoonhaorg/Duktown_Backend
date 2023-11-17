@@ -4,6 +4,7 @@ import com.duktown.domain.post.dto.PostDto;
 import com.duktown.domain.post.service.PostService;
 import com.duktown.global.security.service.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class PostController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @Valid @RequestBody PostDto.PostRequest request){
         postService.createPost(customUserDetails.getId(), request);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
