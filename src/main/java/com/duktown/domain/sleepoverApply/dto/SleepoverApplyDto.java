@@ -1,5 +1,6 @@
 package com.duktown.domain.sleepoverApply.dto;
 
+import com.duktown.domain.BaseTimeEntity;
 import com.duktown.domain.sleepoverApply.entity.SleepoverApply;
 import com.duktown.domain.user.entity.User;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
-public class SleepoverApplyDto {
+public class SleepoverApplyDto extends BaseTimeEntity {
 
     @Getter
     @AllArgsConstructor
