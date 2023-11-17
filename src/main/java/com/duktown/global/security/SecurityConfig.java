@@ -21,7 +21,7 @@ import org.springframework.security.web.firewall.HttpFirewall;
 
 import java.util.Arrays;
 
-import static org.springframework.security.config.http.SessionCreationPolicy.*;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -75,6 +75,7 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
