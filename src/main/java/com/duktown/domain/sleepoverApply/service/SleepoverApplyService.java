@@ -6,16 +6,11 @@ import com.duktown.domain.sleepoverApply.entity.SleepoverApplyRepository;
 import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.exception.CustomException;
-import com.duktown.global.type.RoleType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.duktown.global.exception.CustomErrorType.SLEEP_OVER_APPLY_NOT_FOUND;
