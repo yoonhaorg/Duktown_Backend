@@ -7,14 +7,17 @@ import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.duktown.global.exception.CustomErrorType.SLEEP_OVER_APPLY_NOT_FOUND;
-import static com.duktown.global.exception.CustomErrorType.USER_NOT_FOUND;
+import static com.duktown.global.exception.CustomErrorType.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,15 +29,25 @@ public class SleepoverApplyService {
     public void createSleepoverApply(Long userId, SleepoverApplyDto.RequestSleepoverApplyDto request){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-         SleepoverApply sleepoverApply = request.toEntity(user);
 
-         // 생성시간이전 요청시간 확인 로직 필요
+        // 생성시간이전 요청시간 확인 로직
+        // DTO 요청을 기반으로 시작 날짜를 가져와 시간값으로 변경
+        LocalDateTime startRequestTime = request.getStartDate().atStartOfDay();
+        if(processRequests(startRequestTime)){
+            SleepoverApply sleepoverApply = request.toEntity(user);
+            sleepoverApplyRepository.save(sleepoverApply);
+        }else {
+            throw new CustomException(SLEEP_OVER_APPLY_INVALID_REQUEST_TIME);
+        }
 
-         sleepoverApplyRepository.save(sleepoverApply);
     }
 
+    //TODO: 외박 신청 수정 -> 하루 추가-> 추가 신청-> 이전 내역과 병합
+
     // 외박 신청 수정 ->  하루 감소 => 기존 신청 이력을 수정
-    // 외박 신청 수정 -> 하루 추가-> 추가 신청 -> 이전 내역과 병합
+    public void updateSleepoverApply(){
+
+    }
 
     public void deleteSleepoverApply(Long sleepoverApplyId , Long userId){
         userRepository.findById(userId).orElseThrow(()->new CustomException(USER_NOT_FOUND));
@@ -70,5 +83,13 @@ public class SleepoverApplyService {
     }
 
 
+    private boolean processRequests(LocalDateTime requestTime) {
+        LocalDateTime currentTime = LocalDateTime.now();
+        if (currentTime.getHour() >= 22) {
+            return false;
+        }
+        return currentTime.isBefore(requestTime);
+    }
 
-}
+
+    }
