@@ -39,10 +39,8 @@ public class SleepoverApplyService {
         }
 
     }
-
-    //TODO: 외박 신청 수정 -> 하루 추가-> 추가 신청-> 이전 내역과 병합
-
-    // 외박 신청 수정 ->  하루 감소 => 기존 신청 이력을 수정
+    
+    // 외박 신청 수정 -> 승인 전-> 하루 감소, 하루 추가 => 기존 신청 이력을 수정
     public void updateSleepoverApply(Long userId,Long sleepoverApplyId ,SleepoverApplyDto.RequestSleepoverApplyDto requestUpdateDto){
         User user = userRepository.findById(userId)
                 .orElseThrow(()-> new CustomException(USER_NOT_FOUND));
