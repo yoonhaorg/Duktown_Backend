@@ -3,6 +3,7 @@ package com.duktown.domain.sleepoverApply.dto;
 import com.duktown.domain.BaseTimeEntity;
 import com.duktown.domain.sleepoverApply.entity.SleepoverApply;
 import com.duktown.domain.user.entity.User;
+import com.duktown.global.type.ApprovalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,9 +42,18 @@ public class SleepoverApplyDto extends BaseTimeEntity {
                     .period(period)
                     .address(address)
                     .reason(reason)
+                    .approved(ApprovalType.Waiting)
                     .build();
         }
     }
+
+
+    @Getter
+    public static class RequestApproveSleepoverApply{
+        private ApprovalType approved;
+    }
+
+
 
     @Getter
     @Builder
@@ -82,11 +92,6 @@ public class SleepoverApplyDto extends BaseTimeEntity {
         }
     }
 
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class RequestApproveSleepoverApply{
-        private Boolean approved;
-    }
+
 
 }

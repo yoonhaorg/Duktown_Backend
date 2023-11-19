@@ -1,19 +1,17 @@
 package com.duktown.domain.sleepoverApply.service;
 
 import com.duktown.domain.sleepoverApply.dto.SleepoverApplyDto;
+import com.duktown.global.type.ApprovalType;
 import com.duktown.domain.sleepoverApply.entity.SleepoverApply;
 import com.duktown.domain.sleepoverApply.entity.SleepoverApplyRepository;
 import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,7 +43,13 @@ public class SleepoverApplyService {
     //TODO: 외박 신청 수정 -> 하루 추가-> 추가 신청-> 이전 내역과 병합
 
     // 외박 신청 수정 ->  하루 감소 => 기존 신청 이력을 수정
-    public void updateSleepoverApply(){
+    public void updateSleepoverApply(Long userId,Long sleepoverApplyId ,SleepoverApplyDto.RequestSleepoverApplyDto requestUpdate){
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new CustomException(USER_NOT_FOUND));
+
+        SleepoverApply updateSleepover = sleepoverApplyRepository.findById(sleepoverApplyId)
+                .orElseThrow(()-> new CustomException(SLEEP_OVER_APPLY_NOT_FOUND));
+        updateSleepover.updateSleepoverApply(requestUpdate.getStartDate(),requestUpdate.getEndDate(),requestUpdate.getPeriod(),requestUpdate.getReason());
 
     }
 
@@ -70,7 +74,7 @@ public class SleepoverApplyService {
     }
 
     @Transactional(readOnly = true)
-    public SleepoverApplyDto.ResponseGetSleepoverApply getSleepoverApply(Long sleepoverApplyId){
+    public SleepoverApplyDto.ResponseGetSleepoverApply getDetailSleepoverApply(Long sleepoverApplyId){
        SleepoverApply getSleepoverApply = sleepoverApplyRepository.findById(sleepoverApplyId).get();
         return new SleepoverApplyDto.ResponseGetSleepoverApply(getSleepoverApply);
     }
@@ -78,17 +82,16 @@ public class SleepoverApplyService {
     public void approveSleepoverApply(Long sleepoverApplyId){
             SleepoverApply sleepoverApply = sleepoverApplyRepository.findById(sleepoverApplyId)
                     .orElseThrow(()->new CustomException(SLEEP_OVER_APPLY_NOT_FOUND));
-            sleepoverApply.approve(true);
+            sleepoverApply.approve(ApprovalType.Approved);
 
     }
 
-
-    private boolean processRequests(LocalDateTime requestTime) {
+    private boolean processRequests(LocalDateTime startDate) {
         LocalDateTime currentTime = LocalDateTime.now();
-        if (currentTime.getHour() >= 22) {
+        if (startDate.toLocalDate().isEqual(currentTime.toLocalDate()) && currentTime.getHour()>= 22) {
             return false;
         }
-        return currentTime.isBefore(requestTime);
+        return true;
     }
 
 

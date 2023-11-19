@@ -25,9 +25,15 @@ public class SleepoverApplyController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    //    public ResponseEntity<?> updateSleepoverApply(Long sleepoverApplyId){
-//
-//    }
+    @PutMapping("/{sleepoverId}")
+    public ResponseEntity<?> updateSleepoverApply(
+            @PathVariable Long sleepoverId,
+            @RequestBody SleepoverApplyDto.RequestSleepoverApplyDto updateRequest,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails)
+    {
+        sleepoverApplyService.updateSleepoverApply(customUserDetails.getId(),sleepoverId,updateRequest);
+        return ResponseEntity.ok().build();
+    }
 
     @DeleteMapping("/{sleepoverId}")
     public ResponseEntity<Void> deleteSleepoverApply(
@@ -38,7 +44,7 @@ public class SleepoverApplyController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping()
+    @GetMapping("/MANAGER")
     public ResponseEntity<SleepoverApplyDto.ResponseGetListSleepoverApply> getSleepoverList(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ){
@@ -46,11 +52,11 @@ public class SleepoverApplyController {
     }
 
     @GetMapping("/{sleepoverId}")
-    public ResponseEntity<SleepoverApplyDto.ResponseGetSleepoverApply> getList(
+    public ResponseEntity<SleepoverApplyDto.ResponseGetSleepoverApply> getSleepoverDetail(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long sleepoverId
     ){
-        return ResponseEntity.ok(sleepoverApplyService.getSleepoverApply(sleepoverId));
+        return ResponseEntity.ok(sleepoverApplyService.getDetailSleepoverApply(sleepoverId));
     }
 
     @PatchMapping("/{sleepoverApplyId}")

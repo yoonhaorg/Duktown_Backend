@@ -1,4 +1,4 @@
-package com.duktown.domain.sleepoverApply.entity;
+package com.duktown.global.type;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
