@@ -1,12 +1,14 @@
 package com.duktown.domain.sleepoverApply.entity;
 
 import com.duktown.domain.user.entity.User;
+import com.duktown.global.type.ApprovalType;
 import lombok.*;
 
 import javax.persistence.*;
 
 import java.time.LocalDate;
 
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PRIVATE;
@@ -40,12 +42,24 @@ public class SleepoverApply {
     @Column(nullable = false)
     private String address; // 머무르는 주소
 
+
     @Column(nullable = false)
     private String reason; //사유
 
-    private Boolean approved; //승인 여부
+    @Enumerated(STRING)
+    private ApprovalType approved; //승인 여부
 
-    public void approve(boolean approved){
+    public void approve(ApprovalType approved){
         this.approved = approved;
     }
+
+    public void updateSleepoverApply(LocalDate startDate, LocalDate endDate,Integer period,String address,String reason){
+        this.startDate = startDate;
+        this.endDate=endDate;
+        this.period =period;
+        this.address =address;
+        this.reason=reason;
+    }
+
+
 }

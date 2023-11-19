@@ -6,15 +6,17 @@ import com.duktown.domain.sleepoverApply.entity.SleepoverApplyRepository;
 import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.exception.CustomException;
+import com.duktown.global.type.ApprovalType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.duktown.global.exception.CustomErrorType.SLEEP_OVER_APPLY_NOT_FOUND;
-import static com.duktown.global.exception.CustomErrorType.USER_NOT_FOUND;
+import static com.duktown.global.exception.CustomErrorType.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,15 +28,32 @@ public class SleepoverApplyService {
     public void createSleepoverApply(Long userId, SleepoverApplyDto.RequestSleepoverApplyDto request){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-         SleepoverApply sleepoverApply = request.toEntity(user);
 
-         // 생성시간이전 요청시간 확인 로직 필요
 
-         sleepoverApplyRepository.save(sleepoverApply);
+        // 외박 시작 날짜 + 현재 로직 시간을 기반으로 22시 체크
+        if(processRequests(request.getStartDate())){
+            SleepoverApply sleepoverApply = request.toEntity(user);
+            sleepoverApplyRepository.save(sleepoverApply);
+        }else {
+            throw new CustomException(SLEEP_OVER_APPLY_INVALID_REQUEST_TIME);
+        }
+
     }
+    
+    // 외박 신청 수정 -> 승인 전-> 하루 감소, 하루 추가 => 기존 신청 이력을 수정
+    public void updateSleepoverApply(Long userId,Long sleepoverApplyId ,SleepoverApplyDto.RequestSleepoverApplyDto requestUpdateDto){
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new CustomException(USER_NOT_FOUND));
 
-    // 외박 신청 수정 ->  하루 감소 => 기존 신청 이력을 수정
-    // 외박 신청 수정 -> 하루 추가-> 추가 신청 -> 이전 내역과 병합
+        SleepoverApply updateSleepover = sleepoverApplyRepository.findById(sleepoverApplyId)
+                .orElseThrow(()-> new CustomException(SLEEP_OVER_APPLY_NOT_FOUND));
+        SleepoverApply requestUpdate = requestUpdateDto.toEntity(user);
+
+        if(updateSleepover.getApproved().equals(ApprovalType.Approved)) {
+            throw new CustomException(SLEEP_OVER_APPLY_TARGET_ERROR);
+        }else updateSleepover.updateSleepoverApply(requestUpdate.getStartDate(), requestUpdate.getEndDate(), requestUpdate.getPeriod(),requestUpdate.getAddress(), requestUpdate.getReason());
+
+    }
 
     public void deleteSleepoverApply(Long sleepoverApplyId , Long userId){
         userRepository.findById(userId).orElseThrow(()->new CustomException(USER_NOT_FOUND));
@@ -57,18 +76,27 @@ public class SleepoverApplyService {
     }
 
     @Transactional(readOnly = true)
-    public SleepoverApplyDto.ResponseGetSleepoverApply getSleepoverApply(Long sleepoverApplyId){
-       SleepoverApply getSleepoverApply = sleepoverApplyRepository.findById(sleepoverApplyId).get();
+    public SleepoverApplyDto.ResponseGetSleepoverApply getDetailSleepoverApply(Long sleepoverApplyId){
+       SleepoverApply getSleepoverApply = sleepoverApplyRepository.findById(sleepoverApplyId)
+               .orElseThrow(()-> new CustomException(SLEEP_OVER_APPLY_NOT_FOUND));
         return new SleepoverApplyDto.ResponseGetSleepoverApply(getSleepoverApply);
     }
 
     public void approveSleepoverApply(Long sleepoverApplyId){
             SleepoverApply sleepoverApply = sleepoverApplyRepository.findById(sleepoverApplyId)
                     .orElseThrow(()->new CustomException(SLEEP_OVER_APPLY_NOT_FOUND));
-            sleepoverApply.approve(true);
+            sleepoverApply.approve(ApprovalType.Approved);
 
     }
 
+    private boolean processRequests(LocalDate startDate) {
+        LocalDateTime currentTime = LocalDateTime.now();
+        // 외박 시작 날짜와 신청 날짜가 같으면서 신청 로직 currentTime이 22시 이후인 경우 외박 신청 거부
+        if (startDate.isEqual(currentTime.toLocalDate()) && currentTime.getHour()>= 22) {
+            return false;
+        }
+        return true;
+    }
 
 
-}
+    }

@@ -3,14 +3,13 @@ package com.duktown.domain.sleepoverApply.dto;
 import com.duktown.domain.BaseTimeEntity;
 import com.duktown.domain.sleepoverApply.entity.SleepoverApply;
 import com.duktown.domain.user.entity.User;
+import com.duktown.global.type.ApprovalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -22,14 +21,19 @@ public class SleepoverApplyDto extends BaseTimeEntity {
     public static class RequestSleepoverApplyDto{
 
         @NotNull
+        @FutureOrPresent(message = "외박 신청 날짜는 현재 시간 이후거나 동일해야 합니다.")
         private LocalDate startDate; //외박 시작 날짜
         @NotNull
+        @Future(message = "귀가 날짜는 미래여야 합니다.")
         private LocalDate endDate; //돌아오는 날짜
 
         @Min(value = 1)
         private Integer period; //외박 일 수
+
+        private String zipcode; // 우편번호
         @NotBlank(message = "머무는 곳의 주소는 필수 값입니다")
-        private String address; // 머무르는 주소
+        private String streetAddress;// 지번 주소
+        private String detailAddress;// 상세 주소
         @NotBlank(message = "사유는 필수 값입니다.")
         private String reason; //사유
 
@@ -39,11 +43,13 @@ public class SleepoverApplyDto extends BaseTimeEntity {
                     .startDate(startDate)
                     .endDate(endDate)
                     .period(period)
-                    .address(address)
+                    .address(streetAddress)
                     .reason(reason)
+                    .approved(ApprovalType.Waiting)
                     .build();
         }
     }
+
 
     @Getter
     @Builder
@@ -82,11 +88,6 @@ public class SleepoverApplyDto extends BaseTimeEntity {
         }
     }
 
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class RequestApproveSleepoverApply{
-        private Boolean approved;
-    }
+
 
 }
