@@ -44,7 +44,7 @@ public class SleepoverApplyController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/MANAGER")
+    @GetMapping("/manager")
     public ResponseEntity<SleepoverApplyDto.ResponseGetListSleepoverApply> getSleepoverList(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ){

@@ -42,6 +42,7 @@ public class SleepoverApply {
     @Column(nullable = false)
     private String address; // 머무르는 주소
 
+
     @Column(nullable = false)
     private String reason; //사유
 

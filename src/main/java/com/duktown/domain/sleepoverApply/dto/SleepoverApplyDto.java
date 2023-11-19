@@ -30,7 +30,9 @@ public class SleepoverApplyDto extends BaseTimeEntity {
         @Min(value = 1)
         private Integer period; //외박 일 수
         @NotBlank(message = "머무는 곳의 주소는 필수 값입니다")
-        private String address; // 머무르는 주소
+        private String zipcode;
+        private String streetAddress;// 지번 주소
+        private String detailAddress;// 상세 주소
         @NotBlank(message = "사유는 필수 값입니다.")
         private String reason; //사유
 
@@ -40,19 +42,12 @@ public class SleepoverApplyDto extends BaseTimeEntity {
                     .startDate(startDate)
                     .endDate(endDate)
                     .period(period)
-                    .address(address)
+                    .address(zipcode+streetAddress+detailAddress)
                     .reason(reason)
                     .approved(ApprovalType.Waiting)
                     .build();
         }
     }
-
-
-    @Getter
-    public static class RequestApproveSleepoverApply{
-        private ApprovalType approved;
-    }
-
 
 
     @Getter
