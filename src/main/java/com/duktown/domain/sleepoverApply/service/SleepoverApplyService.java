@@ -1,16 +1,17 @@
 package com.duktown.domain.sleepoverApply.service;
 
 import com.duktown.domain.sleepoverApply.dto.SleepoverApplyDto;
-import com.duktown.global.type.ApprovalType;
 import com.duktown.domain.sleepoverApply.entity.SleepoverApply;
 import com.duktown.domain.sleepoverApply.entity.SleepoverApplyRepository;
 import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.exception.CustomException;
+import com.duktown.global.type.ApprovalType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,10 +29,9 @@ public class SleepoverApplyService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        // 생성시간이전 요청시간 확인 로직
-        // DTO 요청을 기반으로 시작 날짜를 가져와 시간값으로 변경
-        LocalDateTime startRequestTime = request.getStartDate().atStartOfDay();
-        if(processRequests(startRequestTime)){
+
+        // 외박 시작 날짜 + 현재 로직 시간을 기반으로 22시 체크
+        if(processRequests(request.getStartDate())){
             SleepoverApply sleepoverApply = request.toEntity(user);
             sleepoverApplyRepository.save(sleepoverApply);
         }else {
@@ -86,9 +86,10 @@ public class SleepoverApplyService {
 
     }
 
-    private boolean processRequests(LocalDateTime startDate) {
+    private boolean processRequests(LocalDate startDate) {
         LocalDateTime currentTime = LocalDateTime.now();
-        if (startDate.toLocalDate().isEqual(currentTime.toLocalDate()) && currentTime.getHour()>= 22) {
+        // 외박 시작 날짜와 신청 날짜가 같으면서 신청 로직 currentTime이 22시 이후인 경우 외박 신청 거부
+        if (startDate.isEqual(currentTime.toLocalDate()) && currentTime.getHour()>= 22) {
             return false;
         }
         return true;
