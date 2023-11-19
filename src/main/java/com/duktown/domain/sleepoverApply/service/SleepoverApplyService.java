@@ -43,13 +43,17 @@ public class SleepoverApplyService {
     //TODO: 외박 신청 수정 -> 하루 추가-> 추가 신청-> 이전 내역과 병합
 
     // 외박 신청 수정 ->  하루 감소 => 기존 신청 이력을 수정
-    public void updateSleepoverApply(Long userId,Long sleepoverApplyId ,SleepoverApplyDto.RequestSleepoverApplyDto requestUpdate){
+    public void updateSleepoverApply(Long userId,Long sleepoverApplyId ,SleepoverApplyDto.RequestSleepoverApplyDto requestUpdateDto){
         User user = userRepository.findById(userId)
                 .orElseThrow(()-> new CustomException(USER_NOT_FOUND));
 
         SleepoverApply updateSleepover = sleepoverApplyRepository.findById(sleepoverApplyId)
                 .orElseThrow(()-> new CustomException(SLEEP_OVER_APPLY_NOT_FOUND));
-        updateSleepover.updateSleepoverApply(requestUpdate.getStartDate(),requestUpdate.getEndDate(),requestUpdate.getPeriod(),requestUpdate.getReason());
+        SleepoverApply requestUpdate = requestUpdateDto.toEntity(user);
+
+        if(updateSleepover.getApproved().equals(ApprovalType.Approved)) {
+            throw new CustomException(SLEEP_OVER_APPLY_TARGET_ERROR);
+        }else updateSleepover.updateSleepoverApply(requestUpdate.getStartDate(), requestUpdate.getEndDate(), requestUpdate.getPeriod(),requestUpdate.getAddress(), requestUpdate.getReason());
 
     }
 
@@ -75,7 +79,8 @@ public class SleepoverApplyService {
 
     @Transactional(readOnly = true)
     public SleepoverApplyDto.ResponseGetSleepoverApply getDetailSleepoverApply(Long sleepoverApplyId){
-       SleepoverApply getSleepoverApply = sleepoverApplyRepository.findById(sleepoverApplyId).get();
+       SleepoverApply getSleepoverApply = sleepoverApplyRepository.findById(sleepoverApplyId)
+               .orElseThrow(()-> new CustomException(SLEEP_OVER_APPLY_NOT_FOUND));
         return new SleepoverApplyDto.ResponseGetSleepoverApply(getSleepoverApply);
     }
 

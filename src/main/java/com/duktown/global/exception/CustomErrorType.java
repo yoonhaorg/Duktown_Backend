@@ -58,7 +58,8 @@ public enum CustomErrorType {
 
     // SleepoverApply(9XXXX)
     SLEEP_OVER_APPLY_NOT_FOUND(NOT_FOUND,90001,"존재하지 않는 외박신청입니다."),
-    SLEEP_OVER_APPLY_INVALID_REQUEST_TIME(BAD_REQUEST,90002,"22시 이후에는 외박 신청이 불가능합니다.");
+    SLEEP_OVER_APPLY_INVALID_REQUEST_TIME(BAD_REQUEST,90002,"22시 이후에는 외박 신청이 불가능합니다."),
+    SLEEP_OVER_APPLY_TARGET_ERROR(BAD_REQUEST,90003,"승인 이후에는 수정 불가능합니다.");
 
     private final HttpStatus httpStatus;
     private final int code;

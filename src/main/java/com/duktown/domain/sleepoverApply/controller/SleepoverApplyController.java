@@ -28,7 +28,7 @@ public class SleepoverApplyController {
     @PutMapping("/{sleepoverId}")
     public ResponseEntity<?> updateSleepoverApply(
             @PathVariable Long sleepoverId,
-            @RequestBody SleepoverApplyDto.RequestSleepoverApplyDto updateRequest,
+            @Valid@RequestBody SleepoverApplyDto.RequestSleepoverApplyDto updateRequest,
             @AuthenticationPrincipal CustomUserDetails customUserDetails)
     {
         sleepoverApplyService.updateSleepoverApply(customUserDetails.getId(),sleepoverId,updateRequest);

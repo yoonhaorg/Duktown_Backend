@@ -53,10 +53,11 @@ public class SleepoverApply {
         this.approved = approved;
     }
 
-    public void updateSleepoverApply(LocalDate startDate, LocalDate endDate,Integer period,String reason){
+    public void updateSleepoverApply(LocalDate startDate, LocalDate endDate,Integer period,String address,String reason){
         this.startDate = startDate;
         this.endDate=endDate;
         this.period =period;
+        this.address =address;
         this.reason=reason;
     }
 
