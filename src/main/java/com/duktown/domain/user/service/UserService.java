@@ -1,11 +1,9 @@
 package com.duktown.domain.user.service;
 
-import com.duktown.domain.emailCert.entity.EmailCert;
 import com.duktown.domain.emailCert.entity.EmailCertRepository;
 import com.duktown.domain.user.dto.UserDto;
 import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
-import com.duktown.global.exception.CustomErrorType;
 import com.duktown.global.exception.CustomException;
 import com.duktown.global.security.provider.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +19,6 @@ import static com.duktown.global.exception.CustomErrorType.*;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final EmailCertRepository emailCertRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
 
