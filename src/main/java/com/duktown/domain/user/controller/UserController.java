@@ -4,6 +4,7 @@ import com.duktown.domain.emailCert.dto.EmailCertDto;
 import com.duktown.domain.emailCert.service.EmailCertService;
 import com.duktown.domain.user.dto.UserDto;
 import com.duktown.domain.user.service.UserService;
+import com.duktown.global.security.service.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,5 +39,11 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<UserDto.SignUpResponse> signup(@Valid @RequestBody final UserDto.SignupRequest signupRequest) {
         return ResponseEntity.ok(userService.signup(signupRequest));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(CustomUserDetails customUserDetails) {
+        userService.logout(customUserDetails.getUser().getId());
+        return ResponseEntity.ok().build();
     }
 }

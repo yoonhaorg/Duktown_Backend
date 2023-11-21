@@ -13,8 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.duktown.global.exception.CustomErrorType.EMAIL_ALREADY_EXIST;
-import static com.duktown.global.exception.CustomErrorType.LOGIN_ID_ALREADY_EXIST;
+import static com.duktown.global.exception.CustomErrorType.*;
 
 @Service
 @RequiredArgsConstructor
@@ -71,6 +70,11 @@ public class UserService {
         String refreshToken = jwtTokenProvider.createRefreshToken(user.getLoginId(), user.getId(), user.getRoleType());
         user.updateRefreshToken(refreshToken);
         return new UserDto.SignUpResponse(accessToken, refreshToken);
+    }
+
+    public void logout(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        user.deleteRefreshToken();
     }
 
     private void emailDuplicateCheck(String email) {
