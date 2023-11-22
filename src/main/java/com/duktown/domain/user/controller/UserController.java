@@ -46,4 +46,15 @@ public class UserController {
         userService.logout(customUserDetails.getUser().getId());
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/id-find")
+    public ResponseEntity<Void> idFindEmailSend(@Valid @RequestBody final EmailCertDto.EmailRequest request) {
+        emailCertService.idFindEmailSend(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/id-find/cert")
+    public ResponseEntity<EmailCertDto.LoginIdResponse> idFind(@Valid @RequestBody final EmailCertDto.CertRequest request) {
+        return ResponseEntity.ok(emailCertService.idFind(request));
+    }
 }

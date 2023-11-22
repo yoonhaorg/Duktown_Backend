@@ -48,4 +48,10 @@ public class EmailCertDto {
         }
     }
 
+    @Getter
+    @AllArgsConstructor
+    public static class LoginIdResponse {
+        private String loginId;
+    }
+
 }
