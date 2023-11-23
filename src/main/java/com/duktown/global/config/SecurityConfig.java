@@ -47,7 +47,9 @@ public class SecurityConfig {
             "/auth/email-cert/**",
             "/auth/id-duplicate",
             "/auth/id-find",
-            "/auth/id-find/cert"
+            "/auth/id-find/cert",
+            "/auth/password",
+            "/auth/password/reset"
     };
 
     @Value("${custom.cors.originUrl}")

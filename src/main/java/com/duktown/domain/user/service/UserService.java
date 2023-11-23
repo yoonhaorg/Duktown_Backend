@@ -68,6 +68,19 @@ public class UserService {
         return new UserDto.SignUpResponse(accessToken, refreshToken);
     }
 
+    // 로그인 아이디 존재하는지
+    public void loginIdExists(UserDto.IdCheckRequest request) {
+        if (!idCheck(request).getIsDuplicated()) {
+            throw new CustomException(LOGIN_ID_NOT_EXISTS);
+        }
+    }
+
+    // 비밀번호 재설정
+    public void pwdReset(UserDto.PwdResetRequest request) {
+        User user = userRepository.findByLoginId(request.getLoginId()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        user.updatePassword(passwordEncoder.encode(request.getNewPassword()));
+    }
+
     public void logout(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         user.deleteRefreshToken();

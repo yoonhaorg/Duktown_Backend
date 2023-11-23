@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
@@ -72,4 +71,17 @@ public class UserDto {
     public static class IdCheckResponse {
         private Boolean isDuplicated;
     }
+
+    // 비밀번호 재설정 요청
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class PwdResetRequest {
+
+        @NotEmpty(message = "아이디는 필수 값입니다.")
+        private String loginId;
+        @NotEmpty(message = "비밀번호는 필수 값입니다.")
+        private String newPassword;
+    }
+
 }

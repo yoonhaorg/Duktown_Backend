@@ -6,6 +6,7 @@ import com.duktown.domain.user.dto.UserDto;
 import com.duktown.domain.user.service.UserService;
 import com.duktown.global.security.service.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,5 +57,17 @@ public class UserController {
     @PostMapping("/id-find/cert")
     public ResponseEntity<EmailCertDto.LoginIdResponse> idFind(@Valid @RequestBody final EmailCertDto.CertRequest request) {
         return ResponseEntity.ok(emailCertService.idFind(request));
+    }
+
+    @PostMapping("/password")
+    public ResponseEntity<Void> checkLoginIdExists(@Valid @RequestBody final UserDto.IdCheckRequest request) {
+        userService.loginIdExists(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/password/reset")
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody final UserDto.PwdResetRequest request) {
+        userService.pwdReset(request);
+        return ResponseEntity.ok().build();
     }
 }
