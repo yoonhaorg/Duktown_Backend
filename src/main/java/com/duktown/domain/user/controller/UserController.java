@@ -6,7 +6,6 @@ import com.duktown.domain.user.dto.UserDto;
 import com.duktown.domain.user.service.UserService;
 import com.duktown.global.security.service.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
