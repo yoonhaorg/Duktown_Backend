@@ -43,13 +43,7 @@ public class SecurityConfig {
 
     // TODO: 인증에 예외를 둘 로직 추가
     private static final String[] AUTH_WHITE_LIST = {
-            "/auth/signup",
-            "/auth/email-cert/**",
-            "/auth/id-duplicate",
-            "/auth/id-find",
-            "/auth/id-find/cert",
-            "/auth/password",
-            "/auth/password/reset"
+            "/auth/**"
     };
 
     @Value("${custom.cors.originUrl}")

@@ -20,18 +20,18 @@ public class UserController {
     private final UserService userService;
     private final EmailCertService emailCertService;
 
-    @PostMapping("/email-cert")
+    @PostMapping("/email")
     public ResponseEntity<EmailCertDto.EmailResponse> emailCert(@Valid @RequestBody final EmailCertDto.EmailRequest request) {
         return ResponseEntity.ok(emailCertService.emailSend(request));
     }
 
-    @PostMapping("/email-cert/check")
+    @PostMapping("/email/cert")
     public ResponseEntity<Void> emailCertCheck(@Valid @RequestBody final EmailCertDto.CertRequest request) {
         emailCertService.emailCert(request);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/id-duplicate")
+    @PostMapping("/id/duplicate")
     public ResponseEntity<UserDto.IdCheckResponse> idCheck(@Valid @RequestBody final UserDto.IdCheckRequest idCheckRequest) {
         return ResponseEntity.ok(userService.idCheck(idCheckRequest));
     }
@@ -47,13 +47,13 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/id-find")
+    @PostMapping("/id")
     public ResponseEntity<Void> idFindEmailSend(@Valid @RequestBody final EmailCertDto.EmailRequest request) {
         emailCertService.idFindEmailSend(request);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/id-find/cert")
+    @PostMapping("/id/find")
     public ResponseEntity<EmailCertDto.LoginIdResponse> idFind(@Valid @RequestBody final EmailCertDto.CertRequest request) {
         return ResponseEntity.ok(emailCertService.idFind(request));
     }
