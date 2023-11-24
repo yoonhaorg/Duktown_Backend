@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 
 public class EmailCertDto {
 
@@ -15,7 +14,7 @@ public class EmailCertDto {
     @NoArgsConstructor
     @Getter
     public static class EmailRequest {  // 이메일 인증 request
-        @NotEmpty(message = "이메일은 필수 값입니다.")
+        @NotBlank(message = "이메일은 필수 값입니다.")
         @Email(regexp = "^[a-zA-Z0-9\\.][^@]+\\@duksung.ac.kr$",
                 message = "이메일 형식이 올바르지 않습니다. 덕성 이메일을 입력해주세요.")
         private String email;
@@ -32,7 +31,7 @@ public class EmailCertDto {
     @NoArgsConstructor
     @Getter
     public static class CertRequest {   // 인증 번호 확인 request
-        @NotEmpty(message = "이메일은 필수 값입니다.")
+        @NotBlank(message = "이메일은 필수 값입니다.")
         @Email(regexp = "^[a-zA-Z0-9\\.][^@]+\\@duksung.ac.kr$",
                 message = "이메일 형식이 올바르지 않습니다. 덕성 이메일을 입력해주세요.")
         private String email;
@@ -46,6 +45,12 @@ public class EmailCertDto {
                     .certified(false)   // 최초 저장시 기본 false
                     .build();
         }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class LoginIdResponse {
+        private String loginId;
     }
 
 }

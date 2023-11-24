@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
@@ -38,28 +39,7 @@ public class EmailCertService {
             return new EmailCertDto.EmailResponse(true);
         }
 
-        String certCode = createCertNumber();
-        EmailCert emailCert = emailCertRepository.findByEmail(request.getEmail()).orElse(null);
-
-        // 기존 인증요청이 있었다면 인증번호만 업데이트
-        if (emailCert != null) {
-            emailCert.updateCertCode(certCode);
-        }
-        else {
-            EmailCertDto.CertRequest certRequest = new EmailCertDto.CertRequest(request.getEmail(), certCode);
-            emailCertRepository.save(certRequest.toEntity());
-        }
-
-        String subject = "[덕타운] 이메일 인증 코드를 발송해 드립니다.";
-        String text = "덕타운 서비스에 가입하기 위해 덕성 이메일 인증이 필요합니다.\n\n" +
-                "귀하가 인증 요청한 이메일이 맞으면 아래의 이메일 인증 코드를 입력해주세요.\n\n" +
-                certCode + "\n\n" +
-                "코드는 10분 후 만료됩니다.\n\n" +
-                "감사합니다.\n\n" +
-                "- 덕타운 운영팀";
-
-        // 비동기로 메일 전송 -> 응답을 빨리 보내 인증번호 입력 창으로 넘어가야 하기 때문
-        sendAsyncEmail(request.getEmail(), subject, text);
+        sendCertEmail(request.getEmail());
 
         // 중복 x => 이메일 발송 후 isDuplicated : false 응답
         return new EmailCertDto.EmailResponse(false);
@@ -94,6 +74,28 @@ public class EmailCertService {
 
     }
 
+    // 아이디 찾기 이메일 발송
+    public void idFindEmailSend(EmailCertDto.EmailRequest request) {
+        // 해당 이메일로 가입한 회원이 있는지 조회
+        userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        sendCertEmail(request.getEmail());
+    }
+
+    // 아이디 찾기
+    public EmailCertDto.LoginIdResponse idFind(EmailCertDto.CertRequest request) {
+        EmailCert emailCert = emailCertRepository.findByEmail(request.getEmail()).orElseThrow(() -> new CustomException(EMAIL_CERT_NOT_FOUND));
+
+        // 인증 번호가 같지 않으면 에러
+        if (!emailCert.getCertCode().equals(request.getCertCode())) {
+            throw new CustomException(EMAIL_CERT_FAILED);
+        }
+
+        // 같으면 회원 찾아서 로그인 아이디 응답
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        return new EmailCertDto.LoginIdResponse(user.getLoginId());
+    }
+
     // 인증번호 생성 메서드
     private String createCertNumber() {
         Random random = new Random();
@@ -119,5 +121,30 @@ public class EmailCertService {
                     future.complete(null);
                 }
         ).start();
+    }
+
+    private void sendCertEmail(String email) {
+        String certCode = createCertNumber();
+        EmailCert emailCert = emailCertRepository.findByEmail(email).orElse(null);
+
+        // 기존 인증요청이 있었다면 인증번호만 업데이트
+        if (emailCert != null) {
+            emailCert.updateCertCode(certCode);
+        }
+        else {
+            EmailCertDto.CertRequest certRequest = new EmailCertDto.CertRequest(email, certCode);
+            emailCertRepository.save(certRequest.toEntity());
+        }
+
+        String subject = "[덕타운] 이메일 인증 코드를 발송해 드립니다.";
+        String text = "덕타운 서비스 이용을 위해 덕성 이메일 인증이 필요합니다.\n\n" +
+                "귀하가 인증 요청한 이메일이 맞으면 아래의 이메일 인증 코드를 입력해주세요.\n\n" +
+                certCode + "\n\n" +
+                "코드는 10분 후 만료됩니다.\n\n" +
+                "감사합니다.\n\n" +
+                "- 덕타운 운영팀";
+
+        // 비동기로 메일 전송 -> 응답을 빨리 보내 인증번호 입력 창으로 넘어가야 하기 때문
+        sendAsyncEmail(email, subject, text);
     }
 }
