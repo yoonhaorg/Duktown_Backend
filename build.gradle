@@ -46,7 +46,13 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     // H2 Database
-    runtimeOnly 'com.h2database:h2'
+    /*runtimeOnly 'com.h2database:h2'*/
+
+    // MySQL Database
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // email
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 tasks.named('test') {

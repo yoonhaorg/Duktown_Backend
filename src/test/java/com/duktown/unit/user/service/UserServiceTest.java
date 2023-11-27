@@ -56,35 +56,6 @@ public class UserServiceTest {
                 .build();
     }
 
-    @DisplayName("이메일 중복 체크 성공 - 중복 이메일 존재 x")
-    @Test
-    void duplicatedEmailNotExist_success(){
-        // given
-        given(userRepository.findByEmail(any())).willReturn(Optional.empty());
-        UserDto.EmailCheckRequest request = new UserDto.EmailCheckRequest("dskim@duksung.ac.kr");
-
-        // when
-        UserDto.EmailCheckResponse response = userService.emailCheck(request);
-
-        //then
-        assertThat(response.getIsDuplicated()).isEqualTo(false);
-    }
-
-    @DisplayName("이메일 중복 체크 성공 - 중복 이메일 존재")
-    @Test
-    void duplicatedEmailExist_success() {
-        // given
-        User user = createMockUser(1L);
-        given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
-        UserDto.EmailCheckRequest request = new UserDto.EmailCheckRequest(user.getEmail());
-
-        // when
-        UserDto.EmailCheckResponse response = userService.emailCheck(request);
-
-        // then
-        assertThat(response.getIsDuplicated()).isEqualTo(true);
-    }
-
     @DisplayName("아이디 중복 체크 성공 - 중복 아이디 존재 x")
     @Test
     void duplicatedLoginIdNotExist_success() {

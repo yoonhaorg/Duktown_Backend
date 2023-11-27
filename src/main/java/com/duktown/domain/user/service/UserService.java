@@ -10,8 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.duktown.global.exception.CustomErrorType.EMAIL_ALREADY_EXIST;
-import static com.duktown.global.exception.CustomErrorType.LOGIN_ID_ALREADY_EXIST;
+import static com.duktown.global.exception.CustomErrorType.*;
 
 @Service
 @RequiredArgsConstructor
@@ -21,18 +20,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
-
-    // 이메일 중복 체크 메서드
-    @Transactional(readOnly = true)
-    public UserDto.EmailCheckResponse emailCheck(UserDto.EmailCheckRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElse(null);
-
-        if (user != null) {
-            return new UserDto.EmailCheckResponse(true);
-        }
-        return new UserDto.EmailCheckResponse(false);
-    }
 
     // 아이디 중복 체크 메서드
     @Transactional(readOnly = true)
@@ -59,7 +46,14 @@ public class UserService {
         // 아이디 중복 체크
         idDuplicateCheck(signupRequest.getLoginId());
 
-        // TODO: 이메일 인증 여부 체크
+        // 이메일 인증 여부 체크
+//        EmailCert emailCert = emailCertRepository.findByEmail(signupRequest.getEmail()).orElseThrow(
+//                () -> new CustomException(CustomErrorType.EMAIL_CERT_NOT_FOUND)
+//        );
+//
+//        if (!emailCert.getCertified()) {
+//            throw new CustomException(CustomErrorType.EMAIL_CERT_FAILED);
+//        }
 
         // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
@@ -72,6 +66,24 @@ public class UserService {
         String refreshToken = jwtTokenProvider.createRefreshToken(user.getLoginId(), user.getId(), user.getRoleType());
         user.updateRefreshToken(refreshToken);
         return new UserDto.SignUpResponse(accessToken, refreshToken);
+    }
+
+    // 로그인 아이디 존재하는지
+    public void loginIdExists(UserDto.IdCheckRequest request) {
+        if (!idCheck(request).getIsDuplicated()) {
+            throw new CustomException(LOGIN_ID_NOT_EXISTS);
+        }
+    }
+
+    // 비밀번호 재설정
+    public void pwdReset(UserDto.PwdResetRequest request) {
+        User user = userRepository.findByLoginId(request.getLoginId()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        user.updatePassword(passwordEncoder.encode(request.getNewPassword()));
+    }
+
+    public void logout(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        user.deleteRefreshToken();
     }
 
     private void emailDuplicateCheck(String email) {

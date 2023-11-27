@@ -49,7 +49,7 @@ public class PostService {
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         Post post = postRespository.findById(postId).orElseThrow(() -> new CustomException(POST_NOT_FOUND));
         List<Like> likes = likeRepository.findAllByUserAndPost(user, post);
-        return new PostDto.PostResponse(post, likes);
+        return new PostDto.PostResponse(post, likes, commentRepository.countByPostId(post.getId()));
     }
 
     // 목록 조회
@@ -70,7 +70,7 @@ public class PostService {
                 );
 
         List<PostDto.PostResponse> postListResponses = posts.stream()
-                .map(p -> new PostDto.PostResponse(p, likes))
+                .map(p -> new PostDto.PostResponse(p, likes, commentRepository.countByPostId(p.getId())))
                 .collect(Collectors.toList());
 
         return new PostDto.PostListResponse(postListResponses);

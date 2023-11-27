@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
 public class UserDto {
@@ -18,15 +17,15 @@ public class UserDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class SignupRequest {
-        @NotEmpty(message = "이메일은 필수 값입니다.")
+        @NotBlank(message = "이메일은 필수 값입니다.")
         @Email(message = "이메일 형식이 올바르지 않습니다.")
         @Pattern(regexp = "[A-Za-z0-9+_.-]+@duksung.ac.kr", message = "이메일은 반드시 덕성 메일이어야 합니다.")
         private String email;
 
-        @NotEmpty(message = "아이디는 필수 값입니다.")
+        @NotBlank(message = "아이디는 필수 값입니다.")
         private String loginId;
 
-        @NotEmpty(message = "비밀번호는 필수 값입니다.")
+        @NotBlank(message = "비밀번호는 필수 값입니다.")
         private String password;
 
         public User toEntity(String encodedPassword){
@@ -39,23 +38,12 @@ public class UserDto {
         }
     }
 
-    // 이메일 체크 요청
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class EmailCheckRequest {
-        @NotEmpty(message = "이메일은 필수 값입니다.")
-        @Email(message = "이메일 형식이 올바르지 않습니다.")
-        @Pattern(regexp = "[A-Za-z0-9+_.-]+@duksung.ac.kr", message = "덕성 메일을 입력해주세요.")
-        private String email;
-    }
-
     // 아이디 중복 체크 요청
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
     public static class IdCheckRequest {
-        @NotEmpty(message = "아이디는 필수 값입니다.")
+        @NotBlank(message = "아이디는 필수 값입니다.")
         private String loginId;
     }
 
@@ -77,17 +65,23 @@ public class UserDto {
         private String refreshToken;
     }
 
-    // 이메일 체크 응답
-    @Getter
-    @AllArgsConstructor
-    public static class EmailCheckResponse {
-        private Boolean isDuplicated;
-    }
-
     // 아이디 체크 응답
     @Getter
     @AllArgsConstructor
     public static class IdCheckResponse {
         private Boolean isDuplicated;
     }
+
+    // 비밀번호 재설정 요청
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class PwdResetRequest {
+
+        @NotBlank(message = "아이디는 필수 값입니다.")
+        private String loginId;
+        @NotBlank(message = "비밀번호는 필수 값입니다.")
+        private String newPassword;
+    }
+
 }

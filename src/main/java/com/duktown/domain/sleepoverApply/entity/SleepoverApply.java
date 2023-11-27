@@ -1,13 +1,16 @@
 package com.duktown.domain.sleepoverApply.entity;
 
 import com.duktown.domain.user.entity.User;
+import com.duktown.global.type.ApprovalType;
 import lombok.*;
 
 import javax.persistence.*;
 
 import java.time.LocalDate;
 
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.*;
+import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PRIVATE;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -19,7 +22,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Table(name = "sleepover_apply")
 public class SleepoverApply {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "sleepover_apply_id")
     private Long id;
 
@@ -28,19 +31,35 @@ public class SleepoverApply {
     private User user;
 
     @Column(nullable = false)
-    private LocalDate startDate;
+    private LocalDate startDate; //외박 시작 날짜
 
     @Column(nullable = false)
-    private LocalDate endDate;
+    private LocalDate endDate; //돌아오는 날짜
 
     @Column(nullable = false)
-    private Integer period;
+    private Integer period; //외박 일 수
 
     @Column(nullable = false)
-    private String address;
+    private String address; // 머무르는 주소
+
 
     @Column(nullable = false)
-    private String reason;
+    private String reason; //사유
 
-    private Boolean approved;
+    @Enumerated(STRING)
+    private ApprovalType approved; //승인 여부
+
+    public void approve(ApprovalType approved){
+        this.approved = approved;
+    }
+
+    public void updateSleepoverApply(LocalDate startDate, LocalDate endDate,Integer period,String address,String reason){
+        this.startDate = startDate;
+        this.endDate=endDate;
+        this.period =period;
+        this.address =address;
+        this.reason=reason;
+    }
+
+
 }

@@ -8,6 +8,7 @@ import javax.persistence.*;
 
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.*;
+import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.*;
 
 @Entity
@@ -17,7 +18,7 @@ import static lombok.AccessLevel.*;
 @NoArgsConstructor(access = PROTECTED)
 public class Unit {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "unit_id")
     private Long id;
 

@@ -31,6 +31,7 @@ public enum CustomErrorType {
     EMAIL_ALREADY_EXIST(CONFLICT, 30003, "이미 존재하는 이메일입니다."),
     LOGIN_ID_ALREADY_EXIST(CONFLICT, 30004, "이미 존재하는 아이디입니다."),
     HAVE_NO_PERMISSION(FORBIDDEN, 30005, "수정 및 삭제에 대한 권한이 없습니다."),
+    LOGIN_ID_NOT_EXISTS(NOT_FOUND, 30006, "입력하신 아이디를 찾을 수 없습니다."),
 
     // Delivery (4xxxx)
     DELIVERY_NOT_FOUND(NOT_FOUND, 40001, "존재하지 않는 배달팟입니다."),
@@ -39,18 +40,27 @@ public enum CustomErrorType {
     POST_NOT_FOUND(NOT_FOUND, 50001, "존재하지 않는 게시글입니다."),
     INVALID_POST_CATEGORY_VALUE(BAD_REQUEST,50002, "잘못된 카테고리입니다."),
 
-    // (6xxxx)
+    // Cert (6xxxx) 인증 오류
+    UNABLE_TO_SEND_EMAIL(INTERNAL_SERVER_ERROR, 60001, "이메일을 전송할 수 없습니다."),
+    EMAIL_CERT_NOT_FOUND(NOT_FOUND, 60002, "이메일 인증 내역이 존재하지 않습니다."),
+    EMAIL_CERT_FAILED(UNAUTHORIZED, 60003, "인증번호가 일치하지 않습니다."),
 
     // Comment(7xxxx)
     COMMENT_NOT_FOUND(NOT_FOUND, 70001, "존재하지 않는 댓글입니다."),
     PARENT_COMMENT_NOT_FOUND(NOT_FOUND, 70002, "존재하지 않는 상위 댓글입니다."),
+
     COMMENT_TARGET_NOT_SELECTED(BAD_REQUEST, 70003, "댓글을 생성하거나 조회할 대상이 선택되지 않았습니다."),
     COMMENT_DEPTH_ERROR(BAD_REQUEST, 70004, "대댓글에 대댓글을 달 수 없습니다."),
     COMMENT_TARGET_ERROR(BAD_REQUEST, 70005, "댓글을 생성하거나 조회할 대상은 하나만 선택할 수 있습니다."),
 
     // Like(8xxxx)
     LIKE_TARGET_NOT_SELECTED(BAD_REQUEST, 80001, "좋아요할 대상이 선택되지 않았습니다."),
-    LIKE_TARGET_ERROR(BAD_REQUEST, 80002, "좋아요할 대상은 하나만 선택할 수 있습니다.");
+    LIKE_TARGET_ERROR(BAD_REQUEST, 80002, "좋아요할 대상은 하나만 선택할 수 있습니다."),
+
+    // SleepoverApply(9XXXX)
+    SLEEP_OVER_APPLY_NOT_FOUND(NOT_FOUND,90001,"존재하지 않는 외박신청입니다."),
+    SLEEP_OVER_APPLY_INVALID_REQUEST_TIME(BAD_REQUEST,90002,"22시 이후에는 외박 신청이 불가능합니다."),
+    SLEEP_OVER_APPLY_TARGET_ERROR(BAD_REQUEST,90003,"승인 이후에는 수정 불가능합니다.");
 
     private final HttpStatus httpStatus;
     private final int code;

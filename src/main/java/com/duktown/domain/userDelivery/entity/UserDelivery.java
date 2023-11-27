@@ -7,6 +7,7 @@ import lombok.*;
 import javax.persistence.*;
 
 import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.*;
 
 @Entity
@@ -17,7 +18,7 @@ import static lombok.AccessLevel.*;
 @Table(name = "user_delivery")
 public class UserDelivery {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "user_delivery_id")
     private Long id;
 
