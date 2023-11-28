@@ -45,7 +45,8 @@ public class SecurityConfig {
     private static final String[] AUTH_WHITE_LIST = {
             "/auth/signup",
             "/auth/email-cert/**",
-            "/auth/id-duplicate"
+            "/auth/id-duplicate",
+            "/jsoup/getFoodMenus"
     };
 
     @Value("${custom.cors.originUrl}")
