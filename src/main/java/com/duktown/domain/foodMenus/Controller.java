@@ -16,7 +16,7 @@ public class Controller {
     @GetMapping("/getFoodMenus")
     public String getFoodMenus() {
         try {
-            foodMenusService.getFoodMenus();
+            foodMenusService.crawlAndSaveMenu();
             return "Successfully fetched food menus!";
         } catch (Exception e) {
             e.printStackTrace();
