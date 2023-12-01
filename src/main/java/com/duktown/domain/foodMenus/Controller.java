@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class Controller {
 
-    private final foodMenusService foodMenusService;
+    private final FoodMenuService foodMenuService;
 
     @GetMapping("/getFoodMenus")
     public String getFoodMenus() {
         try {
-            foodMenusService.crawlAndSaveMenu();
+            foodMenuService.crawlAndSaveMenu();
             return "Successfully fetched food menus!";
         } catch (Exception e) {
             e.printStackTrace();

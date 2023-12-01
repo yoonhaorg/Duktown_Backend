@@ -55,8 +55,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
     // 크롤링
-    implementation 'org.jsoup:jsoup:1.15.3'
-    //implementation 'org.seleniumhq.selenium:selenium-java'
+    //implementation 'org.jsoup:jsoup:1.15.3'
+    // Selenium WebDriver
+    implementation 'org.seleniumhq.selenium:selenium-java'
 }
 
 tasks.named('test') {
