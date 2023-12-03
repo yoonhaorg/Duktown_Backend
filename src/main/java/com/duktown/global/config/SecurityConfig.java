@@ -46,7 +46,9 @@ public class SecurityConfig {
             "/auth/email/**",
             "/auth/id/**",
             "/auth/password/**",
-            "/auth/signup"
+            "/auth/signup",
+            "/websocket",   // TODO: 현재는 개발 편의상 임시로 추가, 추후 삭제
+            "/chat"
     };
 
     @Value("${custom.cors.originUrl}")
