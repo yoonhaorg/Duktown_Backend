@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 
 public class UserDto {
 
@@ -18,8 +17,8 @@ public class UserDto {
     @NoArgsConstructor
     public static class SignupRequest {
         @NotBlank(message = "이메일은 필수 값입니다.")
-        @Email(message = "이메일 형식이 올바르지 않습니다.")
-        @Pattern(regexp = "[A-Za-z0-9+_.-]+@duksung.ac.kr", message = "이메일은 반드시 덕성 메일이어야 합니다.")
+        @Email(regexp = "^[a-zA-Z0-9.][^@]*@duksung.ac.kr$",
+                message = "이메일 형식이 올바르지 않습니다. 덕성 이메일을 입력해주세요.")
         private String email;
 
         @NotBlank(message = "아이디는 필수 값입니다.")
@@ -77,9 +76,6 @@ public class UserDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class PwdResetRequest {
-
-        @NotBlank(message = "아이디는 필수 값입니다.")
-        private String loginId;
         @NotBlank(message = "비밀번호는 필수 값입니다.")
         private String newPassword;
     }
