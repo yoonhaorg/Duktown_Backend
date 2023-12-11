@@ -12,9 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import static com.duktown.global.exception.CustomErrorType.*;
@@ -22,13 +22,14 @@ import static com.duktown.global.exception.CustomErrorType.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class EmailCertService {
     private final UserRepository userRepository;
     private final EmailCertRepository emailCertRepository;
     private final MailService mailService;
 
     // 이메일로 인증번호 발송
+    @Transactional
     public EmailCertDto.EmailResponse emailSend(EmailCertDto.EmailRequest request) {
 
         // 이미 가입된 이메일이면, isDuplicated: true 응답
@@ -39,15 +40,16 @@ public class EmailCertService {
             return new EmailCertDto.EmailResponse(true);
         }
 
+        String certCode = createCertNumber(false);
         String subject = "[덕타운] 이메일 인증코드 발송";
         String text = "덕타운 서비스 이용을 위해 덕성 이메일 인증이 필요합니다.\n" +
                 "아래의 이메일 인증 코드를 확인 후 정확히 입력해주세요.\n\n" +
-                "{}\n\n" +
+                certCode + "\n\n" +
                 "코드는 10분 후 만료됩니다.\n" +
                 "감사합니다.\n\n" +
                 "-덕타운 운영팀";
 
-        sendCertEmail(request.getEmail(), subject, text);
+        sendCertEmail(request.getEmail(), certCode, subject, text);
 
         // 중복 x => 이메일 발송 후 isDuplicated : false 응답
         return new EmailCertDto.EmailResponse(false);
@@ -83,37 +85,41 @@ public class EmailCertService {
     }
 
     // 아이디 찾기 이메일 발송
+    @Transactional
     public void idFindEmailSend(EmailCertDto.EmailRequest request) {
         // 해당 이메일로 가입한 회원이 있는지 조회
         userExists(request.getEmail());
 
+        String certCode = createCertNumber(false);
         String subject = "[덕타운] 아이디 찾기 인증코드 발송";
         String text = "아이디 찾기를 위한 코드를 발송드립니다.\n" +
                 "아래의 인증 코드를 확인 후 정확히 입력해주세요.\n\n" +
-                "{}\n\n" +
+                certCode + "\n\n" +
                 "코드는 10분 후 만료됩니다.\n" +
                 "감사합니다.\n\n" +
                 "-덕타운 운영팀";
-        sendCertEmail(request.getEmail(), subject, text);
+
+        sendCertEmail(request.getEmail(), certCode, subject, text);
     }
 
     // 비밀번호 재설정 링크 보내기
-    public EmailCertDto.PwdResetCodeResponse passwordResetEmailSend(EmailCertDto.EmailRequest request) {
+    @Transactional
+    public void passwordResetEmailSend(EmailCertDto.EmailRequest request) {
         userExists(request.getEmail());
 
-        String resetLink = "http://localhost:8080/auth/password/";
+        // 중복 여부 체크
+        String certCode = createCertNumber(true);
+        String resetLink = "http://localhost:8080/auth/password/" + certCode;
 
         String subject = "[덕타운] 비밀번호 변경 링크 전송";
         String text = "비밀번호 변경 링크를 발송드립니다.\n" +
                 "아래의 주소로 접속해 비밀번호를 변경해 주시기 바랍니다.\n\n" +
-                resetLink + "{0}\n\n" +
+                resetLink + "\n\n" +
                 "해당 링크는 10분 후 만료됩니다.\n" +
                 "감사합니다.\n\n" +
                 "-덕타운 운영팀";
 
-        String certCode = sendCertEmail(request.getEmail(), subject, text);
-
-        return new EmailCertDto.PwdResetCodeResponse(certCode);
+        sendCertEmail(request.getEmail(), certCode, subject, text);
     }
 
     // 아이디 찾기
@@ -131,15 +137,17 @@ public class EmailCertService {
     }
 
     // 인증번호 생성 메서드
-    private String createCertNumber() {
+    private String createCertNumber(boolean isUUID) {
         Random random = new Random();
         random.setSeed(System.currentTimeMillis());
-
-        int count = 6;
         StringBuilder certNumber = new StringBuilder();
 
-        for (int i=0; i<count; i++) {
-            certNumber.append(random.nextInt(9));
+        if (!isUUID) {
+            for (int i = 0; i < 6; i++) {
+                certNumber.append(random.nextInt(9));
+            }
+        } else {
+            certNumber.append(UUID.randomUUID());
         }
 
         return certNumber.toString();
@@ -157,8 +165,7 @@ public class EmailCertService {
         ).start();
     }
 
-    private String sendCertEmail(String email, String subject, String text) {
-        String certCode = createCertNumber();
+    private void sendCertEmail(String email, String certCode, String subject, String text) {
         EmailCert emailCert = emailCertRepository.findByEmail(email).orElse(null);
 
         // 기존 인증요청이 있었다면 인증번호만 업데이트
@@ -171,9 +178,7 @@ public class EmailCertService {
         }
 
         // 비동기로 메일 전송 -> 응답을 빨리 보내 인증번호 입력 창으로 넘어가야 하기 때문
-        sendAsyncEmail(email, subject, MessageFormat.format(text, certCode));
-
-        return certCode;
+        sendAsyncEmail(email, subject, text);
     }
 
     private void userExists(String email) {

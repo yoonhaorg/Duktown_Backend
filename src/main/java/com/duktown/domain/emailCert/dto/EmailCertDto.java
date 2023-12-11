@@ -52,11 +52,4 @@ public class EmailCertDto {
     public static class LoginIdResponse {
         private String loginId;
     }
-
-    @Getter
-    @AllArgsConstructor
-    public static class PwdResetCodeResponse {
-        private String code;
-    }
-
 }

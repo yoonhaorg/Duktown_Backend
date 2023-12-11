@@ -17,7 +17,7 @@ import static com.duktown.global.exception.CustomErrorType.*;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class UserService {
 
     private final UserRepository userRepository;
@@ -26,7 +26,6 @@ public class UserService {
     private final EmailCertRepository emailCertRepository;
 
     // 아이디 중복 체크 메서드
-    @Transactional(readOnly = true)
     public UserDto.IdCheckResponse idCheck(UserDto.IdCheckRequest idCheckRequest) {
         User user = userRepository.findByLoginId(idCheckRequest.getLoginId())
                 .orElse(null);
@@ -38,6 +37,7 @@ public class UserService {
     }
 
     // 사용자 회원가입 메서드
+    @Transactional
     public UserDto.SignUpResponse signup(UserDto.SignupRequest signupRequest) {
 
         /*
@@ -78,6 +78,7 @@ public class UserService {
     }
 
     // 비밀번호 재설정
+    @Transactional
     public void pwdReset(UserDto.PwdResetRequest request, String code) {
         // code로 emailCert 찾기
         EmailCert emailCert = emailCertRepository.findByCertCode(code).orElseThrow(() -> new CustomException(EMAIL_CERT_NOT_FOUND));
@@ -89,6 +90,7 @@ public class UserService {
         user.updatePassword(passwordEncoder.encode(request.getNewPassword()));
     }
 
+    @Transactional
     public void logout(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         user.deleteRefreshToken();

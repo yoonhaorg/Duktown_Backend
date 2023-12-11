@@ -66,9 +66,10 @@ public class UserController {
     }
 
     @PostMapping("/password")
-    public ResponseEntity<EmailCertDto.PwdResetCodeResponse> sendPasswordResetLink(
+    public ResponseEntity<Void> sendPasswordResetLink(
             @Valid @RequestBody final EmailCertDto.EmailRequest request) {
-        return ResponseEntity.ok(emailCertService.passwordResetEmailSend(request));
+        emailCertService.passwordResetEmailSend(request);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/password/{code}")
