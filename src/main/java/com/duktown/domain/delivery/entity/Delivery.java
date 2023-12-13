@@ -38,6 +38,22 @@ public class Delivery {
     @Column(nullable = false, columnDefinition = "longtext")
     private String content;
 
+    @Builder.Default
     @Column(nullable = false)
-    private Integer state;  // 0 : 진행중, 1 : 성공, 2 : 실패
+    private Boolean active = true;
+
+    public void closeDelivery() {
+        this.active = false;
+    }
+
+    public void reOpenDelivery() {
+        this.active = true;
+    }
+
+    public void update(String title, String content, LocalDateTime orderTime, Integer maxPeople) {
+        this.title = title;
+        this.content = content;
+        this.orderTime = orderTime;
+        this.maxPeople = maxPeople;
+    }
 }
