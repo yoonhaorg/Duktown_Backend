@@ -35,13 +35,13 @@ public class DeliveryDto {
         @NotBlank(message = "내용은 필수 값입니다.")
         private String content;
 
-        public Delivery toEntity(User user) {
+        public Delivery toEntity(User user, String encryptedAccountNumber) {
             return Delivery.builder()
                     .user(user)
                     .title(title)
                     .maxPeople(maxPeople)
                     .orderTime(orderTime)
-                    .accountNumber(accountNumber)
+                    .accountNumber(encryptedAccountNumber)
                     .content(content)
                     .build();
         }
