@@ -30,10 +30,13 @@ public class Delivery {
     private String title;
 
     @Column(nullable = false)
+    private Integer maxPeople;
+
+    @Column(nullable = false)
     private LocalDateTime orderTime;
 
     @Column(nullable = false)
-    private Integer maxPeople;
+    private String accountNumber;
 
     @Column(nullable = false, columnDefinition = "longtext")
     private String content;
@@ -48,12 +51,5 @@ public class Delivery {
 
     public void reOpenDelivery() {
         this.active = true;
-    }
-
-    public void update(String title, String content, LocalDateTime orderTime, Integer maxPeople) {
-        this.title = title;
-        this.content = content;
-        this.orderTime = orderTime;
-        this.maxPeople = maxPeople;
     }
 }

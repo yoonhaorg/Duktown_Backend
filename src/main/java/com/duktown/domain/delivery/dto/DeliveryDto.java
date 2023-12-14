@@ -21,13 +21,16 @@ public class DeliveryDto {
         @NotBlank(message = "배달팟 제목은 필수 값입니다.")
         private String title;
 
+        @NotNull(message = "모집인원은 필수 값입니다.")
+        @Min(value = 1, message = "모집인원의 최소 값은 1 이상이어야 합니다.")
+        private int maxPeople;
+
         @NotNull(message = "주문 예정 시각은 필수 값입니다.")
         @Future(message = "주문 예정 시각은 현재 시각 이후여야 합니다.")
         private LocalDateTime orderTime;
 
-        @NotNull(message = "모집인원은 필수 값입니다.")
-        @Min(value = 1, message = "모집인원의 최소 값은 1 이상이어야 합니다.")
-        private int maxPeople;
+        @NotBlank(message = "송금 받을 계좌는 필수 값입니다.")
+        private String accountNumber;
 
         @NotBlank(message = "내용은 필수 값입니다.")
         private String content;
@@ -36,8 +39,9 @@ public class DeliveryDto {
             return Delivery.builder()
                     .user(user)
                     .title(title)
-                    .orderTime(orderTime)
                     .maxPeople(maxPeople)
+                    .orderTime(orderTime)
+                    .accountNumber(accountNumber)
                     .content(content)
                     .build();
         }
