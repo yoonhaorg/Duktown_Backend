@@ -1,5 +1,6 @@
 package com.duktown.domain.chatRoomUser.entity;
 
+import com.duktown.domain.BaseTimeEntity;
 import com.duktown.domain.chatRoom.entity.ChatRoom;
 import com.duktown.domain.user.entity.User;
 import lombok.*;
@@ -15,7 +16,7 @@ import static lombok.AccessLevel.*;
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor(access = PRIVATE)
 @Table(name = "chat_room_users")
-public class ChatRoomUser {
+public class ChatRoomUser extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "chat_room_user_id")
