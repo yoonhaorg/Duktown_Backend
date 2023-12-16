@@ -11,6 +11,7 @@ import com.duktown.global.type.HallName;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -191,7 +192,7 @@ public class RepairApplyServiceImpl {
 //        return result;
 //    }
 
-    //check
+    //check -> 3일 동안 안 되면 재요청
     public void check(Long userId, Long repairApplyId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         RepairApply checkApply = repairApplyRepository.findById(repairApplyId).orElseThrow(() -> new CustomException(POST_NOT_FOUND));
@@ -200,12 +201,18 @@ public class RepairApplyServiceImpl {
         repairApplyRepository.save(checkApply);
     }
 
-    //solve
+    //solve ->
     public void solve(Long userId, Long repairApplyId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         RepairApply solveApply = repairApplyRepository.findById(repairApplyId).orElseThrow(() -> new CustomException(POST_NOT_FOUND));
 
         solveApply.solve();
         repairApplyRepository.save(solveApply);
+    }
+
+
+    @Scheduled(cron = "0 0 9 * * ?")
+    private void nextCheck(){
+
     }
 }
