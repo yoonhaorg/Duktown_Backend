@@ -79,6 +79,7 @@ public class UserService {
         userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
     }
 
+    @Transactional
     // 임시 비밀번호 전송
     public void temporaryPwdEmailSend(UserDto.EmailRequest request) {
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
@@ -89,7 +90,6 @@ public class UserService {
         // 사용자 비밀번호 업데이트
         user.updatePassword(passwordEncoder.encode(temporaryPwd));
 
-        System.out.println(temporaryPwd);
         String subject = "[덕타운] 임시 비밀번호 발급 안내";
         String text = "임시 비밀번호를 발급했습니다.\n\n" +
                 "임시 비밀번호: " + temporaryPwd + "\n\n" +
