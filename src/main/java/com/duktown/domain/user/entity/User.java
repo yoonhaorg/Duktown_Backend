@@ -52,5 +52,6 @@ public class User extends BaseTimeEntity {
 
     public void updatePassword(String encodedPwd) {
         this.password = encodedPwd;
+        System.out.println("updated");
     }
 }

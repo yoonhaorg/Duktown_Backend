@@ -71,13 +71,14 @@ public class UserDto {
         private Boolean isDuplicated;
     }
 
-    // 비밀번호 재설정 요청
+    // 이메일 제공 요청 (비밀번호 찾기에서 사용)
     @Getter
-    @AllArgsConstructor
     @NoArgsConstructor
-    public static class PwdResetRequest {
-        @NotBlank(message = "비밀번호는 필수 값입니다.")
-        private String newPassword;
+    @AllArgsConstructor
+    public static class EmailRequest {
+        @NotBlank(message = "이메일은 필수 값입니다.")
+        @Email(regexp = "^[a-zA-Z0-9.][^@]*@duksung.ac.kr$",
+                message = "이메일 형식이 올바르지 않습니다. 덕성 이메일을 입력해주세요.")
+        private String email;
     }
-
 }

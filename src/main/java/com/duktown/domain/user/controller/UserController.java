@@ -59,24 +59,16 @@ public class UserController {
         return ResponseEntity.ok(emailCertService.idFind(request));
     }
 
-    @PostMapping("/password/email")
+    @PostMapping("/password")
     public ResponseEntity<Void> checkLoginIdExists(@Valid @RequestBody final EmailCertDto.EmailRequest request) {
         userService.userEmailExists(request);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/password")
-    public ResponseEntity<Void> sendPasswordResetLink(
-            @Valid @RequestBody final EmailCertDto.EmailRequest request) {
-        emailCertService.passwordResetEmailSend(request);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/password/{code}")
-    public ResponseEntity<Void> resetPassword(
-            @Valid @RequestBody final UserDto.PwdResetRequest request,
-            @PathVariable String code) {
-        userService.pwdReset(request, code);
+    @PostMapping("/password/reset")
+    public ResponseEntity<Void> temporaryPwdEmailSend(
+            @Valid @RequestBody final UserDto.EmailRequest request) {
+        userService.temporaryPwdEmailSend(request);
         return ResponseEntity.ok().build();
     }
 }

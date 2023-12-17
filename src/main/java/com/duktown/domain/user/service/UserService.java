@@ -1,17 +1,19 @@
 package com.duktown.domain.user.service;
 
 import com.duktown.domain.emailCert.dto.EmailCertDto;
-import com.duktown.domain.emailCert.entity.EmailCert;
-import com.duktown.domain.emailCert.entity.EmailCertRepository;
 import com.duktown.domain.user.dto.UserDto;
 import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
+import com.duktown.global.email.MailService;
 import com.duktown.global.exception.CustomException;
 import com.duktown.global.security.provider.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.security.SecureRandom;
+import java.util.Date;
 
 import static com.duktown.global.exception.CustomErrorType.*;
 
@@ -23,7 +25,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
-    private final EmailCertRepository emailCertRepository;
+    private final MailService mailService;
 
     // 아이디 중복 체크 메서드
     public UserDto.IdCheckResponse idCheck(UserDto.IdCheckRequest idCheckRequest) {
@@ -77,17 +79,39 @@ public class UserService {
         userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
     }
 
-    // 비밀번호 재설정
-    @Transactional
-    public void pwdReset(UserDto.PwdResetRequest request, String code) {
-        // code로 emailCert 찾기
-        EmailCert emailCert = emailCertRepository.findByCertCode(code).orElseThrow(() -> new CustomException(EMAIL_CERT_NOT_FOUND));
+    // 임시 비밀번호 전송
+    public void temporaryPwdEmailSend(UserDto.EmailRequest request) {
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        // 인증내역에서 이메일 얻어 사용자 찾기
-        User user = userRepository.findByEmail(emailCert.getEmail()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        // 임시 비밀번호 생성
+        String temporaryPwd = createTemporaryPwd();
 
         // 사용자 비밀번호 업데이트
-        user.updatePassword(passwordEncoder.encode(request.getNewPassword()));
+        user.updatePassword(passwordEncoder.encode(temporaryPwd));
+
+        System.out.println(temporaryPwd);
+        String subject = "[덕타운] 임시 비밀번호 발급 안내";
+        String text = "임시 비밀번호를 발급했습니다.\n\n" +
+                "임시 비밀번호: " + temporaryPwd + "\n\n" +
+                "해당 비밀번호로 로그인 후 반드시 비밀번호를 재설정해 주시기 바랍니다.\n" +
+                "감사합니다.\n\n" +
+                "-덕타운 운영팀";
+
+        mailService.sendAsyncEmail(request.getEmail(), subject, text);
+    }
+
+    private String createTemporaryPwd() {
+        final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012345678!@#$%^&*-_=+";
+
+        StringBuilder sb = new StringBuilder();
+        SecureRandom sr = new SecureRandom();
+        sr.setSeed(new Date().getTime());
+
+        for (int i = 0; i < 10; i++) {
+            sb.append(chars.charAt(sr.nextInt(chars.length())));
+        }
+
+        return sb.toString();
     }
 
     @Transactional
