@@ -15,7 +15,7 @@ import org.springframework.messaging.support.ChannelInterceptor;
 @RequiredArgsConstructor
 public class ChatPreHandler implements ChannelInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
-    public static final String TOKEN_HEADER_PREFIX = "Bearer ";
+    public static final String TOKEN_HEADER_PREFIX = "[Bearer ";
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -28,8 +28,7 @@ public class ChatPreHandler implements ChannelInterceptor {
         if (authorization == null || !authorization.startsWith(TOKEN_HEADER_PREFIX)) {
             throw new CustomException(CustomErrorType.INVALID_TOKEN);
         }
-
-        String token = authorization.substring(8, authorization.length() - 1);
+        String token = authorization.substring(TOKEN_HEADER_PREFIX.length(), authorization.length() - 1);
         jwtTokenProvider.validateToken(token);
 
         return message;
