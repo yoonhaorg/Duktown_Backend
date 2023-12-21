@@ -15,7 +15,7 @@ public class EmailCertDto {
     @Getter
     public static class EmailRequest {  // 이메일 인증 request
         @NotBlank(message = "이메일은 필수 값입니다.")
-        @Email(regexp = "^[a-zA-Z0-9\\.][^@]+\\@duksung.ac.kr$",
+        @Email(regexp = "^[a-zA-Z0-9.][^@]*@duksung.ac.kr$",
                 message = "이메일 형식이 올바르지 않습니다. 덕성 이메일을 입력해주세요.")
         private String email;
     }
@@ -32,7 +32,7 @@ public class EmailCertDto {
     @Getter
     public static class CertRequest {   // 인증 번호 확인 request
         @NotBlank(message = "이메일은 필수 값입니다.")
-        @Email(regexp = "^[a-zA-Z0-9\\.][^@]+\\@duksung.ac.kr$",
+        @Email(regexp = "^[a-zA-Z0-9.][^@]*@duksung.ac.kr$",
                 message = "이메일 형식이 올바르지 않습니다. 덕성 이메일을 입력해주세요.")
         private String email;
         @NotBlank(message = "인증 코드는 필수 값입니다.")
@@ -52,5 +52,4 @@ public class EmailCertDto {
     public static class LoginIdResponse {
         private String loginId;
     }
-
 }

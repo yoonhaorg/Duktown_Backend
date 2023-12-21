@@ -60,14 +60,15 @@ public class UserController {
     }
 
     @PostMapping("/password")
-    public ResponseEntity<Void> checkLoginIdExists(@Valid @RequestBody final UserDto.IdCheckRequest request) {
-        userService.loginIdExists(request);
+    public ResponseEntity<Void> checkLoginIdExists(@Valid @RequestBody final EmailCertDto.EmailRequest request) {
+        userService.userEmailExists(request);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/password/reset")
-    public ResponseEntity<Void> resetPassword(@Valid @RequestBody final UserDto.PwdResetRequest request) {
-        userService.pwdReset(request);
+    public ResponseEntity<Void> temporaryPwdEmailSend(
+            @Valid @RequestBody final UserDto.EmailRequest request) {
+        userService.temporaryPwdEmailSend(request);
         return ResponseEntity.ok().build();
     }
 }

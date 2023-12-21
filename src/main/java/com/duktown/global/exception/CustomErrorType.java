@@ -26,7 +26,7 @@ public enum CustomErrorType {
     UNHANDLED_TOKEN_ERROR(UNAUTHORIZED, 20006, "알 수 없는 Token 에러가 발생했습니다."),  // TODO: 추후 자연스럽게 수정
 
     // User (3xxxx)
-    LOGIN_FAILED(UNAUTHORIZED, 30001, "이메일 또는 비밀번호가 일치하지 않습니다."),
+    LOGIN_FAILED(UNAUTHORIZED, 30001, "아이디 또는 비밀번호가 일치하지 않습니다."),
     USER_NOT_FOUND(NOT_FOUND, 30002, "사용자를 찾을 수 없습니다."),
     EMAIL_ALREADY_EXIST(CONFLICT, 30003, "이미 존재하는 이메일입니다."),
     LOGIN_ID_ALREADY_EXIST(CONFLICT, 30004, "이미 존재하는 아이디입니다."),

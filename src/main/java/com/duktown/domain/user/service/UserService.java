@@ -1,8 +1,10 @@
 package com.duktown.domain.user.service;
 
+import com.duktown.domain.emailCert.dto.EmailCertDto;
 import com.duktown.domain.user.dto.UserDto;
 import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
+import com.duktown.global.email.MailService;
 import com.duktown.global.exception.CustomException;
 import com.duktown.global.security.provider.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -10,19 +12,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
+import java.util.Date;
+
 import static com.duktown.global.exception.CustomErrorType.*;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class UserService {
 
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final MailService mailService;
 
     // 아이디 중복 체크 메서드
-    @Transactional(readOnly = true)
     public UserDto.IdCheckResponse idCheck(UserDto.IdCheckRequest idCheckRequest) {
         User user = userRepository.findByLoginId(idCheckRequest.getLoginId())
                 .orElse(null);
@@ -34,6 +39,7 @@ public class UserService {
     }
 
     // 사용자 회원가입 메서드
+    @Transactional
     public UserDto.SignUpResponse signup(UserDto.SignupRequest signupRequest) {
 
         /*
@@ -68,19 +74,47 @@ public class UserService {
         return new UserDto.SignUpResponse(accessToken, refreshToken);
     }
 
-    // 로그인 아이디 존재하는지
-    public void loginIdExists(UserDto.IdCheckRequest request) {
-        if (!idCheck(request).getIsDuplicated()) {
-            throw new CustomException(LOGIN_ID_NOT_EXISTS);
+    // 비밀번호 찾기 - 이메일로 계정 존재여부 확인
+    public void userEmailExists(EmailCertDto.EmailRequest request) {
+        userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+    }
+
+    @Transactional
+    // 임시 비밀번호 전송
+    public void temporaryPwdEmailSend(UserDto.EmailRequest request) {
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        // 임시 비밀번호 생성
+        String temporaryPwd = createTemporaryPwd();
+
+        // 사용자 비밀번호 업데이트
+        user.updatePassword(passwordEncoder.encode(temporaryPwd));
+
+        String subject = "[덕타운] 임시 비밀번호 발급 안내";
+        String text = "임시 비밀번호를 발급했습니다.\n\n" +
+                "임시 비밀번호: " + temporaryPwd + "\n\n" +
+                "해당 비밀번호로 로그인 후 반드시 비밀번호를 재설정해 주시기 바랍니다.\n" +
+                "감사합니다.\n\n" +
+                "-덕타운 운영팀";
+
+        mailService.sendAsyncEmail(request.getEmail(), subject, text);
+    }
+
+    private String createTemporaryPwd() {
+        final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012345678!@#$%^&*-_=+";
+
+        StringBuilder sb = new StringBuilder();
+        SecureRandom sr = new SecureRandom();
+        sr.setSeed(new Date().getTime());
+
+        for (int i = 0; i < 10; i++) {
+            sb.append(chars.charAt(sr.nextInt(chars.length())));
         }
+
+        return sb.toString();
     }
 
-    // 비밀번호 재설정
-    public void pwdReset(UserDto.PwdResetRequest request) {
-        User user = userRepository.findByLoginId(request.getLoginId()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        user.updatePassword(passwordEncoder.encode(request.getNewPassword()));
-    }
-
+    @Transactional
     public void logout(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         user.deleteRefreshToken();
