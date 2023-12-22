@@ -1,5 +1,6 @@
 package com.duktown.domain.delivery.entity;
 
+import com.duktown.domain.chatRoom.entity.ChatRoom;
 import com.duktown.domain.user.entity.User;
 import lombok.*;
 
@@ -25,6 +26,10 @@ public class Delivery {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToOne(fetch = LAZY)
+    @JoinColumn(name = "delivery_id", nullable = false)
+    private ChatRoom chatRoom;
 
     @Column(length = 20, nullable = false)
     private String title;

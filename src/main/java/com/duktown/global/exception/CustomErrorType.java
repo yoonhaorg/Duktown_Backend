@@ -63,7 +63,9 @@ public enum CustomErrorType {
     SLEEP_OVER_APPLY_TARGET_ERROR(BAD_REQUEST,90003,"승인 이후에는 수정 불가능합니다."),
 
     // Chat(10xxxx)
-    CHAT_ROOM_NOT_FOUND(NOT_FOUND, 100001, "존재하지 않는 채팅방입니다.");
+    CHAT_ROOM_NOT_FOUND(NOT_FOUND, 100001, "존재하지 않는 채팅방입니다."),
+    NO_PERMISSION_TO_INVITE_CHAT_ROOM(FORBIDDEN, 100002, "채팅방에 초대할 수 있는 권한이 없습니다."),
+    CANNOT_INVITE_SELF(FORBIDDEN, 100003, "채팅방에 자기 자신을 초대할 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final int code;
