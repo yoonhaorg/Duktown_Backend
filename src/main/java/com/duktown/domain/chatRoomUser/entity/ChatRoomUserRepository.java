@@ -10,4 +10,6 @@ public interface ChatRoomUserRepository extends JpaRepository<ChatRoomUser, Long
 
     @Query(value = "select count(*) from chat_room where chat_room_id = :chat_room_id", nativeQuery = true)
     Integer countByChatRoomId(@Param("chat_room_id") Long chatRoomId);
+
+    Boolean existsByChatRoomIdAndUserId(Long chatRoomId, Long userId);
 }
