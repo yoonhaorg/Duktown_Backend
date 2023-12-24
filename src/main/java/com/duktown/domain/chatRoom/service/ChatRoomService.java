@@ -1,5 +1,6 @@
 package com.duktown.domain.chatRoom.service;
 
+import com.duktown.domain.chatRoom.dto.ChatRoomDto;
 import com.duktown.domain.chatRoom.entity.ChatRoom;
 import com.duktown.domain.chatRoom.entity.ChatRoomRepository;
 import com.duktown.domain.chatRoomUser.dto.ChatRoomUserDto;
@@ -10,6 +11,7 @@ import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.exception.CustomErrorType;
 import com.duktown.global.exception.CustomException;
+import com.duktown.global.kisa_SEED.SEED;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ public class ChatRoomService {
     private final DeliveryRepository deliveryRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomUserRepository chatRoomUserRepository;
+    private final SEED seed;
 
     // 배달팟 채팅방 초대하기
     @Transactional
@@ -47,5 +50,20 @@ public class ChatRoomService {
 
         Integer userNumber = chatRoomUserRepository.countByChatRoomId(chatRoom.getId());
         chatRoomUserRepository.save(request.toEntity(inviteUser, chatRoom, userNumber));
+    }
+
+    // 채팅방 조회
+    public ChatRoomDto.ChatRoomResponse getChatRoom(Long userId, Long chatRoomId) {
+        userRepository.findById(userId).orElseThrow(() -> new CustomException(CustomErrorType.USER_NOT_FOUND));
+        chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new CustomException(CustomErrorType.CHAT_ROOM_NOT_FOUND));
+
+        // 해당 채팅방 안에 있는 유저인지 검증
+        if (!chatRoomUserRepository.existsByChatRoomIdAndUserId(chatRoomId, userId)) {
+            throw new CustomException(CustomErrorType.USER_NOT_EXISTS_IN_CHAT_ROOM);
+        }
+
+        Delivery delivery = deliveryRepository.findByChatRoomId(chatRoomId).orElseThrow(() -> new CustomException(CustomErrorType.DELIVERY_NOT_FOUND));
+
+        return ChatRoomDto.ChatRoomResponse.from(delivery, seed.decrypt(delivery.getAccountNumber()));
     }
 }
