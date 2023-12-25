@@ -48,6 +48,12 @@ public class ChatRoomService {
 
         User inviteUser = userRepository.findById(request.getInviteUserId()).orElseThrow(() -> new CustomException(CustomErrorType.USER_NOT_FOUND));
 
+        // 이미 초대된 유저는 초대 불가
+        if (chatRoomUserRepository.existsByChatRoomIdAndUserId(chatRoom.getId(), request.getInviteUserId())) {
+            throw new CustomException(CustomErrorType.USER_ALREADY_EXISTS_IN_CHAT_ROOM);
+        }
+
+        // 가장 최근에 채팅방에 참여한 사람의 userNumber에서 1 더한 값 TODO: BlockedUser, ActivatedUser, DeletedUser로 관리
         Integer userNumber = chatRoomUserRepository.countByChatRoomId(chatRoom.getId());
         chatRoomUserRepository.save(request.toEntity(inviteUser, chatRoom, userNumber));
     }
@@ -65,5 +71,24 @@ public class ChatRoomService {
         Delivery delivery = deliveryRepository.findByChatRoomId(chatRoomId).orElseThrow(() -> new CustomException(CustomErrorType.DELIVERY_NOT_FOUND));
 
         return ChatRoomDto.ChatRoomResponse.from(delivery, seed.decrypt(delivery.getAccountNumber()));
+    }
+
+    // 채팅방 나가기
+    @Transactional
+    public void exitChatRoom(Long userId, Long chatRoomId) {
+        userRepository.findById(userId).orElseThrow(() -> new CustomException(CustomErrorType.USER_NOT_FOUND));
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new CustomException(CustomErrorType.CHAT_ROOM_NOT_FOUND));
+
+        // 채팅방 주인은 채팅방 나가기 불가
+        if (!chatRoom.getUser().getId().equals(userId)) {
+            throw new CustomException(CustomErrorType.CHAT_ROOM_OWNER_CANNOT_EXIT);
+        }
+
+        // 해당 채팅방 안에 있는 유저인지 검증
+        if (!chatRoomUserRepository.existsByChatRoomIdAndUserId(chatRoomId, userId)) {
+            throw new CustomException(CustomErrorType.USER_NOT_EXISTS_IN_CHAT_ROOM);
+        }
+
+        chatRoomUserRepository.deleteByUserIdAndChatRoomId(userId, chatRoomId);
     }
 }

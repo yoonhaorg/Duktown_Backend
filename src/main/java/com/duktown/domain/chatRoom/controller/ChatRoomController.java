@@ -22,7 +22,7 @@ public class ChatRoomController {
     public ResponseEntity<Void> inviteChatRoomUser(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @Valid @RequestBody ChatRoomUserDto.InviteRequest request
-            ) {
+    ) {
         chatRoomService.inviteChatRoomUser(customUserDetails.getId(), request);
         return ResponseEntity.ok().build();
     }
@@ -33,5 +33,14 @@ public class ChatRoomController {
             @PathVariable("chatRoomId") Long chatRoomId
     ) {
         return ResponseEntity.ok(chatRoomService.getChatRoom(customUserDetails.getId(), chatRoomId));
+    }
+
+    @DeleteMapping("/{chatRoomId}")
+    public ResponseEntity<Void> exitChatRoom(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable("chatRoomId") Long chatRoomId
+    ) {
+        chatRoomService.exitChatRoom(customUserDetails.getId(), chatRoomId);
+        return ResponseEntity.ok().build();
     }
 }
