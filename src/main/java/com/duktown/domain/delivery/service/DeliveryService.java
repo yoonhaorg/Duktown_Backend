@@ -11,6 +11,7 @@ import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.exception.CustomException;
 import com.duktown.global.kisa_SEED.SEED;
+import com.duktown.global.type.ChatRoomUserType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +47,7 @@ public class DeliveryService {
                         .user(user)
                         .chatRoom(chatRoom)
                         .userNumber(0)  // 방장은 0
+                        .chatRoomUserType(ChatRoomUserType.ACTIVE)
                         .build()
         );
     }

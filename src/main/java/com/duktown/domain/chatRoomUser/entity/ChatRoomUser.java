@@ -3,10 +3,12 @@ package com.duktown.domain.chatRoomUser.entity;
 import com.duktown.domain.BaseTimeEntity;
 import com.duktown.domain.chatRoom.entity.ChatRoom;
 import com.duktown.domain.user.entity.User;
+import com.duktown.global.type.ChatRoomUserType;
 import lombok.*;
 
 import javax.persistence.*;
 
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.*;
 
@@ -32,4 +34,12 @@ public class ChatRoomUser extends BaseTimeEntity {
 
     @Column(nullable = false)
     private Integer userNumber;
+
+    @Enumerated(STRING)
+    @Column(nullable = false)
+    private ChatRoomUserType chatRoomUserType;
+
+    public void changeChatRoomUserType(ChatRoomUserType chatRoomUserType) {
+        this.chatRoomUserType = chatRoomUserType;
+    }
 }

@@ -65,10 +65,15 @@ public enum CustomErrorType {
     // Chat(10xxxx)
     CHAT_ROOM_NOT_FOUND(NOT_FOUND, 100001, "존재하지 않는 채팅방입니다."),
     NO_PERMISSION_TO_INVITE_CHAT_ROOM(FORBIDDEN, 100002, "채팅방에 초대할 수 있는 권한이 없습니다."),
-    CANNOT_INVITE_SELF(FORBIDDEN, 100003, "채팅방에 자기 자신을 초대할 수 없습니다."),
-    USER_NOT_EXISTS_IN_CHAT_ROOM(FORBIDDEN, 100004, "채팅방에 존재하지 않는 사용자입니다."),
-    CHAT_ROOM_OWNER_CANNOT_EXIT(FORBIDDEN, 100005, "채팅방 개설자는 채팅방을 나갈 수 없습니다."),
-    USER_ALREADY_EXISTS_IN_CHAT_ROOM(FORBIDDEN, 100006, "이미 채팅방에 초대된 사용자입니다.");
+    CANNOT_INVITE_SELF(BAD_REQUEST, 100003, "채팅방에 자기 자신을 초대할 수 없습니다."),
+    CHAT_ROOM_USER_NOT_FOUND(NOT_FOUND, 100004, "채팅방에 존재하지 않는 사용자입니다."),
+    CHAT_ROOM_OWNER_CANNOT_EXIT(BAD_REQUEST, 100005, "채팅방 개설자는 채팅방을 나갈 수 없습니다."),
+    USER_ALREADY_EXISTS_IN_CHAT_ROOM(BAD_REQUEST, 100006, "이미 채팅방에 초대된 사용자입니다."),
+    CANNOT_BLOCK_SELF(BAD_REQUEST, 100007, "자기 자신을 차단할 수 없습니다."),
+    NO_PERMISSION_TO_BLOCK_CHAT_ROOM_USER(FORBIDDEN, 100008, "채팅방 사용자를 차단할 수 있는 권한이 없습니다."),
+    BLOCKED_CHAT_ROOM_USER(BAD_REQUEST, 100009, "해당 채팅방에서 차단된 사용자입니다."),
+    BLOCKED_FROM_CHAT_ROOM(BAD_REQUEST, 100010, "이용이 제한되어 더이상 참여할 수 없는 채팅방입니다."),
+    DELETED_CHAT_ROOM_USER(BAD_REQUEST, 100011, "채팅방에서 나가기한 사용자입니다.");
 
     private final HttpStatus httpStatus;
     private final int code;

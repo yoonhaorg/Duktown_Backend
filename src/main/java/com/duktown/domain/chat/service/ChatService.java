@@ -5,11 +5,13 @@ import com.duktown.domain.chat.entity.Chat;
 import com.duktown.domain.chat.entity.ChatRepository;
 import com.duktown.domain.chatRoom.entity.ChatRoom;
 import com.duktown.domain.chatRoom.entity.ChatRoomRepository;
+import com.duktown.domain.chatRoomUser.entity.ChatRoomUser;
 import com.duktown.domain.chatRoomUser.entity.ChatRoomUserRepository;
 import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.exception.CustomErrorType;
 import com.duktown.global.exception.CustomException;
+import com.duktown.global.type.ChatRoomUserType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -40,11 +42,17 @@ public class ChatService {
         chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new CustomException(CustomErrorType.CHAT_ROOM_NOT_FOUND));
 
         // 해당 채팅방 안에 있는 유저인지 검증
-        if (!chatRoomUserRepository.existsByChatRoomIdAndUserId(chatRoomId, userId)) {
-            throw new CustomException(CustomErrorType.USER_NOT_EXISTS_IN_CHAT_ROOM);
+        ChatRoomUser chatRoomUser = chatRoomUserRepository.findByChatRoomIdAndUserId(chatRoomId, userId)
+                .orElseThrow(() -> new CustomException(CustomErrorType.CHAT_ROOM_USER_NOT_FOUND));
+
+        if (chatRoomUser.getChatRoomUserType() == ChatRoomUserType.BLOCKED) {
+            throw new CustomException(CustomErrorType.BLOCKED_FROM_CHAT_ROOM);
+        } else if (chatRoomUser.getChatRoomUserType() == ChatRoomUserType.DELETED) {
+            throw new CustomException(CustomErrorType.DELETED_CHAT_ROOM_USER);
         }
 
-        // 채팅 내역 조회
+        // 차단되거나 나가기한 유저가 아니면 채팅 내역 조회
+        // TODO: 들어온 시점 이후만 조회 (chatRoomUser modifiedAt 이후인 것들만)
         Slice<Chat> chats = chatRepository.findSliceByChatRoomId(chatRoomId, pageable);
         return ChatDto.ListResponse.from(chats);
     }

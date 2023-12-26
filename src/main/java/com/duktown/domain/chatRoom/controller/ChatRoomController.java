@@ -35,7 +35,7 @@ public class ChatRoomController {
         return ResponseEntity.ok(chatRoomService.getChatRoom(customUserDetails.getId(), chatRoomId));
     }
 
-    @DeleteMapping("/{chatRoomId}")
+    @PatchMapping("/{chatRoomId}")
     public ResponseEntity<Void> exitChatRoom(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable("chatRoomId") Long chatRoomId
