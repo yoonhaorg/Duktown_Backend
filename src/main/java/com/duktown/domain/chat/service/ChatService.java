@@ -52,8 +52,7 @@ public class ChatService {
         }
 
         // 차단되거나 나가기한 유저가 아니면 채팅 내역 조회
-        // TODO: 들어온 시점 이후만 조회 (chatRoomUser modifiedAt 이후인 것들만)
-        Slice<Chat> chats = chatRepository.findSliceByChatRoomId(chatRoomId, pageable);
+        Slice<Chat> chats = chatRepository.findSliceChats(chatRoomId, userId, pageable);
         return ChatDto.ListResponse.from(chats);
     }
 }
