@@ -2,6 +2,7 @@ package com.duktown.domain.delivery.dto;
 
 import com.duktown.domain.delivery.entity.Delivery;
 import com.duktown.domain.user.entity.User;
+import com.duktown.global.util.DateUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -64,9 +65,9 @@ public class DeliveryDto {
     public static class DeliveryResponse {
         private Long userId;
         private Long deliveryId;
-        private LocalDateTime createdAt; //TODO: 날짜 표시 수정
+        private String createdAt;
         private Integer maxPeople;
-        private LocalDateTime orderTime;
+        private String orderTime;
         private String content;
         private Integer peopleCount;
         private Integer commentCount;
@@ -77,9 +78,9 @@ public class DeliveryDto {
             return DeliveryResponse.builder()
                     .userId(delivery.getUser().getId())
                     .deliveryId(delivery.getId())
-                    .createdAt(delivery.getCreatedAt())
+                    .createdAt(DateUtil.convert(delivery.getCreatedAt()))
                     .maxPeople(delivery.getMaxPeople())
-                    .orderTime(delivery.getOrderTime())
+                    .orderTime(DateUtil.convertToAMPMFormat(delivery.getOrderTime()))
                     .content(delivery.getContent())
                     .peopleCount(delivery.getChatRoom().getChatRoomUsers().size())
                     .commentCount(delivery.getComments().size())

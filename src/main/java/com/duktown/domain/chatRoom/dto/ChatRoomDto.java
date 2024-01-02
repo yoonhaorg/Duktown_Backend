@@ -1,6 +1,7 @@
 package com.duktown.domain.chatRoom.dto;
 
 import com.duktown.domain.delivery.entity.Delivery;
+import com.duktown.global.util.DateUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +23,7 @@ public class ChatRoomDto {
                     .chatRoomId(delivery.getChatRoom().getId())
                     .deliveryId(delivery.getId())
                     .maxPeople(delivery.getMaxPeople())
-                    .orderTime(delivery.getOrderTime().toString())   // TODO: 11:30 AM 형식으로 반환
+                    .orderTime(DateUtil.convertToAMPMFormat(delivery.getOrderTime()))
                     .accountNumber(accountNumber)
                     .build();
         }

@@ -73,4 +73,13 @@ public class DeliveryController {
         deliveryService.completeDelivery(customUserDetails.getId(), deliveryId);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/{deliveryId}")
+    public ResponseEntity<Void> deleteDelivery(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable("deliveryId") Long deliveryId
+    ) {
+        deliveryService.deleteDelivery(customUserDetails.getId(), deliveryId);
+        return ResponseEntity.ok().build();
+    }
 }

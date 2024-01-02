@@ -67,7 +67,7 @@ public class PostDto {
 
     @Getter
     public static class PostListResponse{
-        private List<PostResponse> content;
+        private final List<PostResponse> content;
 
         public PostListResponse(List<PostResponse> content){
             this.content = content;

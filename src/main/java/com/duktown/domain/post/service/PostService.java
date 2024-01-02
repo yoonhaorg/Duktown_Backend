@@ -109,7 +109,7 @@ public class PostService {
         if (comments != null) {
             List<Long> commentIds = comments.stream().map(Comment::getId).collect(Collectors.toList());
             likeRepository.deleteByCommentIn(commentIds);
-            commentRepository.deleteAll();
+            commentRepository.deleteAllById(commentIds);
         }
 
         // 게시글 삭제

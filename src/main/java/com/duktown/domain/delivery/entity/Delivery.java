@@ -58,11 +58,19 @@ public class Delivery extends BaseTimeEntity {
     @OneToMany(fetch = LAZY, mappedBy = "delivery")
     private List<Comment> comments = new ArrayList<>();
 
+    @Builder.Default
+    @Column(nullable = false)
+    private Boolean deleted = false;
+
     public void closeDelivery() {
         this.active = false;
     }
 
     public void updateAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 }
