@@ -18,6 +18,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.duktown.global.exception.CustomErrorType.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -29,8 +31,14 @@ public class ChatService {
 
     @Transactional
     public void saveChat(Long chatRoomId, ChatDto.MessageRequest message) {
+        ChatRoomUser chatRoomUser = chatRoomUserRepository.findByChatRoomIdAndUserId(chatRoomId, message.getUserId())
+                .orElseThrow(() -> new CustomException(CHAT_ROOM_USER_NOT_FOUND));
+        if (chatRoomUser.getChatRoomUserType() == ChatRoomUserType.DELETED) {
+            throw new CustomException(CANNOT_SEND_WHEN_CHAT_ROOM_OWNER_EXIT);
+        }
+
         User user = userRepository.findById(message.getUserId()).orElseThrow(() -> new CustomException(CustomErrorType.USER_NOT_FOUND));
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new CustomException(CustomErrorType.CHAT_ROOM_NOT_FOUND));
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new CustomException(CHAT_ROOM_NOT_FOUND));
 
         chatRepository.save(message.toEntity(user, chatRoom));
     }
@@ -39,7 +47,7 @@ public class ChatService {
         // 사용자 존재 검증
         userRepository.findById(userId).orElseThrow(() -> new CustomException(CustomErrorType.USER_NOT_FOUND));
         // 채팅방 존재 검증
-        chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new CustomException(CustomErrorType.CHAT_ROOM_NOT_FOUND));
+        chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new CustomException(CHAT_ROOM_NOT_FOUND));
 
         // 해당 채팅방 안에 있는 유저인지 검증
         ChatRoomUser chatRoomUser = chatRoomUserRepository.findByChatRoomIdAndUserId(chatRoomId, userId)

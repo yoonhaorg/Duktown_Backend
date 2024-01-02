@@ -15,8 +15,15 @@ import com.duktown.global.exception.CustomException;
 import com.duktown.global.kisa_SEED.SEED;
 import com.duktown.global.type.ChatRoomUserType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.duktown.global.exception.CustomErrorType.CHAT_ROOM_USER_NOT_FOUND;
+import static com.duktown.global.exception.CustomErrorType.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -28,12 +35,13 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomUserRepository chatRoomUserRepository;
     private final SEED seed;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     // 배달팟 채팅방 초대하기
     @Transactional
     public void inviteChatRoomUser(Long userId, ChatRoomUserDto.InviteRequest request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(CustomErrorType.USER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         // 자기 자신은 초대 불가
         if (user.getId().equals(request.getInviteUserId())) {
@@ -48,7 +56,9 @@ public class ChatRoomService {
             throw new CustomException(CustomErrorType.NO_PERMISSION_TO_INVITE_CHAT_ROOM);
         }
 
-        User inviteUser = userRepository.findById(request.getInviteUserId()).orElseThrow(() -> new CustomException(CustomErrorType.USER_NOT_FOUND));
+        User inviteUser = userRepository.findById(request.getInviteUserId()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        ChatRoomUser chatRoomUser;
 
         // 이미 초대된 적이 있었던 유저인지 확인
         if (chatRoomUserRepository.existsByChatRoomIdAndUserId(chatRoom.getId(), request.getInviteUserId())) {
@@ -67,18 +77,24 @@ public class ChatRoomService {
                             c.changeChatRoomUserType(ChatRoomUserType.ACTIVE);
                         }
                     });
+
+            chatRoomUser = chatRoomUserRepository.findByChatRoomIdAndUserId(chatRoom.getId(), request.getInviteUserId())
+                    .orElseThrow(() -> new CustomException(CHAT_ROOM_USER_NOT_FOUND));
         }
 
         // 초대된 적 없다면 chatRoomUser 등록
         else {
             Integer userNumber = chatRoomUserRepository.countByChatRoomId(chatRoom.getId());
-            chatRoomUserRepository.save(request.toEntity(inviteUser, chatRoom, userNumber));
+            chatRoomUser = chatRoomUserRepository.save(request.toEntity(inviteUser, chatRoom, userNumber));
         }
+
+        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoom.getId(),
+                "익명" + chatRoomUser.getUserNumber() + "님이 들어왔습니다.");
     }
 
     // 채팅방 조회
     public ChatRoomDto.ChatRoomResponse getChatRoom(Long userId, Long chatRoomId) {
-        userRepository.findById(userId).orElseThrow(() -> new CustomException(CustomErrorType.USER_NOT_FOUND));
+        userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new CustomException(CustomErrorType.CHAT_ROOM_NOT_FOUND));
 
         // 해당 채팅방 안에 있는 유저인지 검증
@@ -101,21 +117,39 @@ public class ChatRoomService {
         return ChatRoomDto.ChatRoomResponse.from(delivery, seed.decrypt(delivery.getAccountNumber()));
     }
 
+    // 내가 참여중인 채팅방 목록 조회 TODO : 채팅 온 순으로 자동 정렬
+    public ChatRoomDto.ChatRoomListResponse getChatRoomList(Long userId) {
+        userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        List<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByUserId(userId);
+        if (chatRoomUsers != null) {
+            List<ChatRoom> chatRooms = chatRoomUsers.stream().map(ChatRoomUser::getChatRoom).collect(Collectors.toList());
+            return ChatRoomDto.ChatRoomListResponse.from(chatRooms);
+        }
+
+        return null;
+    }
+
     // 채팅방 나가기
     @Transactional
     public void exitChatRoom(Long userId, Long chatRoomId) {
-        userRepository.findById(userId).orElseThrow(() -> new CustomException(CustomErrorType.USER_NOT_FOUND));
+        userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new CustomException(CustomErrorType.CHAT_ROOM_NOT_FOUND));
-
-        // 채팅방 주인은 채팅방 나가기 불가
-        if (chatRoom.getUser().getId().equals(userId)) {
-            throw new CustomException(CustomErrorType.CHAT_ROOM_OWNER_CANNOT_EXIT);
-        }
 
         ChatRoomUser chatRoomUser = chatRoomUserRepository.findByChatRoomIdAndUserId(chatRoomId, userId)
                 .orElseThrow(() -> new CustomException(CustomErrorType.CHAT_ROOM_USER_NOT_FOUND));
 
         // 상태 DELETED로 변경
         chatRoomUser.changeChatRoomUserType(ChatRoomUserType.DELETED);
+
+        Integer userNumber = chatRoomUser.getUserNumber();
+        String userName;
+        if (userNumber == 0) {
+            userName = "글쓴이";
+        } else {
+            userName = "익명" + userNumber;
+        }
+
+        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoom.getId(),
+                userName + "님이 채팅방을 나갔습니다.");
     }
 }

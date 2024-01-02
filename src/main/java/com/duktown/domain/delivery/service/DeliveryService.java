@@ -15,6 +15,7 @@ import com.duktown.global.exception.CustomException;
 import com.duktown.global.kisa_SEED.SEED;
 import com.duktown.global.type.ChatRoomUserType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +34,7 @@ public class DeliveryService {
     private final ChatRoomUserRepository chatRoomUserRepository;
     private final SEED seed;
     private final CommentRepository commentRepository;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     @Transactional
     public void createDelivery(Long userId, DeliveryDto.CreateRequest request) {
@@ -82,6 +84,10 @@ public class DeliveryService {
         }
 
         delivery.updateAccountNumber(seed.encrypt(request.getAccountNumber()));
+
+        // 송금계좌 수정 알림
+        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + delivery.getChatRoom().getId(),
+                "글쓴이가 송금 계좌를 수정했어요!");
     }
 
     // 주문 완료
@@ -98,6 +104,10 @@ public class DeliveryService {
         if (delivery.getActive()) {
             delivery.closeDelivery();
         }
+
+        // 주문 완료 알림
+        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + delivery.getChatRoom().getId(),
+                "글쓴이가 주문을 완료했어요!");
 
         // 계좌번호 삭제
         delivery.updateAccountNumber(seed.encrypt(""));

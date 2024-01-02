@@ -43,4 +43,11 @@ public class ChatRoomController {
         chatRoomService.exitChatRoom(customUserDetails.getId(), chatRoomId);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping()
+    public ResponseEntity<ChatRoomDto.ChatRoomListResponse> getChatRoomList(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        return ResponseEntity.ok(chatRoomService.getChatRoomList(customUserDetails.getId()));
+    }
 }

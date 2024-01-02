@@ -21,16 +21,14 @@ public class ChatPreHandler implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
         StompCommand stompCommand = headerAccessor.getCommand();
-        if (!stompCommand.equals(StompCommand.CONNECT)) {
-            return message;
+        if (stompCommand.equals(StompCommand.CONNECT)) {
+            String authorization = String.valueOf(headerAccessor.getNativeHeader("Authorization"));
+            if (authorization == null || !authorization.startsWith(TOKEN_HEADER_PREFIX)) {
+                throw new CustomException(CustomErrorType.INVALID_TOKEN);
+            }
+            String token = authorization.substring(TOKEN_HEADER_PREFIX.length(), authorization.length() - 1);
+            jwtTokenProvider.validateToken(token);
         }
-        String authorization = String.valueOf(headerAccessor.getNativeHeader("Authorization"));
-        if (authorization == null || !authorization.startsWith(TOKEN_HEADER_PREFIX)) {
-            throw new CustomException(CustomErrorType.INVALID_TOKEN);
-        }
-        String token = authorization.substring(TOKEN_HEADER_PREFIX.length(), authorization.length() - 1);
-        jwtTokenProvider.validateToken(token);
-
         return message;
     }
 }
