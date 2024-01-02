@@ -3,6 +3,7 @@ package com.duktown.domain.delivery.dto;
 import com.duktown.domain.delivery.entity.Delivery;
 import com.duktown.domain.user.entity.User;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class DeliveryDto {
 
@@ -43,6 +46,60 @@ public class DeliveryDto {
                     .orderTime(orderTime)
                     .accountNumber(encryptedAccountNumber)
                     .content(content)
+                    .build();
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AccountUpdateRequest {
+        @NotBlank(message = "송금 받을 계좌는 필수 값입니다.")
+        private String accountNumber;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class DeliveryResponse {
+        private Long userId;
+        private Long deliveryId;
+        private LocalDateTime createdAt; //TODO: 날짜 표시 수정
+        private Integer maxPeople;
+        private LocalDateTime orderTime;
+        private String content;
+        private Integer peopleCount;
+        private Integer commentCount;
+        private Boolean active;
+
+
+        public static DeliveryResponse from(Delivery delivery) {
+            return DeliveryResponse.builder()
+                    .userId(delivery.getUser().getId())
+                    .deliveryId(delivery.getId())
+                    .createdAt(delivery.getCreatedAt())
+                    .maxPeople(delivery.getMaxPeople())
+                    .orderTime(delivery.getOrderTime())
+                    .content(delivery.getContent())
+                    .peopleCount(delivery.getChatRoom().getChatRoomUsers().size())
+                    .commentCount(delivery.getComments().size())
+                    .active(delivery.getActive())
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class DeliveryListResponse {
+        private List<DeliveryResponse> content;
+
+        public static DeliveryListResponse from(List<Delivery> deliveries) {
+            return DeliveryListResponse.builder()
+                    .content(deliveries
+                            .stream()
+                            .map(DeliveryResponse::from)
+                            .collect(Collectors.toList()))
                     .build();
         }
     }

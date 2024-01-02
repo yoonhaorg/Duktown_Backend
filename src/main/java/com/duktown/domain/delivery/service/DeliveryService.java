@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.duktown.global.exception.CustomErrorType.USER_NOT_FOUND;
+import java.util.List;
+
+import static com.duktown.global.exception.CustomErrorType.*;
 
 @Service
 @RequiredArgsConstructor
@@ -50,5 +52,67 @@ public class DeliveryService {
                         .chatRoomUserType(ChatRoomUserType.ACTIVE)
                         .build()
         );
+    }
+
+    // 모집 종료
+    @Transactional
+    public void closeDelivery(Long userId, Long deliveryId) {
+        userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        Delivery delivery = deliveryRepository.findById(deliveryId).orElseThrow(() -> new CustomException(DELIVERY_NOT_FOUND));
+
+        if (!userId.equals(delivery.getUser().getId())) {
+            throw new CustomException(HAVE_NO_PERMISSION);
+        }
+
+        delivery.closeDelivery();
+    }
+
+    // 송금계좌 수정
+    @Transactional
+    public void updateAccountNumber(Long userId, Long deliveryId, DeliveryDto.AccountUpdateRequest request) {
+        userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        Delivery delivery = deliveryRepository.findById(deliveryId).orElseThrow(() -> new CustomException(DELIVERY_NOT_FOUND));
+
+        if (!userId.equals(delivery.getUser().getId())) {
+            throw new CustomException(HAVE_NO_PERMISSION);
+        }
+
+        delivery.updateAccountNumber(seed.encrypt(request.getAccountNumber()));
+    }
+
+    // 주문 완료
+    @Transactional
+    public void completeDelivery(Long userId, Long deliveryId) {
+        userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        Delivery delivery = deliveryRepository.findById(deliveryId).orElseThrow(() -> new CustomException(DELIVERY_NOT_FOUND));
+
+        if (!userId.equals(delivery.getUser().getId())) {
+            throw new CustomException(HAVE_NO_PERMISSION);
+        }
+
+        // active가 true면 false로 변경
+        if (delivery.getActive()) {
+            delivery.closeDelivery();
+        }
+
+        // 계좌번호 삭제
+        delivery.updateAccountNumber(seed.encrypt(""));
+    }
+
+    // 목록 조회 TODO: sortBy 관련 수정
+    public DeliveryDto.DeliveryListResponse getDeliveryList(Long userId, Integer sortBy) {
+        userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        List<Delivery> deliveries = deliveryRepository.findAll();
+
+        return DeliveryDto.DeliveryListResponse.from(deliveries);
+    }
+
+    // 상세 조회
+    public DeliveryDto.DeliveryResponse getDeliveryDetail(Long userId, Long deliveryId) {
+        userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        Delivery delivery = deliveryRepository.findById(deliveryId).orElseThrow(() -> new CustomException(DELIVERY_NOT_FOUND));
+
+        return DeliveryDto.DeliveryResponse.from(delivery);
     }
 }

@@ -1,11 +1,15 @@
 package com.duktown.domain.chatRoom.entity;
 
 import com.duktown.domain.BaseTimeEntity;
+import com.duktown.domain.chatRoomUser.entity.ChatRoomUser;
 import com.duktown.domain.delivery.entity.Delivery;
 import com.duktown.domain.user.entity.User;
 import lombok.*;
 
 import javax.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -34,4 +38,8 @@ public class ChatRoom extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String name;
+
+    @Builder.Default
+    @OneToMany(fetch = LAZY, mappedBy = "chatRoom")
+    private List<ChatRoomUser> chatRoomUsers = new ArrayList<>();
 }
