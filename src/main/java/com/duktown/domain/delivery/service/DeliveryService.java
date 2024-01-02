@@ -13,6 +13,7 @@ import com.duktown.global.exception.CustomException;
 import com.duktown.global.kisa_SEED.SEED;
 import com.duktown.global.type.ChatRoomUserType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -99,11 +100,19 @@ public class DeliveryService {
         delivery.updateAccountNumber(seed.encrypt(""));
     }
 
-    // 목록 조회 TODO: sortBy 관련 수정
+    // 목록 조회
     public DeliveryDto.DeliveryListResponse getDeliveryList(Long userId, Integer sortBy) {
         userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        List<Delivery> deliveries = deliveryRepository.findAll();
+        List<Delivery> deliveries;
+
+        if(sortBy == null || sortBy == 0){
+            deliveries = deliveryRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+        } else if (sortBy == 1) {
+            deliveries = deliveryRepository.findAll(Sort.by("orderTime"));
+        } else {
+            throw new CustomException(INVALID_DELIVERY_SORTBY_VALUE);
+        }
 
         return DeliveryDto.DeliveryListResponse.from(deliveries);
     }
