@@ -1,5 +1,7 @@
 package com.duktown.domain.delivery.service;
 
+import com.duktown.domain.chat.entity.Chat;
+import com.duktown.domain.chat.entity.ChatRepository;
 import com.duktown.domain.chatRoom.entity.ChatRoom;
 import com.duktown.domain.chatRoom.entity.ChatRoomRepository;
 import com.duktown.domain.chatRoomUser.entity.ChatRoomUser;
@@ -35,6 +37,7 @@ public class DeliveryService {
     private final SEED seed;
     private final CommentRepository commentRepository;
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final ChatRepository chatRepository;
 
     @Transactional
     public void createDelivery(Long userId, DeliveryDto.CreateRequest request) {
@@ -71,6 +74,9 @@ public class DeliveryService {
         }
 
         delivery.closeDelivery();
+
+        // 모집 종료 시 배달팟 자동 삭제
+        deleteDelivery(userId, deliveryId);
     }
 
     // 송금계좌 수정
@@ -86,8 +92,9 @@ public class DeliveryService {
         delivery.updateAccountNumber(seed.encrypt(request.getAccountNumber()));
 
         // 송금계좌 수정 알림
-        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + delivery.getChatRoom().getId(),
-                "글쓴이가 송금 계좌를 수정했어요!");
+        String message = "글쓴이가 송금 계좌를 수정했어요!";
+        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + delivery.getChatRoom().getId(), message);
+        chatRepository.save(Chat.builder().chatRoom(delivery.getChatRoom()).content(message).build());
     }
 
     // 주문 완료
@@ -106,11 +113,12 @@ public class DeliveryService {
         }
 
         // 주문 완료 알림
-        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + delivery.getChatRoom().getId(),
-                "글쓴이가 주문을 완료했어요!");
+        String message = "글쓴이가 주문을 완료했어요!";
+        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + delivery.getChatRoom().getId(), message);
+        chatRepository.save(Chat.builder().chatRoom(delivery.getChatRoom()).content(message).build());
 
-        // 계좌번호 삭제
-        delivery.updateAccountNumber(seed.encrypt(""));
+        // 계좌번호 삭제 TODO: 필요에 따라 삭제
+//        delivery.updateAccountNumber(seed.encrypt(""));
     }
 
     // 목록 조회
@@ -135,11 +143,6 @@ public class DeliveryService {
     public DeliveryDto.DeliveryResponse getDeliveryDetail(Long userId, Long deliveryId) {
         userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         Delivery delivery = deliveryRepository.findById(deliveryId).orElseThrow(() -> new CustomException(DELIVERY_NOT_FOUND));
-
-        // deleted = true면 조회 x
-        if (delivery.getDeleted()) {
-            throw new CustomException(DELIVERY_NOT_FOUND);
-        }
 
         return DeliveryDto.DeliveryResponse.from(delivery);
     }

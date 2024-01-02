@@ -1,5 +1,7 @@
 package com.duktown.domain.chatRoomUser.service;
 
+import com.duktown.domain.chat.entity.Chat;
+import com.duktown.domain.chat.entity.ChatRepository;
 import com.duktown.domain.chatRoom.entity.ChatRoom;
 import com.duktown.domain.chatRoom.entity.ChatRoomRepository;
 import com.duktown.domain.chatRoomUser.dto.ChatRoomUserDto;
@@ -10,6 +12,7 @@ import com.duktown.global.exception.CustomErrorType;
 import com.duktown.global.exception.CustomException;
 import com.duktown.global.type.ChatRoomUserType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +24,8 @@ public class ChatRoomUserService {
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomUserRepository chatRoomUserRepository;
+    private final ChatRepository chatRepository;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     // 채팅방에서 사용자 내보내기
     @Transactional
@@ -42,6 +47,10 @@ public class ChatRoomUserService {
                 .orElseThrow(() -> new CustomException(CustomErrorType.CHAT_ROOM_NOT_FOUND));
 
         chatRoomUser.changeChatRoomUserType(ChatRoomUserType.BLOCKED);
+
+        String message = "글쓴이가 익명" + chatRoomUser.getUserNumber() + "님을 내보냈습니다.";
+        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoom.getId(), message);
+        chatRepository.save(Chat.builder().chatRoom(chatRoom).content(message).build());
     }
 
 }

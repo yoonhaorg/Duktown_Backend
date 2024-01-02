@@ -44,6 +44,14 @@ public class ChatDto {
         private String createdAt;
 
         public static MessageResponse from(Chat chat) {
+            if (chat.getUser() == null) {
+                return MessageResponse.builder()
+                        .userId(null)
+                        .message(chat.getContent())
+                        .createdAt(chat.getCreatedAt().toString())
+                        .build();
+            }
+
             return MessageResponse.builder()
                     .userId(chat.getUser().getId())
                     .message(chat.getContent())

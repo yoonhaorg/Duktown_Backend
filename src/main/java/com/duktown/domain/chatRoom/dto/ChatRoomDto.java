@@ -2,7 +2,6 @@ package com.duktown.domain.chatRoom.dto;
 
 import com.duktown.domain.chatRoom.entity.ChatRoom;
 import com.duktown.domain.delivery.entity.Delivery;
-import com.duktown.global.kisa_SEED.SEED;
 import com.duktown.global.util.DateUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

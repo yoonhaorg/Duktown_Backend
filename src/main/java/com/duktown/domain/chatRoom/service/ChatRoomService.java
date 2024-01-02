@@ -1,5 +1,7 @@
 package com.duktown.domain.chatRoom.service;
 
+import com.duktown.domain.chat.entity.Chat;
+import com.duktown.domain.chat.entity.ChatRepository;
 import com.duktown.domain.chatRoom.dto.ChatRoomDto;
 import com.duktown.domain.chatRoom.entity.ChatRoom;
 import com.duktown.domain.chatRoom.entity.ChatRoomRepository;
@@ -36,6 +38,7 @@ public class ChatRoomService {
     private final ChatRoomUserRepository chatRoomUserRepository;
     private final SEED seed;
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final ChatRepository chatRepository;
 
     // 배달팟 채팅방 초대하기
     @Transactional
@@ -88,8 +91,9 @@ public class ChatRoomService {
             chatRoomUser = chatRoomUserRepository.save(request.toEntity(inviteUser, chatRoom, userNumber));
         }
 
-        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoom.getId(),
-                "익명" + chatRoomUser.getUserNumber() + "님이 들어왔습니다.");
+        String message = "익명" + chatRoomUser.getUserNumber() + "님이 들어왔습니다.";
+        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoom.getId(), message);
+        chatRepository.save(Chat.builder().chatRoom(chatRoom).content(message).build());
     }
 
     // 채팅방 조회
@@ -117,7 +121,7 @@ public class ChatRoomService {
         return ChatRoomDto.ChatRoomResponse.from(delivery, seed.decrypt(delivery.getAccountNumber()));
     }
 
-    // 내가 참여중인 채팅방 목록 조회 TODO : 채팅 온 순으로 자동 정렬
+    // 내가 참여중인 채팅방 목록 조회 TODO : 채팅 온 순으로 자동 정렬, 페이징 처리
     public ChatRoomDto.ChatRoomListResponse getChatRoomList(Long userId) {
         userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         List<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByUserId(userId);
@@ -142,14 +146,14 @@ public class ChatRoomService {
         chatRoomUser.changeChatRoomUserType(ChatRoomUserType.DELETED);
 
         Integer userNumber = chatRoomUser.getUserNumber();
-        String userName;
+        String message;
         if (userNumber == 0) {
-            userName = "글쓴이";
+            message = "글쓴이가 채팅방을 나갔습니다. 더 이상 채팅을 전송할 수 없습니다.";
         } else {
-            userName = "익명" + userNumber;
+            message = "익명" + userNumber + "님이 채팅방을 나갔습니다.";
         }
 
-        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoom.getId(),
-                userName + "님이 채팅방을 나갔습니다.");
+        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoom.getId(), message);
+        chatRepository.save(Chat.builder().chatRoom(chatRoom).content(message).build());
     }
 }
