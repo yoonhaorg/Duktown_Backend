@@ -22,28 +22,22 @@ public class CleaningController {
      }
 
 
-    // 청소 완료
+    // 청소 완료: 사생 청소 승인 요청
     @PatchMapping("/{cleaningId}")
     public ResponseEntity cleningOk(@PathVariable Long cleaningId){
         cleaningService.cleningOk(cleaningId);
         return ResponseEntity.ok().build();
     }
 
-    // 청소 승인
+    // 청소 승인 : 사생회 청소 승인
     @PatchMapping("/manager/{cleaningId}")
     public ResponseEntity cleaningApply(@PathVariable Long cleaningId){
         cleaningService.cleaningApply(cleaningId);
         return ResponseEntity.ok().build();
     }
 
-    // 벌점 부여
 
 
-    // 청소 내역 조회
-//    @GetMapping("cleaning/manager")
-//
-//    // 청소 배정
-//    @PostMapping("cleaning/manager/schedul")
 
     // 유닛 조장이 청소 날짜 신청
     @PostMapping("/student/schedul")

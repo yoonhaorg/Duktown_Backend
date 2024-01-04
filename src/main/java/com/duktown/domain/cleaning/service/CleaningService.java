@@ -40,8 +40,11 @@ public class CleaningService {
         Cleaning cleaning = cleaningRepository.findCleaningById(cleaningId);
         cleaning.updateCleaned();
     }
+    //TODO: 벌점 부여 : 청소 승인 과정에서 벌점 부여
+
 
     // 유닛 조장이 청소 날짜 신청
+    //TODO: 기획에 따라 리스트로 신청입력, 개별 신청 입력 확인하기
     public void createCleaningDate(CleaningDto.CreateCleaningDto createCleaningDto){
         User user = userRepository.findByEmail(createCleaningDto.getEmail())
                 .orElseThrow(()->new CustomException(USER_NOT_FOUND));
