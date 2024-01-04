@@ -1,27 +1,22 @@
 package com.duktown.domain.repairApply.controller;
 
 import com.duktown.domain.repairApply.dto.RepairApplyDto;
-import com.duktown.domain.repairApply.entity.RepairApply;
-import com.duktown.domain.repairApply.service.RepairApplyService;
 import com.duktown.domain.repairApply.service.RepairApplyServiceImpl;
 import com.duktown.global.security.service.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/repairApply")
 @RequiredArgsConstructor
 public class RepairApplyController {
 
-    @Autowired
-    private RepairApplyServiceImpl repairApplyService;
+
+    private final RepairApplyServiceImpl repairApplyService;
 
 //    @PostMapping
 //    public ResponseEntity<RepairApply> save(

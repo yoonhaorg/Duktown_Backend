@@ -192,7 +192,7 @@ public class RepairApplyServiceImpl {
 //        return result;
 //    }
 
-    //check -> 3일 동안 안 되면 재요청
+    //check
     public void check(Long userId, Long repairApplyId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         RepairApply checkApply = repairApplyRepository.findById(repairApplyId).orElseThrow(() -> new CustomException(POST_NOT_FOUND));
@@ -201,7 +201,7 @@ public class RepairApplyServiceImpl {
         repairApplyRepository.save(checkApply);
     }
 
-    //solve ->
+    //solve
     public void solve(Long userId, Long repairApplyId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         RepairApply solveApply = repairApplyRepository.findById(repairApplyId).orElseThrow(() -> new CustomException(POST_NOT_FOUND));
@@ -211,8 +211,9 @@ public class RepairApplyServiceImpl {
     }
 
 
-    @Scheduled(cron = "0 0 9 * * ?")
-    private void nextCheck(){
-
-    }
+    // TODO: check -> 3일 동안 안 되면 재요청
+//    @Scheduled(cron = "0 0 9 * * ?")
+//    private void nextCheck(){
+//
+//    }
 }

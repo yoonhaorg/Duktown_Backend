@@ -1,5 +1,6 @@
 package com.duktown.domain.sleepoverApply.entity;
 
+import com.duktown.domain.BaseTimeEntity;
 import com.duktown.domain.user.entity.User;
 import com.duktown.global.type.ApprovalType;
 import lombok.*;
@@ -20,7 +21,7 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor(access = PRIVATE)
 @NoArgsConstructor(access = PROTECTED)
 @Table(name = "sleepover_apply")
-public class SleepoverApply {
+public class SleepoverApply extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "sleepover_apply_id")
@@ -42,6 +43,8 @@ public class SleepoverApply {
     @Column(nullable = false)
     private String address; // 머무르는 주소
 
+    // 남은 외박 일 수
+    private Integer totalPeriod;
 
     @Column(nullable = false)
     private String reason; //사유
@@ -53,13 +56,11 @@ public class SleepoverApply {
         this.approved = approved;
     }
 
-    public void updateSleepoverApply(LocalDate startDate, LocalDate endDate,Integer period,String address,String reason){
-        this.startDate = startDate;
-        this.endDate=endDate;
-        this.period =period;
-        this.address =address;
-        this.reason=reason;
-    }
+    @PrePersist
+    private void baseTotoalPeriod(){
+        // 외박 가능 일수 초기값 부여
+        totalPeriod = 21;
+    };
 
 
 }
