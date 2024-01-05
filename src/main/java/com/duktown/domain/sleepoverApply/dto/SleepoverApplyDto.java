@@ -4,18 +4,16 @@ import com.duktown.domain.BaseTimeEntity;
 import com.duktown.domain.sleepoverApply.entity.SleepoverApply;
 import com.duktown.domain.user.entity.User;
 import com.duktown.global.type.ApprovalType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.List;
 
-public class SleepoverApplyDto extends BaseTimeEntity {
+public class SleepoverApplyDto {
 
     @Getter
+    @Setter
     @AllArgsConstructor
     @NoArgsConstructor
     public static class RequestSleepoverApplyDto{
@@ -56,9 +54,13 @@ public class SleepoverApplyDto extends BaseTimeEntity {
     @AllArgsConstructor
     public static class ResponseGetListSleepoverApply{
         private Integer sleepoverApplyCount;
+
+        private boolean isFirstPage;
+        private boolean isLastPage;
+
         private List<ResponseGetSleepoverApply> listSleepoverApply;
 
-        public static ResponseGetListSleepoverApply from(List<ResponseGetSleepoverApply> getSleepoverApplyList){
+        public static ResponseGetListSleepoverApply from(List<ResponseGetSleepoverApply> getSleepoverApplyList, boolean isFirstPage, boolean isLastPage){
             return ResponseGetListSleepoverApply.builder()
                     .sleepoverApplyCount(getSleepoverApplyList.size())
                     .listSleepoverApply(getSleepoverApplyList)

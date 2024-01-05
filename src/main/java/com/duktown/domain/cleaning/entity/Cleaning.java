@@ -40,7 +40,17 @@ public class Cleaning {
 //    @Column(nullable = false)
 //    private String cleaningArea;
 
+    // 벌점
+
     private Boolean cleaned;
 
     private Boolean checked;
+
+    public void updateCleaned(){
+        this.cleaned = true;
+    }
+
+    public void updateChecked(){
+        this.checked =true;
+    }
 }

@@ -11,6 +11,7 @@ import com.duktown.global.type.HallName;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -208,4 +209,11 @@ public class RepairApplyServiceImpl {
         solveApply.solve();
         repairApplyRepository.save(solveApply);
     }
+
+
+    // TODO: check -> 3일 동안 안 되면 재요청
+//    @Scheduled(cron = "0 0 9 * * ?")
+//    private void nextCheck(){
+//
+//    }
 }
