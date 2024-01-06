@@ -98,8 +98,7 @@ public class ChatRoomService {
 
         // 초대된 적 없다면 chatRoomUser 등록
         else {
-            Integer userNumber = chatRoomUserRepository.countByChatRoomId(chatRoom.getId());
-            chatRoomUser = chatRoomUserRepository.save(request.toEntity(inviteUser, chatRoom, userNumber));
+            chatRoomUser = chatRoomUserRepository.save(request.toEntity(inviteUser, chatRoom));
         }
 
         String message = "익명" + chatRoomUser.getUserNumber() + "님이 들어왔습니다.";
@@ -112,7 +111,7 @@ public class ChatRoomService {
 
         chatRepository.save(chat);
 
-        ChatDto.MessageResponse messageResponse = ChatDto.MessageResponse.from(chat);
+        ChatDto.MessageResponse messageResponse = ChatDto.MessageResponse.from(chat, null);
         simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoom.getId(), messageResponse);
     }
 
@@ -215,7 +214,7 @@ public class ChatRoomService {
 
         chatRepository.save(chat);
 
-        ChatDto.MessageResponse messageResponse = ChatDto.MessageResponse.from(chat);
+        ChatDto.MessageResponse messageResponse = ChatDto.MessageResponse.from(chat, null);
         simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoom.getId(), messageResponse);
     }
 }

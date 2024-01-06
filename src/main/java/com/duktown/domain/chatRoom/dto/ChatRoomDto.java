@@ -56,7 +56,7 @@ public class ChatRoomDto {
 
     @Getter
     public static class ChatRoomListResponse {
-        private List<ChatRoomListElementResponse> chatRooms;
+        private final List<ChatRoomListElementResponse> chatRooms;
 
         public ChatRoomListResponse(List<ChatRoomListElementResponse> chatRooms) {
             this.chatRooms = chatRooms;

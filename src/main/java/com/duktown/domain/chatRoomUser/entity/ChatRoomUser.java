@@ -32,7 +32,6 @@ public class ChatRoomUser extends BaseTimeEntity {
     @JoinColumn(name = "chat_room_id", nullable = false)
     private ChatRoom chatRoom;
 
-    @Column(nullable = false)
     private Integer userNumber;
 
     @Enumerated(STRING)

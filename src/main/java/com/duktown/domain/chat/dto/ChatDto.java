@@ -2,6 +2,7 @@ package com.duktown.domain.chat.dto;
 
 import com.duktown.domain.chat.entity.Chat;
 import com.duktown.domain.chatRoom.entity.ChatRoom;
+import com.duktown.domain.chatRoomUser.entity.ChatRoomUser;
 import com.duktown.domain.user.entity.User;
 import com.duktown.global.type.ChatType;
 import lombok.AllArgsConstructor;
@@ -45,14 +46,14 @@ public class ChatDto {
     @AllArgsConstructor
     public static class MessageResponse {
         private Long userId;
+        private Integer userNumber;
         private ChatType chatType;
         private String message;
         private String createdAt;
 
-        public static MessageResponse from(Chat chat) {
+        public static MessageResponse from(Chat chat, ChatRoomUser chatRoomUser) {
             if (chat.getUser() == null) {
                 return MessageResponse.builder()
-                        .userId(null)
                         .chatType(chat.getChatType())
                         .message(chat.getContent())
                         .createdAt(chat.getCreatedAt().toString())
@@ -61,6 +62,7 @@ public class ChatDto {
 
             return MessageResponse.builder()
                     .userId(chat.getUser().getId())
+                    .userNumber(chatRoomUser.getUserNumber())
                     .chatType(chat.getChatType())
                     .message(chat.getContent())
                     .createdAt(chat.getCreatedAt().toString())
@@ -68,20 +70,12 @@ public class ChatDto {
         }
     }
 
-    @Builder
     @Getter
-    @AllArgsConstructor
     public static class ListResponse {
-        private List<MessageResponse> messages;
+        private final List<MessageResponse> messages;
 
-        public static ListResponse from(Slice<Chat> chats) {
-            List<MessageResponse> messages = chats.stream()
-                    .map(MessageResponse::from)
-                    .collect(Collectors.toList());
-
-            return ListResponse.builder()
-                    .messages(messages)
-                    .build();
+        public ListResponse(List<MessageResponse> messages) {
+            this.messages = messages;
         }
     }
 }

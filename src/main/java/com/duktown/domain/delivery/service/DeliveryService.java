@@ -104,7 +104,7 @@ public class DeliveryService {
 
         chatRepository.save(chat);
 
-        ChatDto.MessageResponse messageResponse = ChatDto.MessageResponse.from(chat);
+        ChatDto.MessageResponse messageResponse = ChatDto.MessageResponse.from(chat, null);
         simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoom.getId(), messageResponse);
     }
 
@@ -134,7 +134,7 @@ public class DeliveryService {
 
         chatRepository.save(chat);
 
-        ChatDto.MessageResponse messageResponse = ChatDto.MessageResponse.from(chat);
+        ChatDto.MessageResponse messageResponse = ChatDto.MessageResponse.from(chat, null);
         simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoom.getId(), messageResponse);
 
         // 계좌번호 삭제 TODO: 필요에 따라 삭제

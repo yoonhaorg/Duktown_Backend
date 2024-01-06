@@ -19,6 +19,9 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static com.duktown.global.exception.CustomErrorType.*;
 
 @Service
@@ -31,7 +34,7 @@ public class ChatService {
     private final ChatRoomUserRepository chatRoomUserRepository;
 
     @Transactional
-    public void saveChat(Long chatRoomId, ChatDto.MessageRequest message) {
+    public ChatDto.MessageResponse saveChat(Long chatRoomId, ChatDto.MessageRequest message) {
         ChatRoomUser chatRoomUser = chatRoomUserRepository.findByChatRoomIdAndUserId(chatRoomId, message.getUserId())
                 .orElseThrow(() -> new CustomException(CHAT_ROOM_USER_NOT_FOUND));
         if (chatRoomUser.getChatRoomUserType() == ChatRoomUserType.DELETED) {
@@ -42,7 +45,9 @@ public class ChatService {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new CustomException(CHAT_ROOM_NOT_FOUND));
         ChatType chatType = ChatType.valueOf(message.getChatType());
 
-        chatRepository.save(message.toEntity(user, chatRoom, chatType));
+        Chat chat = chatRepository.save(message.toEntity(user, chatRoom, chatType));
+
+        return ChatDto.MessageResponse.from(chat, chatRoomUser);
     }
 
     public ChatDto.ListResponse getChatMessages(Long userId, Long chatRoomId, Pageable pageable) {
@@ -59,14 +64,30 @@ public class ChatService {
             throw new CustomException(CustomErrorType.DELETED_CHAT_ROOM_USER);
         }
 
+        Slice<Chat> chats;
         // 차단된 유저는 차단 이전 채팅 내역만 조회됨
         if (chatRoomUser.getChatRoomUserType() == ChatRoomUserType.BLOCKED) {
-            Slice<Chat> chats = chatRepository.findSliceChatsForBlockedUser(chatRoomId, userId, pageable);
-            return ChatDto.ListResponse.from(chats);
+            chats = chatRepository.findSliceChatsForBlockedUser(chatRoomId, userId, pageable);
+        } else {
+            // 나가기한 유저가 아니면 채팅 내역 조회
+            chats = chatRepository.findSliceChats(chatRoomId, userId, pageable);
         }
 
-        // 나가기한 유저가 아니면 채팅 내역 조회
-        Slice<Chat> chats = chatRepository.findSliceChats(chatRoomId, userId, pageable);
-        return ChatDto.ListResponse.from(chats);
+        List<ChatDto.MessageResponse> messages = chats.stream()
+                .map(c -> {
+                    Long chatUserId;
+                    if (c.getUser() != null) {
+                        chatUserId = c.getUser().getId();
+                    } else {
+                        chatUserId = null;
+                    }
+
+                    return ChatDto.MessageResponse.from(
+                            c,
+                            chatRoomUserRepository.findByChatRoomIdAndUserId(c.getChatRoom().getId(), chatUserId)
+                                    .orElse(null));
+                })
+                .collect(Collectors.toList());
+        return new ChatDto.ListResponse(messages);
     }
 }

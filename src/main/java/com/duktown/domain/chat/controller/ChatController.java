@@ -25,8 +25,7 @@ public class ChatController {
     @MessageMapping("/chatRoom/{chatRoomId}")   // 실제로는 /pub/chatRoom/{chatRoomId}로 전송됨
     public void sendMessage(@DestinationVariable("chatRoomId") Long chatRoomId,
                             @Valid @RequestBody ChatDto.MessageRequest message) {
-        chatService.saveChat(chatRoomId, message);
-        template.convertAndSend("/sub/chatRoom/" + chatRoomId, message);
+        template.convertAndSend("/sub/chatRoom/" + chatRoomId, chatService.saveChat(chatRoomId, message));
     }
 
     // 채팅방 채팅 조회

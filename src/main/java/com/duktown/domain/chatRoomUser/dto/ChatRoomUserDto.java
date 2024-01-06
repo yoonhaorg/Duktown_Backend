@@ -22,7 +22,10 @@ public class ChatRoomUserDto {
         @NotNull(message = "배달팟 아이디는 필수 값입니다.")
         private Long deliveryId;
 
-        public ChatRoomUser toEntity(User user, ChatRoom chatRoom, Integer userNumber) {
+        @NotNull(message = "유저 번호는 필수 값입니다.")
+        private Integer userNumber;
+
+        public ChatRoomUser toEntity(User user, ChatRoom chatRoom) {
             return ChatRoomUser.builder()
                     .user(user)
                     .chatRoom(chatRoom)

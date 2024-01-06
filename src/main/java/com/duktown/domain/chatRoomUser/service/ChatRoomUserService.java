@@ -60,7 +60,7 @@ public class ChatRoomUserService {
 
         chatRepository.save(chat);
 
-        ChatDto.MessageResponse messageResponse = ChatDto.MessageResponse.from(chat);
+        ChatDto.MessageResponse messageResponse = ChatDto.MessageResponse.from(chat, null);
         simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoom.getId(), messageResponse);
     }
 
