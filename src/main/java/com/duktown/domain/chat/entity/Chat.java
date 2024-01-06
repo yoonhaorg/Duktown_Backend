@@ -3,10 +3,12 @@ package com.duktown.domain.chat.entity;
 import com.duktown.domain.BaseTimeEntity;
 import com.duktown.domain.chatRoom.entity.ChatRoom;
 import com.duktown.domain.user.entity.User;
+import com.duktown.global.type.ChatType;
 import lombok.*;
 
 import javax.persistence.*;
 
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.*;
@@ -29,6 +31,10 @@ public class Chat extends BaseTimeEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Enumerated(STRING)
+    @Column(nullable = false)
+    private ChatType chatType;
 
     @Column(nullable = false, columnDefinition = "text")
     private String content;

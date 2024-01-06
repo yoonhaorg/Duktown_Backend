@@ -3,6 +3,7 @@ package com.duktown.domain.chat.dto;
 import com.duktown.domain.chat.entity.Chat;
 import com.duktown.domain.chatRoom.entity.ChatRoom;
 import com.duktown.domain.user.entity.User;
+import com.duktown.global.type.ChatType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,14 +24,18 @@ public class ChatDto {
         @NotNull(message = "유저 아이디는 필수 값입니다.")
         private Long userId;
 
+        @NotBlank(message = "채팅 타입은 필수 값입니다.")
+        private String chatType;
+
         @NotBlank(message = "메시지는 필수 값입니다.")
         private String message;
 
-        public Chat toEntity(User user, ChatRoom chatRoom) {
+        public Chat toEntity(User user, ChatRoom chatRoom, ChatType chatType) {
             return Chat.builder()
                     .user(user)
                     .chatRoom(chatRoom)
                     .content(message)
+                    .chatType(chatType)
                     .build();
         }
     }
@@ -40,6 +45,7 @@ public class ChatDto {
     @AllArgsConstructor
     public static class MessageResponse {
         private Long userId;
+        private ChatType chatType;
         private String message;
         private String createdAt;
 
@@ -47,6 +53,7 @@ public class ChatDto {
             if (chat.getUser() == null) {
                 return MessageResponse.builder()
                         .userId(null)
+                        .chatType(chat.getChatType())
                         .message(chat.getContent())
                         .createdAt(chat.getCreatedAt().toString())
                         .build();
@@ -54,6 +61,7 @@ public class ChatDto {
 
             return MessageResponse.builder()
                     .userId(chat.getUser().getId())
+                    .chatType(chat.getChatType())
                     .message(chat.getContent())
                     .createdAt(chat.getCreatedAt().toString())
                     .build();

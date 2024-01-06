@@ -1,5 +1,6 @@
 package com.duktown.domain.delivery.service;
 
+import com.duktown.domain.chat.dto.ChatDto;
 import com.duktown.domain.chat.entity.Chat;
 import com.duktown.domain.chat.entity.ChatRepository;
 import com.duktown.domain.chatRoom.entity.ChatRoom;
@@ -16,6 +17,7 @@ import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.exception.CustomException;
 import com.duktown.global.kisa_SEED.SEED;
 import com.duktown.global.type.ChatRoomUserType;
+import com.duktown.global.type.ChatType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -83,39 +85,57 @@ public class DeliveryService {
     @Transactional
     public void updateAccountNumber(Long userId, Long deliveryId, DeliveryDto.AccountUpdateRequest request) {
         userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        Delivery delivery = deliveryRepository.findById(deliveryId).orElseThrow(() -> new CustomException(DELIVERY_NOT_FOUND));
+        ChatRoom chatRoom = chatRoomRepository.findByDeliveryId(deliveryId).orElseThrow(() -> new CustomException(CHAT_ROOM_NOT_FOUND));
 
-        if (!userId.equals(delivery.getUser().getId())) {
+        if (!userId.equals(chatRoom.getUser().getId())) {
             throw new CustomException(HAVE_NO_PERMISSION);
         }
 
-        delivery.updateAccountNumber(seed.encrypt(request.getAccountNumber()));
+        chatRoom.getDelivery().updateAccountNumber(seed.encrypt(request.getAccountNumber()));
 
         // 송금계좌 수정 알림
         String message = "글쓴이가 송금 계좌를 수정했어요!";
-        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + delivery.getChatRoom().getId(), message);
-        chatRepository.save(Chat.builder().chatRoom(delivery.getChatRoom()).content(message).build());
+
+        Chat chat = Chat.builder()
+                .chatRoom(chatRoom)
+                .content(message)
+                .chatType(ChatType.ACCOUNT_EDIT)
+                .build();
+
+        chatRepository.save(chat);
+
+        ChatDto.MessageResponse messageResponse = ChatDto.MessageResponse.from(chat);
+        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoom.getId(), messageResponse);
     }
 
     // 주문 완료
     @Transactional
     public void completeDelivery(Long userId, Long deliveryId) {
         userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        Delivery delivery = deliveryRepository.findById(deliveryId).orElseThrow(() -> new CustomException(DELIVERY_NOT_FOUND));
+        ChatRoom chatRoom = chatRoomRepository.findByDeliveryId(deliveryId).orElseThrow(() -> new CustomException(CHAT_ROOM_NOT_FOUND));
 
-        if (!userId.equals(delivery.getUser().getId())) {
+        if (!userId.equals(chatRoom.getUser().getId())) {
             throw new CustomException(HAVE_NO_PERMISSION);
         }
 
         // active가 true면 false로 변경
-        if (delivery.getActive()) {
-            delivery.closeDelivery();
+        if (chatRoom.getDelivery().getActive()) {
+            chatRoom.getDelivery().closeDelivery();
         }
 
         // 주문 완료 알림
         String message = "글쓴이가 주문을 완료했어요!";
-        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + delivery.getChatRoom().getId(), message);
-        chatRepository.save(Chat.builder().chatRoom(delivery.getChatRoom()).content(message).build());
+
+        Chat chat = Chat.builder()
+                .chatRoom(chatRoom)
+                .content(message)
+                .chatType(ChatType.ORDER_FINISH)
+                .build();
+
+        chatRepository.save(chat);
+
+        ChatDto.MessageResponse messageResponse = ChatDto.MessageResponse.from(chat);
+        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoom.getId(), messageResponse);
 
         // 계좌번호 삭제 TODO: 필요에 따라 삭제
 //        delivery.updateAccountNumber(seed.encrypt(""));

@@ -1,5 +1,6 @@
 package com.duktown.domain.chatRoom.service;
 
+import com.duktown.domain.chat.dto.ChatDto;
 import com.duktown.domain.chat.entity.Chat;
 import com.duktown.domain.chat.entity.ChatRepository;
 import com.duktown.domain.chatRoom.dto.ChatRoomDto;
@@ -16,6 +17,7 @@ import com.duktown.global.exception.CustomErrorType;
 import com.duktown.global.exception.CustomException;
 import com.duktown.global.kisa_SEED.SEED;
 import com.duktown.global.type.ChatRoomUserType;
+import com.duktown.global.type.ChatType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -53,6 +55,11 @@ public class ChatRoomService {
 
         Delivery delivery = deliveryRepository.findById(request.getDeliveryId()).orElseThrow(() -> new CustomException(CustomErrorType.DELIVERY_NOT_FOUND));
         ChatRoom chatRoom = chatRoomRepository.findById(delivery.getChatRoom().getId()).orElseThrow(() -> new CustomException(CustomErrorType.CHAT_ROOM_NOT_FOUND));
+
+        // 배달팟이 활성 상태여야만 초대 가능
+        if (!delivery.getActive()) {
+            throw new CustomException(CustomErrorType.DELIVERY_ALREADY_CLOSED);
+        }
 
         // 채팅방 주인만 초대 가능
         if (!user.getId().equals(chatRoom.getUser().getId())) {
@@ -92,8 +99,17 @@ public class ChatRoomService {
         }
 
         String message = "익명" + chatRoomUser.getUserNumber() + "님이 들어왔습니다.";
-        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoom.getId(), message);
-        chatRepository.save(Chat.builder().chatRoom(chatRoom).content(message).build());
+
+        Chat chat = Chat.builder()
+                .chatRoom(chatRoom)
+                .content(message)
+                .chatType(ChatType.JOIN)
+                .build();
+
+        chatRepository.save(chat);
+
+        ChatDto.MessageResponse messageResponse = ChatDto.MessageResponse.from(chat);
+        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoom.getId(), messageResponse);
     }
 
     // 채팅방 조회
@@ -147,13 +163,24 @@ public class ChatRoomService {
 
         Integer userNumber = chatRoomUser.getUserNumber();
         String message;
+        ChatType chatType;
         if (userNumber == 0) {
             message = "글쓴이가 채팅방을 나갔습니다. 더 이상 채팅을 전송할 수 없습니다.";
+            chatType = ChatType.WRITER_EXIT;
         } else {
             message = "익명" + userNumber + "님이 채팅방을 나갔습니다.";
+            chatType = ChatType.EXIT;
         }
 
-        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoom.getId(), message);
-        chatRepository.save(Chat.builder().chatRoom(chatRoom).content(message).build());
+        Chat chat = Chat.builder()
+                .chatRoom(chatRoom)
+                .content(message)
+                .chatType(chatType)
+                .build();
+
+        chatRepository.save(chat);
+
+        ChatDto.MessageResponse messageResponse = ChatDto.MessageResponse.from(chat);
+        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoom.getId(), messageResponse);
     }
 }

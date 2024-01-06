@@ -12,6 +12,7 @@ import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.exception.CustomErrorType;
 import com.duktown.global.exception.CustomException;
 import com.duktown.global.type.ChatRoomUserType;
+import com.duktown.global.type.ChatType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -39,8 +40,9 @@ public class ChatService {
 
         User user = userRepository.findById(message.getUserId()).orElseThrow(() -> new CustomException(CustomErrorType.USER_NOT_FOUND));
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new CustomException(CHAT_ROOM_NOT_FOUND));
+        ChatType chatType = ChatType.valueOf(message.getChatType());
 
-        chatRepository.save(message.toEntity(user, chatRoom));
+        chatRepository.save(message.toEntity(user, chatRoom, chatType));
     }
 
     public ChatDto.ListResponse getChatMessages(Long userId, Long chatRoomId, Pageable pageable) {

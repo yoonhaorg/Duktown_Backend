@@ -1,5 +1,6 @@
 package com.duktown.domain.chatRoomUser.service;
 
+import com.duktown.domain.chat.dto.ChatDto;
 import com.duktown.domain.chat.entity.Chat;
 import com.duktown.domain.chat.entity.ChatRepository;
 import com.duktown.domain.chatRoom.entity.ChatRoom;
@@ -11,6 +12,7 @@ import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.exception.CustomErrorType;
 import com.duktown.global.exception.CustomException;
 import com.duktown.global.type.ChatRoomUserType;
+import com.duktown.global.type.ChatType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -49,8 +51,17 @@ public class ChatRoomUserService {
         chatRoomUser.changeChatRoomUserType(ChatRoomUserType.BLOCKED);
 
         String message = "글쓴이가 익명" + chatRoomUser.getUserNumber() + "님을 내보냈습니다.";
-        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoom.getId(), message);
-        chatRepository.save(Chat.builder().chatRoom(chatRoom).content(message).build());
+
+        Chat chat = Chat.builder()
+                .chatRoom(chatRoom)
+                .content(message)
+                .chatType(ChatType.FORCE_OUT)
+                .build();
+
+        chatRepository.save(chat);
+
+        ChatDto.MessageResponse messageResponse = ChatDto.MessageResponse.from(chat);
+        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoom.getId(), messageResponse);
     }
 
 }

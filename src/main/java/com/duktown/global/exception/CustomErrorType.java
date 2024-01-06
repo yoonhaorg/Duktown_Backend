@@ -36,6 +36,7 @@ public enum CustomErrorType {
     // Delivery (4xxxx)
     DELIVERY_NOT_FOUND(NOT_FOUND, 40001, "존재하지 않는 배달팟입니다."),
     INVALID_DELIVERY_SORTBY_VALUE(BAD_REQUEST, 40002, "잘못된 정렬조건입니다."),
+    DELIVERY_ALREADY_CLOSED(BAD_REQUEST, 40003, "모집 마감된 배달팟입니다."),
 
     // Post (5xxxx)
     POST_NOT_FOUND(NOT_FOUND, 50001, "존재하지 않는 게시글입니다."),
