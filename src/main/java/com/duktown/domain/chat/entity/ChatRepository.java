@@ -16,11 +16,26 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
     @Query(value = "select c from Chat c " +
             "where c.chatRoom.id = :chat_room_id " +
             "and c.createdAt > (" +
-            "select cru.modifiedAt from ChatRoomUser cru " +
+            "select cru.createdAt from ChatRoomUser cru " +
             "where cru.chatRoom.id = :chat_room_id and " +
             "cru.user.id = :user_id" +
             ") order by c.createdAt desc")
     Slice<Chat> findSliceChats(@Param("chat_room_id") Long chatRoomId,
+                               @Param("user_id") Long userId,
+                               Pageable pageable);
+
+    @Query(value = "select c from Chat c " +
+            "where c.chatRoom.id = :chat_room_id " +
+            "and c.createdAt > (" +
+            "select cru.createdAt from ChatRoomUser cru " +
+            "where cru.chatRoom.id = :chat_room_id and " +
+            "cru.user.id = :user_id) " +
+            "and c.createdAt < (" +
+            "select cru.modifiedAt from ChatRoomUser cru " +
+            "where cru.chatRoom.id = :chat_room_id and " +
+            "cru.user.id = :user_id) " +
+            "order by c.createdAt desc")
+    Slice<Chat> findSliceChatsForBlockedUser(@Param("chat_room_id") Long chatRoomId,
                                @Param("user_id") Long userId,
                                Pageable pageable);
 

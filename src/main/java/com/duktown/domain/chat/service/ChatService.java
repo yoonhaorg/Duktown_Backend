@@ -55,13 +55,17 @@ public class ChatService {
         ChatRoomUser chatRoomUser = chatRoomUserRepository.findByChatRoomIdAndUserId(chatRoomId, userId)
                 .orElseThrow(() -> new CustomException(CustomErrorType.CHAT_ROOM_USER_NOT_FOUND));
 
-        if (chatRoomUser.getChatRoomUserType() == ChatRoomUserType.BLOCKED) {
-            throw new CustomException(CustomErrorType.BLOCKED_FROM_CHAT_ROOM);
-        } else if (chatRoomUser.getChatRoomUserType() == ChatRoomUserType.DELETED) {
+        if (chatRoomUser.getChatRoomUserType() == ChatRoomUserType.DELETED) {
             throw new CustomException(CustomErrorType.DELETED_CHAT_ROOM_USER);
         }
 
-        // 차단되거나 나가기한 유저가 아니면 채팅 내역 조회
+        // 차단된 유저는 차단 이전 채팅 내역만 조회됨
+        if (chatRoomUser.getChatRoomUserType() == ChatRoomUserType.BLOCKED) {
+            Slice<Chat> chats = chatRepository.findSliceChatsForBlockedUser(chatRoomId, userId, pageable);
+            return ChatDto.ListResponse.from(chats);
+        }
+
+        // 나가기한 유저가 아니면 채팅 내역 조회
         Slice<Chat> chats = chatRepository.findSliceChats(chatRoomId, userId, pageable);
         return ChatDto.ListResponse.from(chats);
     }

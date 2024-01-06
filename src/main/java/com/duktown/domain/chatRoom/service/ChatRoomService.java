@@ -19,6 +19,7 @@ import com.duktown.global.kisa_SEED.SEED;
 import com.duktown.global.type.ChatRoomUserType;
 import com.duktown.global.type.ChatType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.duktown.global.exception.CustomErrorType.CHAT_ROOM_USER_NOT_FOUND;
 import static com.duktown.global.exception.CustomErrorType.USER_NOT_FOUND;
@@ -85,9 +85,10 @@ public class ChatRoomService {
                         else if (c.getChatRoomUserType() == ChatRoomUserType.BLOCKED) {
                             throw new CustomException(CustomErrorType.BLOCKED_CHAT_ROOM_USER);
                         }
-                        // 나가기했던 유저라면 ACTIVE로 재활성화
+                        // 나가기했던 유저라면 ACTIVE로 재활성화, createdAt 현재로 변경
                         else {
                             c.changeChatRoomUserType(ChatRoomUserType.ACTIVE);
+                            c.setCreatedAt(LocalDateTime.now());
                         }
                     });
 
@@ -151,19 +152,23 @@ public class ChatRoomService {
             ChatRoom chatRoom = chatRoomUser.getChatRoom();
 
             // 가장 최근 메시지 찾기
-            Chat recentChat = chatRepository.findTopByChatRoomOrderByCreatedAtDesc(chatRoom)
-                    .orElse(Chat.builder()
-                            .user(null)
-                            .chatRoom(chatRoom)
-                            .chatType(ChatType.CHAT)
-                            .content("아직 채팅이 없습니다.")
-                            .build());
+            Chat recentChat;
+            String recentChatContent;
+            LocalDateTime recentChatCreatedAt;
+            if (chatRoomUser.getChatRoomUserType() == ChatRoomUserType.BLOCKED) {
+                recentChat = chatRepository.findSliceChatsForBlockedUser(chatRoom.getId(), chatRoomUser.getUser().getId(), PageRequest.of(0, 1))
+                        .toList().get(0);
+            } else {
+                recentChat = chatRepository.findTopByChatRoomOrderByCreatedAtDesc(chatRoom)
+                        .orElse(null);
+            }
 
-            String recentChatContent = recentChat.getContent();
-            LocalDateTime recentChatCreatedAt = recentChat.getCreatedAt();
-
-            if (recentChatCreatedAt == null) {
+            if (recentChat == null) {
+                recentChatContent = "아직 채팅이 없습니다.";
                 recentChatCreatedAt = chatRoom.getCreatedAt();
+            } else {
+                recentChatContent = recentChat.getContent();
+                recentChatCreatedAt = recentChat.getCreatedAt();
             }
 
             chatRooms.add(ChatRoomDto.ChatRoomListElementResponse.from(chatRoom, recentChatContent, recentChatCreatedAt));
@@ -182,6 +187,11 @@ public class ChatRoomService {
 
         ChatRoomUser chatRoomUser = chatRoomUserRepository.findByChatRoomIdAndUserId(chatRoomId, userId)
                 .orElseThrow(() -> new CustomException(CustomErrorType.CHAT_ROOM_USER_NOT_FOUND));
+
+        // 차단된 유저는 나가기해도 채팅방을 나갔습니다가 보내지면 안 된다
+        if (chatRoomUser.getChatRoomUserType() == ChatRoomUserType.BLOCKED) {
+            return;
+        }
 
         // 상태 DELETED로 변경
         chatRoomUser.changeChatRoomUserType(ChatRoomUserType.DELETED);
