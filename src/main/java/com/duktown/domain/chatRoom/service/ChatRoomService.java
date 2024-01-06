@@ -23,6 +23,9 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -137,16 +140,38 @@ public class ChatRoomService {
         return ChatRoomDto.ChatRoomResponse.from(delivery, seed.decrypt(delivery.getAccountNumber()));
     }
 
-    // 내가 참여중인 채팅방 목록 조회 TODO : 채팅 온 순으로 자동 정렬, 페이징 처리
+    // 내가 참여중인 채팅방 목록 조회 TODO : 페이징 처리, 안 읽은 개수 표시
     public ChatRoomDto.ChatRoomListResponse getChatRoomList(Long userId) {
         userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         List<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByUserId(userId);
-        if (chatRoomUsers != null) {
-            List<ChatRoom> chatRooms = chatRoomUsers.stream().map(ChatRoomUser::getChatRoom).collect(Collectors.toList());
-            return ChatRoomDto.ChatRoomListResponse.from(chatRooms);
+        List<ChatRoomDto.ChatRoomListElementResponse> chatRooms = new ArrayList<>();
+
+        for (ChatRoomUser chatRoomUser : chatRoomUsers) {
+            // 참여중인 채팅방 찾기
+            ChatRoom chatRoom = chatRoomUser.getChatRoom();
+
+            // 가장 최근 메시지 찾기
+            Chat recentChat = chatRepository.findTopByChatRoomOrderByCreatedAtDesc(chatRoom)
+                    .orElse(Chat.builder()
+                            .user(null)
+                            .chatRoom(chatRoom)
+                            .chatType(ChatType.CHAT)
+                            .content("아직 채팅이 없습니다.")
+                            .build());
+
+            String recentChatContent = recentChat.getContent();
+            LocalDateTime recentChatCreatedAt = recentChat.getCreatedAt();
+
+            if (recentChatCreatedAt == null) {
+                recentChatCreatedAt = chatRoom.getCreatedAt();
+            }
+
+            chatRooms.add(ChatRoomDto.ChatRoomListElementResponse.from(chatRoom, recentChatContent, recentChatCreatedAt));
         }
 
-        return null;
+        chatRooms.sort(Comparator.comparing(ChatRoomDto.ChatRoomListElementResponse::getRecentChatCreatedAt).reversed());
+
+        return new ChatRoomDto.ChatRoomListResponse(chatRooms);
     }
 
     // 채팅방 나가기
