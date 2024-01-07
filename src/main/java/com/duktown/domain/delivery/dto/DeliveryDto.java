@@ -65,6 +65,7 @@ public class DeliveryDto {
     public static class DeliveryResponse {
         private Long userId;
         private Long deliveryId;
+        private String title;
         private String createdAt;
         private Integer maxPeople;
         private String orderTime;
@@ -79,6 +80,7 @@ public class DeliveryDto {
                     .userId(delivery.getUser().getId())
                     .deliveryId(delivery.getId())
                     .createdAt(DateUtil.convert(delivery.getCreatedAt()))
+                    .title(delivery.getTitle())
                     .maxPeople(delivery.getMaxPeople())
                     .orderTime(DateUtil.convertToAMPMFormat(delivery.getOrderTime()))
                     .content(delivery.getContent())
