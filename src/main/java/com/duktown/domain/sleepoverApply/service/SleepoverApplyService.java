@@ -35,16 +35,11 @@ public class SleepoverApplyService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-
         //외박 시작 날짜 + 현재 로직 시간을 기반으로 22시 체크
         if(processRequests(request.getStartDate())){
-            //TODO: 남은 외박 일수 필요함 +  금,토,일은 외박 날짜에서 제외함.
-            long remainingDays = calculateRemainingDays(request.getStartDate(), request.getEndDate());
+            long remainingDays = calculateRemainingDaysExcludingWeekends(request.getStartDate(), request.getEndDate());
 
-            // 남은 외박 일수를 로그로 출력
-            System.out.println("Remaining days: " + remainingDays);
-
-            request.setPeriod(remainingDays > 0 ? Math.toIntExact(remainingDays) : 0);
+            request.setPeriod(remainingDays > 0 ? Math.toIntExact(remainingDays) : 0); // 실제 외박 일수를 DTO에 추가
 
             SleepoverApply sleepoverApply = request.toEntity(user);
             sleepoverApplyRepository.save(sleepoverApply);
@@ -63,34 +58,26 @@ public class SleepoverApplyService {
         return true;
     }
 
-    public long calculateRemainingDays(LocalDate startDate, LocalDate endDate) {
-        // 시작 날짜부터 종료 날짜까지의 날짜 차이 계산
-        long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
-
-        // 금,토,일을 제외하고 남은 외박 일수 계산
-        long remainingDays = daysBetween - countWeekendDays(startDate, endDate);
-
-        return remainingDays > 0 ? remainingDays : 0;
-    }
-
-    private long countWeekendDays(LocalDate startDate, LocalDate endDate) {
-        long weekendDays = 0;
+    // 외박 시작 신청 시작일 종료일 계산 내부 메서드
+    public long calculateRemainingDaysExcludingWeekends(LocalDate startDate, LocalDate endDate) {
+        long remainingDays = 0;
 
         LocalDate currentDate = startDate;
         while (!currentDate.isAfter(endDate)) {
-            // 금,토,일이면 제외
-            if (currentDate.getDayOfWeek() == DayOfWeek.FRIDAY ||
-                    currentDate.getDayOfWeek() == DayOfWeek.SATURDAY ||
-                    currentDate.getDayOfWeek() == DayOfWeek.SUNDAY) {
-                weekendDays++;
+            // 금,토,일이 아니면 카운트
+            if (currentDate.getDayOfWeek() != DayOfWeek.FRIDAY &&
+                    currentDate.getDayOfWeek() != DayOfWeek.SATURDAY &&
+                    currentDate.getDayOfWeek() != DayOfWeek.SUNDAY) {
+                remainingDays++;
             }
 
             // 다음 날짜로 이동
             currentDate = currentDate.plusDays(1);
         }
 
-        return weekendDays;
+        return remainingDays;
     }
+
 
     public void deleteSleepoverApply(Long sleepoverApplyId , Long userId){
         userRepository.findById(userId).orElseThrow(()->new CustomException(USER_NOT_FOUND));
@@ -99,7 +86,7 @@ public class SleepoverApplyService {
         sleepoverApplyRepository.delete(sleepoverApply);
     }
 
-
+    //TODO: 목록 조회 시에도 남은 외박 일수 조회 메서드
     @Transactional(readOnly = true)
     public SleepoverApplyDto.ResponseGetListSleepoverApply getListSleepoverApply(int pageNo){
         Page<SleepoverApply> sleepoverApplies = sleepoverApplyRepository.findAll(PageRequest.of(pageNo,pageNo, Sort.by(Sort.Order.desc("createdAt"),Sort.Order.asc("approved"))));
@@ -131,7 +118,7 @@ public class SleepoverApplyService {
 
     }
 
+    //TODO: 남은 외박 일수 조회 메서드
 
 
-
-    }
+}
