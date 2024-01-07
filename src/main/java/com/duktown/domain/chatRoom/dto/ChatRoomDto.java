@@ -18,6 +18,7 @@ public class ChatRoomDto {
     public static class ChatRoomResponse {
         private Long chatRoomId;
         private Long deliveryId;
+        private Boolean deliveryDeleted;
         private String title;
         private Integer maxPeople;
         private String orderTime;
@@ -27,6 +28,7 @@ public class ChatRoomDto {
             return ChatRoomResponse.builder()
                     .chatRoomId(delivery.getChatRoom().getId())
                     .deliveryId(delivery.getId())
+                    .deliveryDeleted(delivery.getDeleted())
                     .title(delivery.getTitle())
                     .maxPeople(delivery.getMaxPeople())
                     .orderTime(DateUtil.convertToAMPMFormat(delivery.getOrderTime()))

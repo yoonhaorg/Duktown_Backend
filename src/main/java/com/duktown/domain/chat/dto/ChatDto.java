@@ -43,6 +43,7 @@ public class ChatDto {
     @Getter
     @AllArgsConstructor
     public static class MessageResponse {
+        private Long chatId;
         private Long userId;
         private Integer userNumber;
         private ChatType chatType;
@@ -52,6 +53,7 @@ public class ChatDto {
         public static MessageResponse from(Chat chat, ChatRoomUser chatRoomUser) {
             if (chat.getUser() == null) {
                 return MessageResponse.builder()
+                        .chatId(chat.getId())
                         .chatType(chat.getChatType())
                         .message(chat.getContent())
                         .createdAt(chat.getCreatedAt().toString())
@@ -59,6 +61,7 @@ public class ChatDto {
             }
 
             return MessageResponse.builder()
+                    .chatId(chat.getId())
                     .userId(chat.getUser().getId())
                     .userNumber(chatRoomUser.getUserNumber())
                     .chatType(chat.getChatType())
