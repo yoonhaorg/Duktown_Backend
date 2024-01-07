@@ -73,9 +73,10 @@ public class DeliveryDto {
         private Integer peopleCount;
         private Integer commentCount;
         private Boolean active;
+        private Boolean isWriter;
 
 
-        public static DeliveryResponse from(Delivery delivery) {
+        public static DeliveryResponse from(Delivery delivery, Boolean isWriter) {
             return DeliveryResponse.builder()
                     .userId(delivery.getUser().getId())
                     .deliveryId(delivery.getId())
@@ -87,23 +88,17 @@ public class DeliveryDto {
                     .peopleCount(delivery.getChatRoom().getChatRoomUsers().size())
                     .commentCount(delivery.getComments().size())
                     .active(delivery.getActive())
+                    .isWriter(isWriter)
                     .build();
         }
     }
 
     @Getter
-    @Builder
-    @AllArgsConstructor
     public static class DeliveryListResponse {
-        private List<DeliveryResponse> content;
+        private final List<DeliveryResponse> content;
 
-        public static DeliveryListResponse from(List<Delivery> deliveries) {
-            return DeliveryListResponse.builder()
-                    .content(deliveries
-                            .stream()
-                            .map(DeliveryResponse::from)
-                            .collect(Collectors.toList()))
-                    .build();
+        public DeliveryListResponse(List<DeliveryResponse> content) {
+            this.content = content;
         }
     }
 }

@@ -23,6 +23,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -156,7 +157,12 @@ public class DeliveryService {
             throw new CustomException(INVALID_DELIVERY_SORTBY_VALUE);
         }
 
-        return DeliveryDto.DeliveryListResponse.from(deliveries);
+        List<DeliveryDto.DeliveryResponse> content = deliveries
+                .stream()
+                .map(d -> DeliveryDto.DeliveryResponse.from(d, d.getUser().getId().equals(userId)))
+                .collect(Collectors.toList());
+
+        return new DeliveryDto.DeliveryListResponse(content);
     }
 
     // 상세 조회
@@ -164,7 +170,10 @@ public class DeliveryService {
         userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         Delivery delivery = deliveryRepository.findById(deliveryId).orElseThrow(() -> new CustomException(DELIVERY_NOT_FOUND));
 
-        return DeliveryDto.DeliveryResponse.from(delivery);
+        // 글쓴이인지 여부
+        Boolean isWriter = delivery.getUser().getId().equals(userId);
+
+        return DeliveryDto.DeliveryResponse.from(delivery, isWriter);
     }
 
     // 삭제
