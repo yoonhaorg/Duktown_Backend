@@ -51,8 +51,9 @@ public class PostDto {
         private Integer likeCount;
         private Long commentCount;
         private String datetime;
+        private Boolean isWriter;
 
-        public PostResponse(Post post, List<Like> likes, Long commentCount){
+        public PostResponse(Post post, List<Like> likes, Long commentCount, Boolean isWriter){
             this.id = post.getId();
             this.userId = post.getUser().getId();
             this.category = post.getCategory().getValue();
@@ -62,12 +63,13 @@ public class PostDto {
             this.likeCount = post.getLikes().size();
             this.commentCount = commentCount;
             this.datetime = DateUtil.convert(post.getCreatedAt());
+            this.isWriter = isWriter;
         }
     }
 
     @Getter
     public static class PostListResponse{
-        private List<PostResponse> content;
+        private final List<PostResponse> content;
 
         public PostListResponse(List<PostResponse> content){
             this.content = content;

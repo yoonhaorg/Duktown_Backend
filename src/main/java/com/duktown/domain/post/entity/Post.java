@@ -46,10 +46,12 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false, columnDefinition = "longtext")
     private String content;
 
-    @OneToMany(mappedBy = "post")
+    @Builder.Default
+    @OneToMany(fetch = LAZY, mappedBy = "post")
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post")
+    @Builder.Default
+    @OneToMany(fetch = LAZY, mappedBy = "post")
     private List<Like> likes = new ArrayList<>();
 
     public void update(String title, String content){

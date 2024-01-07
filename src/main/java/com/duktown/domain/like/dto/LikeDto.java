@@ -26,7 +26,6 @@ public class LikeDto {
         }
     }
 
-    // TODO: 게시글 관련 타 dto에 likeCount와 liked 필드 추가하기
     @AllArgsConstructor
     @Getter
     public static class LikeResponse {

@@ -46,9 +46,9 @@ public class CommentDto {
         private Long commentCount;
         private List<ParentResponse> content;
 
-        public static ListResponse from(Long commentCount, List<Comment> comments, List<Like> likes){
+        public static ListResponse from(Long commentCount, List<Comment> comments, List<Like> likes, User user){
             List<ParentResponse> content = comments.stream()
-                    .map(c -> ParentResponse.from(c, likes))
+                    .map(c -> ParentResponse.from(c, likes, user, user.getId().equals(c.getUser().getId())))
                     .collect(Collectors.toList());
             return ListResponse.builder()
                     .commentCount(commentCount)
@@ -68,11 +68,12 @@ public class CommentDto {
         private Integer likeCount;
         private String dateTime;
         private Boolean deleted;
+        private Boolean isWriter;
         private List<ChildResponse> childComments;
 
-        public static ParentResponse from(Comment comment, List<Like> likes) {
+        public static ParentResponse from(Comment comment, List<Like> likes, User user, Boolean isWriter) {
             List<ChildResponse> childComments = comment.getChildComments().stream()
-                    .map(c -> ChildResponse.from(c, likes))
+                    .map(c -> ChildResponse.from(c, likes, user.getId().equals(c.getUser().getId())))
                     .collect(Collectors.toList());
             return ParentResponse.builder()
                     .commentId(comment.getId())
@@ -83,6 +84,7 @@ public class CommentDto {
                     .dateTime(DateUtil.convert(comment.getCreatedAt()))
                     .deleted(comment.getDeleted())
                     .childComments(childComments)
+                    .isWriter(isWriter)
                     .build();
         }
     }
@@ -96,9 +98,10 @@ public class CommentDto {
         private String content;
         private Boolean liked;
         private Integer likeCount;
+        private Boolean isWriter;
         private String dateTime;
 
-        public static ChildResponse from(Comment comment, List<Like> likes) {
+        public static ChildResponse from(Comment comment, List<Like> likes, Boolean isWriter) {
             return ChildResponse.builder()
                     .commentId(comment.getId())
                     .userId(comment.getUser().getId())
@@ -106,6 +109,7 @@ public class CommentDto {
                     .liked(likes.stream().anyMatch(l -> l.getComment().getId().equals(comment.getId())))
                     .likeCount(comment.getLikes().size())
                     .dateTime(DateUtil.convert(comment.getCreatedAt()))
+                    .isWriter(isWriter)
                     .build();
         }
     }

@@ -116,7 +116,7 @@ public class CommentService {
             throw new CustomException(COMMENT_TARGET_NOT_SELECTED);
         }
 
-        return CommentDto.ListResponse.from(commentCount, comments, likes);
+        return CommentDto.ListResponse.from(commentCount, comments, likes, user);
     }
 
     public void updateComment(Long userId, Long commentId, CommentDto.UpdateRequest request){
