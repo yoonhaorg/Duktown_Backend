@@ -36,18 +36,20 @@ public class RepairApply {
     private HallName hallName;
 
     //기숙사 호수
-    private String unit;
+    private String roomNumber;
 
     @Column(columnDefinition = "longtext", nullable = false)
     //수리요청 내용
     private String content;
 
+    //
     private Boolean checked;
 
+    //
     private Boolean solved;
 
     public void update(String title, String content){
-        this.unit =unit;
+        this.roomNumber =roomNumber;
         this.content =content;
     }
 
