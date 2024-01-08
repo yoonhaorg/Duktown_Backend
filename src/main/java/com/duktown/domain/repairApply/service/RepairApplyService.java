@@ -9,6 +9,10 @@ import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.exception.CustomException;
 import com.duktown.global.type.HallName;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,11 +78,18 @@ public class RepairApplyService {
 
     //목록조회
     @Transactional(readOnly = true)
-    public RepairApplyDto.RepairApplyListResponse getApplyList(Long userId) {
+    public RepairApplyDto.RepairApplyListResponse getApplyList(Long userId, int pageNo) {
         User user = userRepository.findById(userId)
                 .orElseThrow(()->new CustomException(USER_NOT_FOUND));
 
-        List<RepairApply> applys = repairApplyRepository.findAllByCreatedAtThisYear();
+        Sort customSort = Sort.by(
+                Sort.Order.asc("solved"),
+                Sort.Order.asc("checked")
+        );
+
+        Pageable pageable = PageRequest.of(pageNo-1, 11, customSort);
+
+        Page<RepairApply> applys = repairApplyRepository.findAllByCreatedAtThisYear(pageable);
         List<RepairApplyDto.RepairApplyResponseList> repairApplyResponseList = applys.stream()
                 .map(RepairApplyDto.RepairApplyResponseList::fromEntity)
                 .collect(Collectors.toList());
