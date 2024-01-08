@@ -1,5 +1,6 @@
 package com.duktown.domain.repairApply.entity;
 
+import com.duktown.domain.BaseTimeEntity;
 import com.duktown.domain.user.entity.User;
 import com.duktown.global.type.HallName;
 import lombok.*;
@@ -20,7 +21,7 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor(access = PRIVATE)
 @NoArgsConstructor(access = PROTECTED)
 @Table(name = "repair_apply")
-public class RepairApply {
+public class RepairApply extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "repair_apply_id")

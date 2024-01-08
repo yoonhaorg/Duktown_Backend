@@ -4,14 +4,13 @@ import com.duktown.domain.repairApply.entity.RepairApply;
 import com.duktown.domain.user.entity.User;
 import com.duktown.global.type.HallName;
 import com.duktown.global.util.DateUtil;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.List;
 
 public class RepairApplyDto {
@@ -68,10 +67,29 @@ public class RepairApplyDto {
     }
 
     @Getter
-    public static class RepairApplyListResponse{
-        private List<RepairApply> content;
+    @Builder
+    @AllArgsConstructor
+    public static class RepairApplyResponseList{
+        private String content;
+        private LocalDate createAt;
+        private Boolean checked;
+        private Boolean solved;
 
-        public RepairApplyListResponse(List<RepairApply> content){
+        public static RepairApplyResponseList fromEntity(RepairApply repairApply){
+            return RepairApplyResponseList.builder()
+                    .checked(repairApply.getChecked())
+                    .solved(repairApply.getSolved())
+                    .content(repairApply.getContent())
+                    .createAt(repairApply.getCreatedAt().toLocalDate())
+                    .build();
+        }
+    }
+
+    @Getter
+    public static class RepairApplyListResponse{
+        private List<RepairApplyResponseList> content;
+
+        public RepairApplyListResponse(List<RepairApplyResponseList> content){
             this.content = content;
         }
     }

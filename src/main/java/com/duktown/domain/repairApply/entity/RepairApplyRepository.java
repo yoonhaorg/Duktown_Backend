@@ -9,8 +9,10 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface RepairApplyRepository extends JpaRepository<RepairApply, Long> {
-//    List<RepairApply> findByUser(User user);
     List<RepairApply> findByUser(Long userId);
+
+    @Query("SELECT e FROM RepairApply e WHERE YEAR(e.createdAt) = YEAR(CURRENT_DATE)")
+    List<RepairApply> findAllByCreatedAtThisYear();
 
     @Query("select a from RepairApply a where a.hallName = :hallName")
     List<RepairApply> findAllByHallName(@Param(value = "hallName") HallName findHallName);

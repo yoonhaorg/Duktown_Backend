@@ -14,8 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.duktown.global.exception.CustomErrorType.*;
+
 
 @Service
 @Transactional
@@ -72,17 +74,16 @@ public class RepairApplyService {
 
     //목록조회
     @Transactional(readOnly = true)
-    public RepairApplyDto.RepairApplyListResponse getApplyList(Long userId, Integer hallName) {
+    public RepairApplyDto.RepairApplyListResponse getApplyList(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(()->new CustomException(USER_NOT_FOUND));
 
-        HallName findHallName = Arrays.stream(HallName.values())
-                .filter(c -> c.getValue() == hallName)
-                .findAny().orElseThrow(() -> new CustomException(INVALID_POST_CATEGORY_VALUE));
+        List<RepairApply> applys = repairApplyRepository.findAllByCreatedAtThisYear();
+        List<RepairApplyDto.RepairApplyResponseList> repairApplyResponseList = applys.stream()
+                .map(RepairApplyDto.RepairApplyResponseList::fromEntity)
+                .collect(Collectors.toList());
 
-        List<RepairApply> applys = repairApplyRepository.findAll();
-
-        return new RepairApplyDto.RepairApplyListResponse(applys);
+        return new RepairApplyDto.RepairApplyListResponse(repairApplyResponseList);
     }
 
     //상세조회

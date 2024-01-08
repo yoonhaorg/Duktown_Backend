@@ -28,11 +28,10 @@ public class RepairApplyController {
     //TODO: hallName 탭 삭제, 목록 조건으로 올해 년도만 제한 + 확인 + 해결 여부 추가
     @GetMapping
     public ResponseEntity<RepairApplyDto.RepairApplyListResponse> getApplyList(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam(value = "hallName") Integer hallName
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
     ){
         return ResponseEntity.ok().body(
-                repairApplyService.getApplyList(customUserDetails.getId(), hallName));
+                repairApplyService.getApplyList(customUserDetails.getId()));
     }
 
     @GetMapping("/{repairApplyId}")
