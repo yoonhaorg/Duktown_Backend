@@ -105,7 +105,7 @@ public class UserControllerTest {
     void signup_success() throws Exception {
         // given
         final String url = "/auth/signup";
-        UserDto.SignupRequest request = new UserDto.SignupRequest("dskim@duksung.ac.kr", "dskim", "1234");
+        UserDto.SignupRequest request = new UserDto.SignupRequest("dskim@duksung.ac.kr", "dskim", "1234", "김덕성");
         String body = new ObjectMapper().writeValueAsString(request);
 
         // when & then
