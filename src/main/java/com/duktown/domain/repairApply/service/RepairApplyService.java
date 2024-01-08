@@ -13,9 +13,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -126,9 +129,11 @@ public class RepairApplyService {
     }
 
 
-    // TODO: check -> 3일 동안 안 되면 재요청
-//    @Scheduled(cron = "0 0 9 * * ?")
-//    private void nextCheck(){
-//
-//    }
+    // check -> 3일 동안 안 되면 재요청
+    @Scheduled(cron = "0 0 9 * * ?")
+    private void AgainCheck(){
+        LocalDateTime currentDate = LocalDate.now().atTime(0,0,0);
+        repairApplyRepository.findByCheckedAndCreatedAtAfterThreeDays(currentDate);
+        //TODO: 알림 로직 추가
+    }
 }
