@@ -18,6 +18,6 @@ public interface PostRespository extends JpaRepository<Post,Long> {
     List<Post> findAllByCategory(@Param(value = "category") Category category);
 
     // 일상 0, 장터 1 검색
-    @Query("SELECT p FROM Post p WHERE p.title LIKE %:keyword% OR p.content LIKE %:keyword% AND p.category = :category")
-    Slice<Post> findByKeywordAndCategory(@Param("keyword") String keyword, @Param("category") Category category, Pageable pageable);
+    @Query("SELECT p FROM Post p WHERE p.category = :category AND (p.title LIKE %:keyword% OR p.content LIKE %:keyword%) ")
+    Slice<Post> findByCategoryAndKeyword( @Param("category") Category category, @Param("keyword") String keyword,Pageable pageable);
 }

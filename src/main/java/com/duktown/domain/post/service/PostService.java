@@ -129,7 +129,7 @@ public class PostService {
                 .filter(c -> c.getValue() == category)
                 .findAny().orElseThrow(() -> new CustomException(INVALID_POST_CATEGORY_VALUE));
 
-        Slice<Post> posts = postRespository.findByKeywordAndCategory(keyword,findCategory,PageRequest.of(0,7, Sort.by(Sort.Order.desc("createdAt"))));
+        Slice<Post> posts = postRespository.findByCategoryAndKeyword(findCategory,keyword,PageRequest.of(0,7, Sort.by(Sort.Order.desc("createdAt"))));
         List<Like> likes = likeRepository
                 .findAllByUserAndPostIn(
                         user.getId(),
