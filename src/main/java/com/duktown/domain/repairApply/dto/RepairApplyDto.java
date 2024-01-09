@@ -4,14 +4,13 @@ import com.duktown.domain.repairApply.entity.RepairApply;
 import com.duktown.domain.user.entity.User;
 import com.duktown.global.type.HallName;
 import com.duktown.global.util.DateUtil;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.List;
 
 public class RepairApplyDto {
@@ -24,7 +23,7 @@ public class RepairApplyDto {
         @Max(value = 2, message = "카테고리는 0에서 2사이의 정수 값입니다.")
         private Integer hallName;
 
-        private String unit;
+        private String roomNumber;
 
         @NotBlank(message = "내용은 필수 입력값입니다")
         private String content;
@@ -34,7 +33,7 @@ public class RepairApplyDto {
             return RepairApply.builder()
                     .user(user)
                     .hallName(hallName)
-                    .unit(unit)
+                    .roomNumber(roomNumber)
                     .content(content)
                     .checked(false)
                     .solved(false)
@@ -49,7 +48,7 @@ public class RepairApplyDto {
         private Long id;
         private Long userId;
         private Integer hallName;
-        private String unit;
+        private String roomNumber;
         private String content;
         private Boolean checked;
         private Boolean solved;
@@ -59,7 +58,7 @@ public class RepairApplyDto {
             this.id = apply.getId();
             this.userId = apply.getUser().getId();
             this.hallName = apply.getHallName().getValue();
-            this.unit = apply.getUnit();
+            this.roomNumber = apply.getRoomNumber();
             this.content = apply.getContent();
             this.checked = apply.getChecked();
             this.solved = apply.getSolved();
@@ -68,10 +67,29 @@ public class RepairApplyDto {
     }
 
     @Getter
-    public static class RepairApplyListResponse{
-        private List<RepairApply> content;
+    @Builder
+    @AllArgsConstructor
+    public static class RepairApplyResponseList{
+        private String content;
+        private LocalDate createAt;
+        private Boolean checked;
+        private Boolean solved;
 
-        public RepairApplyListResponse(List<RepairApply> content){
+        public static RepairApplyResponseList fromEntity(RepairApply repairApply){
+            return RepairApplyResponseList.builder()
+                    .checked(repairApply.getChecked())
+                    .solved(repairApply.getSolved())
+                    .content(repairApply.getContent())
+                    .createAt(repairApply.getCreatedAt().toLocalDate())
+                    .build();
+        }
+    }
+
+    @Getter
+    public static class RepairApplyListResponse{
+        private List<RepairApplyResponseList> content;
+
+        public RepairApplyListResponse(List<RepairApplyResponseList> content){
             this.content = content;
         }
     }

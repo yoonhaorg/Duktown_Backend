@@ -1,5 +1,6 @@
 package com.duktown.domain.repairApply.entity;
 
+import com.duktown.domain.BaseTimeEntity;
 import com.duktown.domain.user.entity.User;
 import com.duktown.global.type.HallName;
 import lombok.*;
@@ -20,7 +21,7 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor(access = PRIVATE)
 @NoArgsConstructor(access = PROTECTED)
 @Table(name = "repair_apply")
-public class RepairApply {
+public class RepairApply extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "repair_apply_id")
@@ -36,18 +37,20 @@ public class RepairApply {
     private HallName hallName;
 
     //기숙사 호수
-    private String unit;
+    private String roomNumber;
 
     @Column(columnDefinition = "longtext", nullable = false)
     //수리요청 내용
     private String content;
 
+    //
     private Boolean checked;
 
+    //
     private Boolean solved;
 
     public void update(String title, String content){
-        this.unit =unit;
+        this.roomNumber =roomNumber;
         this.content =content;
     }
 
