@@ -57,4 +57,13 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<PostDto.PostListResponse> searchPost(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam("keyword") String keyword,
+            @RequestParam(value = "category") Integer category
+    ){
+        return ResponseEntity.ok().body(
+                postService.searchPostList(customUserDetails.getId(),category,keyword));
+    }
 }

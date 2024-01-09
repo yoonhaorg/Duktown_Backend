@@ -12,6 +12,9 @@ import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.exception.CustomException;
 import com.duktown.global.type.Category;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -115,5 +118,29 @@ public class PostService {
 
         // 게시글 삭제
         postRespository.delete(deletePost);
+    }
+
+    // 게시글 검색
+    @Transactional(readOnly = true)
+    public PostDto.PostListResponse searchPostList(Long userId, Integer category,String keyword) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        Category findCategory = Arrays.stream(Category.values())
+                .filter(c -> c.getValue() == category)
+                .findAny().orElseThrow(() -> new CustomException(INVALID_POST_CATEGORY_VALUE));
+
+        Slice<Post> posts = postRespository.findByKeywordAndCategory(keyword,findCategory,PageRequest.of(0,7, Sort.by(Sort.Order.desc("createdAt"))));
+        List<Like> likes = likeRepository
+                .findAllByUserAndPostIn(
+                        user.getId(),
+                        posts.stream().map(Post::getId)
+                                .collect(Collectors.toList())
+                );
+
+        List<PostDto.PostResponse> postListResponses = posts.stream()
+                .map(p -> new PostDto.PostResponse(p, likes, commentRepository.countByPostId(p.getId()), p.getUser().getId().equals(userId)))
+                .collect(Collectors.toList());
+
+        return new PostDto.PostListResponse(postListResponses);
     }
 }
