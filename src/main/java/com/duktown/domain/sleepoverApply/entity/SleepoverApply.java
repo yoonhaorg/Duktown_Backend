@@ -41,7 +41,8 @@ public class SleepoverApply extends BaseTimeEntity {
     private Integer period; //외박 일 수
 
     @Column(nullable = false)
-    private String address; // 머무르는 주소
+    @Embedded
+    private Address address; // 머무르는 주소
 
     // 남은 외박 일 수
     private Integer availablePeriod;

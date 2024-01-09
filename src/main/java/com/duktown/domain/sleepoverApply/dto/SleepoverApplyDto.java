@@ -1,6 +1,7 @@
 package com.duktown.domain.sleepoverApply.dto;
 
 import com.duktown.domain.BaseTimeEntity;
+import com.duktown.domain.sleepoverApply.entity.Address;
 import com.duktown.domain.sleepoverApply.entity.SleepoverApply;
 import com.duktown.domain.user.entity.User;
 import com.duktown.global.type.ApprovalType;
@@ -42,7 +43,7 @@ public class SleepoverApplyDto {
                     .startDate(startDate)
                     .endDate(endDate)
                     .period(period)
-                    .address(streetAddress)
+                    .address(new Address(zipcode,streetAddress,detailAddress))
                     .reason(reason)
                     .approved(ApprovalType.Waiting)
                     .build();
@@ -66,7 +67,7 @@ public class SleepoverApplyDto {
             startDate = sleepoverApply.getStartDate();
             endDate= sleepoverApply.getEndDate();
             period= sleepoverApply.getPeriod();
-            address=  sleepoverApply.getAddress();
+            address=  sleepoverApply.getAddress().getStreetAddress() + sleepoverApply.getAddress().getStreetAddress();
             reason =sleepoverApply.getReason();
             userId = sleepoverApply.getUser().getId();
 
@@ -103,6 +104,7 @@ public class SleepoverApplyDto {
         private LocalDate startDate;
         private LocalDate endDate;
         private LocalDateTime createdAt;
+        private String address; // 머무르는 주소
         private Integer period; //외박 일 수
 
         public ResponseGetListSleepoverApply(SleepoverApply sleepoverApply){
@@ -110,6 +112,7 @@ public class SleepoverApplyDto {
             startDate = sleepoverApply.getStartDate();
             endDate= sleepoverApply.getEndDate();
             period= sleepoverApply.getPeriod();
+            address=  sleepoverApply.getAddress().getStreetAddress() + sleepoverApply.getAddress().getStreetAddress();
             createdAt =sleepoverApply.getCreatedAt();
         }
 

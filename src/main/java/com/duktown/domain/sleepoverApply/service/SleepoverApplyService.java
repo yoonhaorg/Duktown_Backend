@@ -86,7 +86,7 @@ public class SleepoverApplyService {
 
     @Transactional(readOnly = true)
     public SleepoverApplyDto.ResponseGetSleepoverApplyFromManager getListSleepoverApply(int pageNo){
-        Page<SleepoverApply> sleepoverApplies = sleepoverApplyRepository.findAll(PageRequest.of(pageNo,pageNo, Sort.by(desc("createdAt"),Sort.Order.asc("approved"))));
+        Page<SleepoverApply> sleepoverApplies = sleepoverApplyRepository.findAll(PageRequest.of(pageNo-1,5, Sort.by(desc("createdAt"),Sort.Order.asc("approved"))));
 
         List<SleepoverApplyDto.ResponseGetSleepoverApply> getSleepoverApplyList
                 = sleepoverApplies.stream()

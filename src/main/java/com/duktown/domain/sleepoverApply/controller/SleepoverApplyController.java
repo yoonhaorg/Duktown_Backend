@@ -42,7 +42,7 @@ public class SleepoverApplyController {
     @GetMapping("/manager")
     public ResponseEntity<SleepoverApplyDto.ResponseGetSleepoverApplyFromManager> getSleepoverListFromManager(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo
+            @RequestParam(required = false, defaultValue = "1", value = "page") int pageNo
     ){
         return ResponseEntity.ok( sleepoverApplyService.getListSleepoverApply(pageNo));
     }
