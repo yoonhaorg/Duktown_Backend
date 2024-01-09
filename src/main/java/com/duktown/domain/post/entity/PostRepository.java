@@ -17,4 +17,9 @@ public interface PostRepository extends JpaRepository<Post,Long> {
 
     @Query("select p from Post p where p.user.id = :user_id and p.category = :category order by p.createdAt desc")
     List<Post> findAllByUserAndCategory(@Param("user_id") Long userId, @Param(value = "category") Category category);
+
+    // 검색 - 키워드, 페이지네이션
+    @Query("SELECT p FROM Post p WHERE LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(p.content) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    List<Post> searchByKeyword(@Param("keyword") String keyword);
+
 }
