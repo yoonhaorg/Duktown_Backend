@@ -121,17 +121,22 @@ public class SleepoverApplyDto {
     public static class ResponseGetSleepoverApplyFromStudent{
         private Integer availablePeriod;
 
-        private List<ResponseGetListSleepoverApply> listSleepoverApply;
+        private List<ResponseGetListSleepoverApply> content;
 
         public static ResponseGetSleepoverApplyFromStudent from(List<ResponseGetListSleepoverApply> getSleepoverApplyList,Integer availablePeriod){
             return ResponseGetSleepoverApplyFromStudent.builder()
-                    .listSleepoverApply(getSleepoverApplyList)
+                    .content(getSleepoverApplyList)
                     .availablePeriod(availablePeriod)
                     .build();
         }
     }
 
+    @Getter
+    @AllArgsConstructor
+    public static class ResponseGetAvailablePeriod{
+        private Integer availablePeriod;
 
+    }
 
 
 }

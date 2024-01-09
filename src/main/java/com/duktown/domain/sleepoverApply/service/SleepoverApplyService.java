@@ -110,14 +110,14 @@ public class SleepoverApplyService {
                 .map(SleepoverApplyDto.ResponseGetListSleepoverApply::new)
                 .collect(Collectors.toList());
 
-        return SleepoverApplyDto.ResponseGetSleepoverApplyFromStudent.from(getListSleepoverApplies, totalAvailablePeriod(userId));
+        return SleepoverApplyDto.ResponseGetSleepoverApplyFromStudent.from(getListSleepoverApplies, totalAvailablePeriod(userId).getAvailablePeriod());
     }
 
     //외박 가능 횟수 조회
-    public Integer totalAvailablePeriod(Long userId){
+    public SleepoverApplyDto.ResponseGetAvailablePeriod totalAvailablePeriod(Long userId){
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         Integer availablePeriod = sleepoverApplyRepository.findByUser(user).getAvailablePeriod();
-        return availablePeriod;
+        return  new SleepoverApplyDto.ResponseGetAvailablePeriod(availablePeriod);
     }
 
 
