@@ -8,6 +8,7 @@ import lombok.*;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class SleepoverApplyDto {
@@ -48,20 +49,42 @@ public class SleepoverApplyDto {
         }
     }
 
+    @Getter
+    @AllArgsConstructor
+    public static class ResponseGetSleepoverApply{
+
+        private Long userId;
+        private Long sleepoverApplyId;
+        private LocalDate startDate;
+        private LocalDate endDate;
+        private Integer period; //외박 일 수
+        private String address; // 머무르는 주소
+        private String reason; //사유
+
+        public ResponseGetSleepoverApply(SleepoverApply sleepoverApply){
+            sleepoverApplyId  = sleepoverApply.getId();
+            startDate = sleepoverApply.getStartDate();
+            endDate= sleepoverApply.getEndDate();
+            period= sleepoverApply.getPeriod();
+            address=  sleepoverApply.getAddress();
+            reason =sleepoverApply.getReason();
+            userId = sleepoverApply.getUser().getId();
+
+        }
+    }
 
     @Getter
     @Builder
     @AllArgsConstructor
-    public static class ResponseGetListSleepoverApply{
+    public static class ResponseGetSleepoverApplyFromManager{
         private Integer sleepoverApplyCount;
-
         private boolean isFirstPage;
         private boolean isLastPage;
 
         private List<ResponseGetSleepoverApply> listSleepoverApply;
 
-        public static ResponseGetListSleepoverApply from(List<ResponseGetSleepoverApply> getSleepoverApplyList, boolean isFirstPage, boolean isLastPage){
-            return ResponseGetListSleepoverApply.builder()
+        public static ResponseGetSleepoverApplyFromManager from(List<ResponseGetSleepoverApply> getSleepoverApplyList, boolean isFirstPage, boolean isLastPage){
+            return ResponseGetSleepoverApplyFromManager.builder()
                     .sleepoverApplyCount(getSleepoverApplyList.size())
                     .listSleepoverApply(getSleepoverApplyList)
                     .build();
@@ -69,26 +92,45 @@ public class SleepoverApplyDto {
     }
 
 
+
+
     @Getter
+    @Builder
     @AllArgsConstructor
-    public static class ResponseGetSleepoverApply{
-        private Long userId;
+    public static class ResponseGetListSleepoverApply{
+
+        private Long sleepoverApplyId;
         private LocalDate startDate;
         private LocalDate endDate;
+        private LocalDateTime createdAt;
         private Integer period; //외박 일 수
-        private String address; // 머무르는 주소
-        private String reason; //사유
 
-       public ResponseGetSleepoverApply(SleepoverApply sleepoverApply){
-           startDate = sleepoverApply.getStartDate();
-           endDate= sleepoverApply.getEndDate();
-           period= sleepoverApply.getPeriod();
-           address=  sleepoverApply.getAddress();
-           userId= sleepoverApply.getUser().getId();
-           reason =sleepoverApply.getReason();
+        public ResponseGetListSleepoverApply(SleepoverApply sleepoverApply){
+            sleepoverApplyId  = sleepoverApply.getId();
+            startDate = sleepoverApply.getStartDate();
+            endDate= sleepoverApply.getEndDate();
+            period= sleepoverApply.getPeriod();
+            createdAt =sleepoverApply.getCreatedAt();
+        }
 
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class ResponseGetSleepoverApplyFromStudent{
+        private Integer availablePeriod;
+
+        private List<ResponseGetListSleepoverApply> listSleepoverApply;
+
+        public static ResponseGetSleepoverApplyFromStudent from(List<ResponseGetListSleepoverApply> getSleepoverApplyList,Integer availablePeriod){
+            return ResponseGetSleepoverApplyFromStudent.builder()
+                    .listSleepoverApply(getSleepoverApplyList)
+                    .availablePeriod(availablePeriod)
+                    .build();
         }
     }
+
 
 
 

@@ -8,21 +8,18 @@ import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.exception.CustomException;
 import com.duktown.global.type.ApprovalType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.duktown.global.exception.CustomErrorType.*;
+import static org.springframework.data.domain.Sort.Order.desc;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +31,7 @@ public class SleepoverApplyService {
     public void createSleepoverApply(Long userId, SleepoverApplyDto.RequestSleepoverApplyDto request){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
 
         //외박 시작 날짜 + 현재 로직 시간을 기반으로 22시 체크
         if(processRequests(request.getStartDate())){
@@ -86,10 +84,9 @@ public class SleepoverApplyService {
         sleepoverApplyRepository.delete(sleepoverApply);
     }
 
-    //TODO: 목록 조회 시에도 남은 외박 일수 조회 메서드
     @Transactional(readOnly = true)
-    public SleepoverApplyDto.ResponseGetListSleepoverApply getListSleepoverApply(int pageNo){
-        Page<SleepoverApply> sleepoverApplies = sleepoverApplyRepository.findAll(PageRequest.of(pageNo,pageNo, Sort.by(Sort.Order.desc("createdAt"),Sort.Order.asc("approved"))));
+    public SleepoverApplyDto.ResponseGetSleepoverApplyFromManager getListSleepoverApply(int pageNo){
+        Page<SleepoverApply> sleepoverApplies = sleepoverApplyRepository.findAll(PageRequest.of(pageNo,pageNo, Sort.by(desc("createdAt"),Sort.Order.asc("approved"))));
 
         List<SleepoverApplyDto.ResponseGetSleepoverApply> getSleepoverApplyList
                 = sleepoverApplies.stream()
@@ -100,7 +97,27 @@ public class SleepoverApplyService {
         boolean isFirstPage = sleepoverApplies.isFirst();
         boolean isLastPage = sleepoverApplies.isLast();
 
-        return SleepoverApplyDto.ResponseGetListSleepoverApply.from(getSleepoverApplyList, isFirstPage, isLastPage);
+        return SleepoverApplyDto.ResponseGetSleepoverApplyFromManager.from(getSleepoverApplyList, isFirstPage, isLastPage);
+    }
+
+    // 목록 조회
+    @Transactional(readOnly = true)
+    public SleepoverApplyDto.ResponseGetSleepoverApplyFromStudent getListSleepoverApply(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        Slice<SleepoverApply> sleepoverApplies = sleepoverApplyRepository.findByUser(user, PageRequest.of(0, 5, Sort.by(Sort.Order.desc("createdAt"))));
+        List<SleepoverApplyDto.ResponseGetListSleepoverApply> getListSleepoverApplies
+                = sleepoverApplies.stream()
+                .map(SleepoverApplyDto.ResponseGetListSleepoverApply::new)
+                .collect(Collectors.toList());
+
+        return SleepoverApplyDto.ResponseGetSleepoverApplyFromStudent.from(getListSleepoverApplies, totalAvailablePeriod(userId));
+    }
+
+    //외박 가능 횟수 조회
+    public Integer totalAvailablePeriod(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        Integer availablePeriod = sleepoverApplyRepository.findByUser(user).getAvailablePeriod();
+        return availablePeriod;
     }
 
 
@@ -118,7 +135,6 @@ public class SleepoverApplyService {
 
     }
 
-    //TODO: 남은 외박 일수 조회 메서드
 
 
 }

@@ -44,7 +44,7 @@ public class SleepoverApply extends BaseTimeEntity {
     private String address; // 머무르는 주소
 
     // 남은 외박 일 수
-    private Integer totalPeriod;
+    private Integer availablePeriod;
 
     @Column(nullable = false)
     private String reason; //사유
@@ -57,9 +57,9 @@ public class SleepoverApply extends BaseTimeEntity {
     }
 
     @PrePersist
-    private void baseTotoalPeriod(){
+    private void baseAvailablePeriod(){
         // 외박 가능 일수 초기값 부여
-        totalPeriod = 21;
+        availablePeriod = 21;
     };
 
 

@@ -16,13 +16,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import static com.duktown.global.exception.CustomErrorType.*;
 
 
@@ -31,9 +29,7 @@ import static com.duktown.global.exception.CustomErrorType.*;
 @RequiredArgsConstructor
 public class RepairApplyService {
 
-
     private final UserRepository userRepository;
-
     private final RepairApplyRepository repairApplyRepository;
 
 
@@ -131,7 +127,7 @@ public class RepairApplyService {
 
     // check -> 3일 동안 안 되면 재요청
     @Scheduled(cron = "0 0 9 * * ?")
-    private void AgainCheck(){
+    public void AgainCheck(){
         LocalDateTime currentDate = LocalDate.now().atTime(0,0,0);
         repairApplyRepository.findByCheckedAndCreatedAtAfterThreeDays(currentDate);
         //TODO: 알림 로직 추가
