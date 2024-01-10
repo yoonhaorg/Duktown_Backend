@@ -21,4 +21,10 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
 
     @Query(value = "select d from Delivery d where d.deleted = false order by d.orderTime")
     List<Delivery> findAllSortByOrderTime();
+
+    @Query(value = "select d from Delivery d where d.user.id = :user_id and d.deleted = false order by d.createdAt desc")
+    List<Delivery> findAllByUserIdSortByCreatedAt(@Param("user_id") Long userId);
+
+    @Query(value = "select d from Delivery d where d.user.id = :user_id and d.deleted = false order by d.orderTime")
+    List<Delivery> findAllByUserIdSortByOrderTime(@Param("user_id") Long userId);
 }

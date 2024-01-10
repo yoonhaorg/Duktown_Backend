@@ -3,7 +3,7 @@ package com.duktown.domain.like.service;
 import com.duktown.domain.comment.entity.Comment;
 import com.duktown.domain.comment.entity.CommentRepository;
 import com.duktown.domain.post.entity.Post;
-import com.duktown.domain.post.entity.PostRespository;
+import com.duktown.domain.post.entity.PostRepository;
 import com.duktown.domain.like.dto.LikeDto;
 import com.duktown.domain.like.entity.Like;
 import com.duktown.domain.like.entity.LikeRepository;
@@ -25,7 +25,7 @@ import static com.duktown.global.exception.CustomErrorType.*;
 public class LikeService {
     private final LikeRepository likeRepository;
     private final UserRepository userRepository;
-    private final PostRespository postRespository;
+    private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
     // 좋아요 추가, 취소
@@ -63,7 +63,7 @@ public class LikeService {
         Comment comment = null;
 
         if (request.getPostId() != null) {
-            post = postRespository.findById(request.getPostId())
+            post = postRepository.findById(request.getPostId())
                     .orElseThrow(() -> new CustomException(POST_NOT_FOUND));
         } else if (request.getCommentId() != null) {
             comment = commentRepository.findById(request.getCommentId())

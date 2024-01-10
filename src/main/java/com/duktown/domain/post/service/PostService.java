@@ -6,7 +6,7 @@ import com.duktown.domain.like.entity.Like;
 import com.duktown.domain.like.entity.LikeRepository;
 import com.duktown.domain.post.dto.PostDto;
 import com.duktown.domain.post.entity.Post;
-import com.duktown.domain.post.entity.PostRespository;
+import com.duktown.domain.post.entity.PostRepository;
 import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.exception.CustomException;
@@ -25,7 +25,7 @@ import static com.duktown.global.exception.CustomErrorType.*;
 @Transactional
 @RequiredArgsConstructor
 public class PostService {
-    private final PostRespository postRespository;
+    private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
@@ -40,14 +40,14 @@ public class PostService {
                 .findAny().orElseThrow(() -> new CustomException(INVALID_POST_CATEGORY_VALUE));
 
         Post post = request.toEntity(user, category);
-        postRespository.save(post);
+        postRepository.save(post);
     }
 
     // 상세 조회
     @Transactional(readOnly = true)
     public PostDto.PostResponse getPost(Long userId, Long postId){
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        Post post = postRespository.findById(postId).orElseThrow(() -> new CustomException(POST_NOT_FOUND));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(POST_NOT_FOUND));
         List<Like> likes = likeRepository.findAllByUserAndPost(user, post);
         Boolean isWriter = post.getUser().getId().equals(userId);
         return new PostDto.PostResponse(post, likes, commentRepository.countByPostId(post.getId()), isWriter);
@@ -62,7 +62,7 @@ public class PostService {
                 .filter(c -> c.getValue() == category)
                 .findAny().orElseThrow(() -> new CustomException(INVALID_POST_CATEGORY_VALUE));
 
-        List<Post> posts = postRespository.findAllByCategory(findCategory);
+        List<Post> posts = postRepository.findAllByCategory(findCategory);
         List<Like> likes = likeRepository
                 .findAllByUserAndPostIn(
                         user.getId(),
@@ -78,7 +78,7 @@ public class PostService {
     }
 
     public void updatePost(Long userId, Long id, PostDto.PostRequest request){
-        Post updatePost = postRespository.findById(id).orElseThrow(() -> new CustomException(POST_NOT_FOUND));
+        Post updatePost = postRepository.findById(id).orElseThrow(() -> new CustomException(POST_NOT_FOUND));
         User user = userRepository.findById(userId)
                 .orElseThrow(()-> new CustomException(USER_NOT_FOUND));
 
@@ -88,11 +88,11 @@ public class PostService {
         }
 
         updatePost.update(request.getTitle(),request.getContent());
-        postRespository.save(updatePost);
+        postRepository.save(updatePost);
     }
 
     public void deletePost(Long userId, Long postId) {
-        Post deletePost = postRespository.findById(postId).orElseThrow(() -> new CustomException(POST_NOT_FOUND));
+        Post deletePost = postRepository.findById(postId).orElseThrow(() -> new CustomException(POST_NOT_FOUND));
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
@@ -114,6 +114,6 @@ public class PostService {
         }
 
         // 게시글 삭제
-        postRespository.delete(deletePost);
+        postRepository.delete(deletePost);
     }
 }

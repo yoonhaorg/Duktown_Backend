@@ -32,12 +32,15 @@ public class UserDto {
         @NotBlank(message = "비밀번호는 필수 값입니다.")
         private String password;
 
+        @NotBlank(message = "이름은 필수 값입니다.")
+        private String name;
+
         public User toEntity(String encodedPassword){
             return User.builder()
+                    .name(this.name)
                     .email(this.email)
                     .loginId(this.loginId)
                     .password(encodedPassword)
-                    .roleType(RoleType.USER)
                     .build();
         }
     }
