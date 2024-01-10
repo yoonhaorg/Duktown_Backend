@@ -1,6 +1,7 @@
 package com.duktown.domain.chatRoom.dto;
 
 import com.duktown.domain.chatRoom.entity.ChatRoom;
+import com.duktown.domain.chatRoomUser.entity.ChatRoomUser;
 import com.duktown.domain.delivery.entity.Delivery;
 import com.duktown.global.util.DateUtil;
 import lombok.AllArgsConstructor;
@@ -16,21 +17,27 @@ public class ChatRoomDto {
     @Builder
     @AllArgsConstructor
     public static class ChatRoomResponse {
+        private Long getRequestUserId;
+        private Integer getRequestUserNumber;
         private Long chatRoomId;
         private Long deliveryId;
         private Boolean deliveryDeleted;
         private String title;
         private Integer maxPeople;
+        private Integer chatRoomUserCnt;
         private String orderTime;
         private String accountNumber;
 
-        public static ChatRoomResponse from(Delivery delivery, String accountNumber) {
+        public static ChatRoomResponse from(ChatRoomUser chatRoomUser, Delivery delivery, String accountNumber) {
             return ChatRoomResponse.builder()
+                    .getRequestUserId(chatRoomUser.getUser().getId())
+                    .getRequestUserNumber(chatRoomUser.getUserNumber())
                     .chatRoomId(delivery.getChatRoom().getId())
                     .deliveryId(delivery.getId())
                     .deliveryDeleted(delivery.getDeleted())
                     .title(delivery.getTitle())
                     .maxPeople(delivery.getMaxPeople())
+                    .chatRoomUserCnt(delivery.getChatRoom().getChatRoomUsers().size())
                     .orderTime(DateUtil.convertToAMPMFormat(delivery.getOrderTime()))
                     .accountNumber(accountNumber)
                     .build();
