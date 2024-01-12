@@ -30,7 +30,7 @@ public class CleaningService {
 
 
     // 청소 완료
-    public void cleningOk(Long cleaningId){
+    public void CheckCleaning(Long cleaningId){
         Cleaning cleaning = cleaningRepository.findCleaningById(cleaningId);
         cleaning.updateCleaned();
     }

@@ -117,6 +117,7 @@ public class SleepoverApplyService {
     }
 
     //외박 가능 횟수 조회
+    @Transactional(readOnly = true)
     public SleepoverApplyDto.ResponseGetAvailablePeriod totalAvailablePeriod(Long userId){
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         Integer availablePeriod = user.getAvailablePeriod();
