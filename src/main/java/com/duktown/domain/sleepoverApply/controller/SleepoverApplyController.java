@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 
 @RestController
@@ -34,9 +33,10 @@ public class SleepoverApplyController {
 
     @GetMapping("/student")
     public ResponseEntity<SleepoverApplyDto.ResponseGetSleepoverApplyFromStudent> getSleepoverList(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam(required = false, defaultValue = "1", value = "page") int pageNo
     ){
-        return ResponseEntity.ok( sleepoverApplyService.getListSleepoverApply(customUserDetails.getId()));
+        return ResponseEntity.ok( sleepoverApplyService.getListSleepoverApply(customUserDetails.getId(),pageNo));
     }
 
     @GetMapping("/manager")

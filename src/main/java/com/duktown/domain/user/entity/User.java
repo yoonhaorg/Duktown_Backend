@@ -44,6 +44,10 @@ public class User extends BaseTimeEntity {
 
     private String refreshToken;
 
+    //TODO: 외박 일 수 관련해서 질문하기
+    // 남은 외박 일 수
+    private Integer availablePeriod;
+
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
@@ -55,4 +59,15 @@ public class User extends BaseTimeEntity {
     public void updatePassword(String encodedPwd) {
         this.password = encodedPwd;
     }
+
+    @PrePersist
+    private void baseAvailablePeriod(){
+        // 외박 가능 일수 초기값 부여
+        availablePeriod = 21;
+    };
+
+    public void downAvailablePeriod(Integer availablePeriod){
+        // 외박 가능 일수 초기값 부여
+        this.availablePeriod = availablePeriod ;
+    };
 }

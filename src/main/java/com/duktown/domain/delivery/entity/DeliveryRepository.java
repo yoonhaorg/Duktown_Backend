@@ -27,4 +27,8 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
 
     @Query(value = "select d from Delivery d where d.user.id = :user_id and d.deleted = false order by d.orderTime")
     List<Delivery> findAllByUserIdSortByOrderTime(@Param("user_id") Long userId);
+
+    @Query("SELECT d FROM Delivery d WHERE LOWER(d.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(d.content) LIKE LOWER(CONCAT('%', :keyword, '%')) ORDER BY d.orderTime DESC")
+    List<Delivery> searchByKeywordOrdered(@Param("keyword") String keyword);
+
 }

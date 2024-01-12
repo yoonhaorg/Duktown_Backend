@@ -27,10 +27,11 @@ public class PostController {
     @GetMapping
     public ResponseEntity<PostDto.PostListResponse> getPostList(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam(value = "category") Integer category
+            @RequestParam(value = "category") Integer category,
+            @RequestParam(value = "pagdNo") int pageNo
     ){
         return ResponseEntity.ok().body(
-                postService.getPostList(customUserDetails.getId(), category));
+                postService.getPostList(customUserDetails.getId(), category, pageNo));
     }
 
     @GetMapping("/{postId}")
@@ -57,4 +58,13 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<PostDto.PostListResponse> searchPost(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam("keyword") String keyword,
+            @RequestParam(value = "category") Integer category
+    ){
+        return ResponseEntity.ok().body(
+                postService.searchPostList(customUserDetails.getId(),category,keyword));
+    }
 }

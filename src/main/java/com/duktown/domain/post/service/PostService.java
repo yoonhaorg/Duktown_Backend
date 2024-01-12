@@ -12,9 +12,13 @@ import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.exception.CustomException;
 import com.duktown.global.type.Category;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +33,8 @@ public class PostService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
+
+    private final Post1PageCache post1PageCache;
 
     // 생성
     public void createPost(Long userId, PostDto.PostRequest request){
@@ -55,14 +61,20 @@ public class PostService {
 
     // 목록 조회
     @Transactional(readOnly = true)
-    public PostDto.PostListResponse getPostList(Long userId, Integer category) {
+    public PostDto.PostListResponse getPostList(Long userId, Integer category, int pageNo) {
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         Category findCategory = Arrays.stream(Category.values())
                 .filter(c -> c.getValue() == category)
                 .findAny().orElseThrow(() -> new CustomException(INVALID_POST_CATEGORY_VALUE));
 
-        List<Post> posts = postRepository.findAllByCategory(findCategory);
+        Slice<Post> posts;
+        if(pageNo == 1 && findCategory.equals(Category.DAILY)){
+            posts = post1PageCache.getPage1();
+        }else {
+            posts = postRepository.findAllByCategory(findCategory);
+        }
+
         List<Like> likes = likeRepository
                 .findAllByUserAndPostIn(
                         user.getId(),
@@ -115,5 +127,30 @@ public class PostService {
 
         // 게시글 삭제
         postRepository.delete(deletePost);
+    }
+
+    // 게시글 검색
+    @Transactional(readOnly = true)
+    public PostDto.PostListResponse searchPostList(Long userId, Integer category,String keyword) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        Category findCategory = Arrays.stream(Category.values())
+                .filter(c -> c.getValue() == category)
+                .findAny().orElseThrow(() -> new CustomException(INVALID_POST_CATEGORY_VALUE));
+
+        Slice<Post> posts = postRepository.findByCategoryAndKeyword(findCategory,keyword,PageRequest.of(0,7, Sort.by(Sort.Order.desc("createdAt"))));
+        List<Like> likes = likeRepository
+                .findAllByUserAndPostIn(
+                        user.getId(),
+                        posts.stream().map(Post::getId)
+                                .collect(Collectors.toList())
+                );
+
+        List<PostDto.PostResponse> postListResponses = posts.stream()
+                .map(p -> new PostDto.PostResponse(p, likes, commentRepository.countByPostId(p.getId()), p.getUser().getId().equals(userId)))
+                .collect(Collectors.toList());
+
+        return new PostDto.PostListResponse(postListResponses);
+
     }
 }

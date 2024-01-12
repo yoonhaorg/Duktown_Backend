@@ -2,6 +2,7 @@ package com.duktown.domain.delivery.controller;
 
 import com.duktown.domain.delivery.dto.DeliveryDto;
 import com.duktown.domain.delivery.service.DeliveryService;
+import com.duktown.domain.post.dto.PostDto;
 import com.duktown.global.security.service.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -81,5 +82,14 @@ public class DeliveryController {
     ) {
         deliveryService.deleteDelivery(customUserDetails.getId(), deliveryId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchDelivery(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam("keyword") String keyword
+    ){
+        return ResponseEntity.ok().body(
+                deliveryService.searchDeliveryList(customUserDetails.getId(),keyword));
     }
 }

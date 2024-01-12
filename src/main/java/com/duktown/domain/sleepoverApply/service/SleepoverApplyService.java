@@ -40,7 +40,10 @@ public class SleepoverApplyService {
             request.setPeriod(remainingDays > 0 ? Math.toIntExact(remainingDays) : 0); // 실제 외박 일수를 DTO에 추가
 
             SleepoverApply sleepoverApply = request.toEntity(user);
+            // 외박 가능 일 수 감소
+            user.downAvailablePeriod(request.getPeriod());
             sleepoverApplyRepository.save(sleepoverApply);
+
         }else {
             throw new CustomException(SLEEP_OVER_APPLY_INVALID_REQUEST_TIME);
         }
@@ -102,9 +105,9 @@ public class SleepoverApplyService {
 
     // 목록 조회
     @Transactional(readOnly = true)
-    public SleepoverApplyDto.ResponseGetSleepoverApplyFromStudent getListSleepoverApply(Long userId){
+    public SleepoverApplyDto.ResponseGetSleepoverApplyFromStudent getListSleepoverApply(Long userId, int pageNo){
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        Slice<SleepoverApply> sleepoverApplies = sleepoverApplyRepository.findByUser(user, PageRequest.of(0, 5, Sort.by(Sort.Order.desc("createdAt"))));
+        Slice<SleepoverApply> sleepoverApplies = sleepoverApplyRepository.findByUser(user, PageRequest.of(pageNo-1, 5, Sort.by(Sort.Order.desc("createdAt"))));
         List<SleepoverApplyDto.ResponseGetListSleepoverApply> getListSleepoverApplies
                 = sleepoverApplies.stream()
                 .map(SleepoverApplyDto.ResponseGetListSleepoverApply::new)
@@ -116,7 +119,7 @@ public class SleepoverApplyService {
     //외박 가능 횟수 조회
     public SleepoverApplyDto.ResponseGetAvailablePeriod totalAvailablePeriod(Long userId){
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        Integer availablePeriod = sleepoverApplyRepository.findByUser(user).getAvailablePeriod();
+        Integer availablePeriod = user.getAvailablePeriod();
         return  new SleepoverApplyDto.ResponseGetAvailablePeriod(availablePeriod);
     }
 
