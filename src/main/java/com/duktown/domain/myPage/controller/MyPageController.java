@@ -10,19 +10,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("")
+@RequestMapping("/my")
 public class MyPageController {
     private final MyPageService myPageService;
 
     // 나의 벌점 내역 조회
-    @GetMapping("/myPenaltyPoints")
+    @GetMapping("/PenaltyPoints")
     public ResponseEntity<?> getMyPenaltyPoints(){
         return null;
     }
     // 관리자, 사생회: 사생에게 벌점 부과도 여기?
 
     // 나의 유닛 조회
-    @GetMapping("/myunit")
+    @GetMapping("/Units")
     public ResponseEntity<?> getMyUnits(){
         return null;
     }

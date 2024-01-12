@@ -96,7 +96,7 @@ public class UserServiceTest {
 
         UserDto.SignupRequest request =
                 new UserDto.SignupRequest(
-                        "dskim@duksung.ac.kr", "dskim", encoder.encode("1234"));
+                        "dskim@duksung.ac.kr", "dskim", encoder.encode("1234"), "김덕성");
 
         doReturn(
                 new UserDto.SignUpResponse(
@@ -120,7 +120,7 @@ public class UserServiceTest {
     void signup_duplicatedEmailExist_fail() {
         // given
         given(userRepository.findByEmail(any())).willReturn(Optional.of(createMockUser(1L)));
-        UserDto.SignupRequest request = new UserDto.SignupRequest("dskim@duksung.ac.kr", "dskim", "1234");
+        UserDto.SignupRequest request = new UserDto.SignupRequest("dskim@duksung.ac.kr", "dskim", "1234", "김덕성");
 
         // when & then
         CustomException e = assertThrows(CustomException.class, () -> userService.signup(request));
@@ -133,7 +133,7 @@ public class UserServiceTest {
         // given
         given(userRepository.findByEmail(any())).willReturn(Optional.empty());
         given(userRepository.findByLoginId(any())).willReturn(Optional.of(createMockUser(1L)));
-        UserDto.SignupRequest request = new UserDto.SignupRequest("dskim@duksung.ac.kr", "dskim", "1234");
+        UserDto.SignupRequest request = new UserDto.SignupRequest("dskim@duksung.ac.kr", "dskim", "1234", "김덕성");
 
         // when & then
         CustomException e = assertThrows(CustomException.class, () -> userService.signup(request));

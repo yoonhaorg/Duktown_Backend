@@ -195,4 +195,19 @@ public class DeliveryService {
         // 배달팟 삭제(deleted = true)
         delivery.delete();
     }
+
+    // 검색
+    public DeliveryDto.DeliveryListResponse searchDeliveryList(Long userId, String keyword) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        List<Delivery> deliveries = deliveryRepository.searchByKeywordOrdered(keyword);
+
+        List<DeliveryDto.DeliveryResponse> content = deliveries
+                .stream()
+                .map(d -> DeliveryDto.DeliveryResponse.from(d, d.getUser().getId().equals(userId)))
+                .collect(Collectors.toList());
+
+        return new DeliveryDto.DeliveryListResponse(content);
+
+    }
 }

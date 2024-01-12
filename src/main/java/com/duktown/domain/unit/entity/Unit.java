@@ -28,14 +28,14 @@ public class Unit {
 
     @Enumerated(value = STRING)
     @Column(nullable = false)
-    private HallName hallName;
+    private HallName hallName; // 가온1/가온2/국제
 
     @Column(nullable = false)
-    private Integer floorNumber;
+    private Integer floorNumber; // 층
 
     @Column(nullable = false)
-    private Integer buildingNumber;
+    private Integer buildingNumber; // 동
 
     @Column(nullable = false)
-    private Integer roomNumber;
+    private Integer roomNumber; // 호
 }

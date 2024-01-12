@@ -151,5 +151,6 @@ public class PostService {
                 .collect(Collectors.toList());
 
         return new PostDto.PostListResponse(postListResponses);
+
     }
 }

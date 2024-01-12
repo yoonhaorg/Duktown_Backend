@@ -53,6 +53,7 @@ public class EmailCertService {
     }
 
     // 이메일 인증
+    @Transactional
     public void emailCert(EmailCertDto.CertRequest request) {
         // 인증 요청 내역 조회 -> 인증요청을 한 적이 없거나, 10분 이상 지나면 조회 x
         EmailCert emailCert = emailCertRepository.findByEmail(request.getEmail()).orElseThrow(

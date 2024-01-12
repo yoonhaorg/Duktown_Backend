@@ -16,9 +16,14 @@ public class UserDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class SignupRequest {
+        /**
+         * TODO: 정식 버전에서는 duksung 이메일인지 Validate
+         * @Email(regexp = "^[a-zA-Z0-9.][^@]*@duksung.ac.kr$",
+         *                 message = "이메일 형식이 올바르지 않습니다. 덕성 이메일을 입력해주세요.")
+         */
         @NotBlank(message = "이메일은 필수 값입니다.")
-        @Email(regexp = "^[a-zA-Z0-9.][^@]*@duksung.ac.kr$",
-                message = "이메일 형식이 올바르지 않습니다. 덕성 이메일을 입력해주세요.")
+        @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",
+                message = "이메일 형식이 올바르지 않습니다.")
         private String email;
 
         @NotBlank(message = "아이디는 필수 값입니다.")
@@ -27,12 +32,15 @@ public class UserDto {
         @NotBlank(message = "비밀번호는 필수 값입니다.")
         private String password;
 
+        @NotBlank(message = "이름은 필수 값입니다.")
+        private String name;
+
         public User toEntity(String encodedPassword){
             return User.builder()
+                    .name(this.name)
                     .email(this.email)
                     .loginId(this.loginId)
                     .password(encodedPassword)
-                    .roleType(RoleType.USER)
                     .build();
         }
     }
@@ -77,8 +85,8 @@ public class UserDto {
     @AllArgsConstructor
     public static class EmailRequest {
         @NotBlank(message = "이메일은 필수 값입니다.")
-        @Email(regexp = "^[a-zA-Z0-9.][^@]*@duksung.ac.kr$",
-                message = "이메일 형식이 올바르지 않습니다. 덕성 이메일을 입력해주세요.")
+        @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",
+                message = "이메일 형식이 올바르지 않습니다.")
         private String email;
     }
 }
