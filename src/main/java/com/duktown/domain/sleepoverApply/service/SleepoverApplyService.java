@@ -41,7 +41,7 @@ public class SleepoverApplyService {
 
             SleepoverApply sleepoverApply = request.toEntity(user);
             // 외박 가능 일 수 감소
-            sleepoverApply.downAvailablePeriod(request.getPeriod());
+            user.downAvailablePeriod(request.getPeriod());
             sleepoverApplyRepository.save(sleepoverApply);
 
         }else {
@@ -119,7 +119,7 @@ public class SleepoverApplyService {
     //외박 가능 횟수 조회
     public SleepoverApplyDto.ResponseGetAvailablePeriod totalAvailablePeriod(Long userId){
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        Integer availablePeriod = sleepoverApplyRepository.findByUser(user).getAvailablePeriod();
+        Integer availablePeriod = user.getAvailablePeriod();
         return  new SleepoverApplyDto.ResponseGetAvailablePeriod(availablePeriod);
     }
 
