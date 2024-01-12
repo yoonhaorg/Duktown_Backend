@@ -27,10 +27,11 @@ public class PostController {
     @GetMapping
     public ResponseEntity<PostDto.PostListResponse> getPostList(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam(value = "category") Integer category
+            @RequestParam(value = "category") Integer category,
+            @RequestParam(value = "pagdNo") int pageNo
     ){
         return ResponseEntity.ok().body(
-                postService.getPostList(customUserDetails.getId(), category));
+                postService.getPostList(customUserDetails.getId(), category, pageNo));
     }
 
     @GetMapping("/{postId}")

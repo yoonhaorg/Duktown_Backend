@@ -4,7 +4,7 @@ import com.duktown.domain.comment.dto.CommentDto;
 import com.duktown.domain.comment.entity.Comment;
 import com.duktown.domain.comment.entity.CommentRepository;
 import com.duktown.domain.post.entity.Post;
-import com.duktown.domain.post.entity.PostRespository;
+import com.duktown.domain.post.entity.PostRepository;
 import com.duktown.domain.delivery.entity.Delivery;
 import com.duktown.domain.delivery.entity.DeliveryRepository;
 import com.duktown.domain.like.entity.Like;
@@ -30,7 +30,7 @@ public class CommentService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final DeliveryRepository deliveryRepository;
-    private final PostRespository postRespository;
+    private final PostRepository postRepository;
     private final LikeRepository likeRepository;
 
     public void createComment(Long userId, CommentDto.CreateRequest request){
@@ -64,7 +64,7 @@ public class CommentService {
             delivery = deliveryRepository.findById(request.getDeliveryId())
                     .orElseThrow(() -> new CustomException(DELIVERY_NOT_FOUND));
         } else if (request.getPostId() != null) {
-            post = postRespository.findById(request.getPostId())
+            post = postRepository.findById(request.getPostId())
                     .orElseThrow(() -> new CustomException(POST_NOT_FOUND));
         } else {
             throw new CustomException(COMMENT_TARGET_NOT_SELECTED);
