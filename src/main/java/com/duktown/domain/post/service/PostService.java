@@ -13,6 +13,7 @@ import com.duktown.global.exception.CustomException;
 import com.duktown.global.type.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -72,7 +73,8 @@ public class PostService {
         if(pageNo == 1 && findCategory.equals(Category.DAILY)){
             posts = post1PageCache.getPage1();
         }else {
-            posts = postRepository.findAllByCategory(findCategory);
+            Pageable pageable = PageRequest.of(pageNo - 1, 5, Sort.by(Sort.Order.desc("createdAt")));
+            posts = postRepository.findAllByCategory(findCategory,pageable);
         }
 
         List<Like> likes = likeRepository

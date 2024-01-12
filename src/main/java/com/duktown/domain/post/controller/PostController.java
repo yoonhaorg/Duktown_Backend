@@ -28,7 +28,7 @@ public class PostController {
     public ResponseEntity<PostDto.PostListResponse> getPostList(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestParam(value = "category") Integer category,
-            @RequestParam(value = "pagdNo") int pageNo
+            @RequestParam(required = false, defaultValue = "1",value = "pageNo") int pageNo
     ){
         return ResponseEntity.ok().body(
                 postService.getPostList(customUserDetails.getId(), category, pageNo));
