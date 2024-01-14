@@ -1,7 +1,6 @@
 package com.duktown.domain.myPage.controller;
 
 import com.duktown.domain.myPage.service.MyPageService;
-import com.duktown.domain.penaltyPoints.PenaltyPoints;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

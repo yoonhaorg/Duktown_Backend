@@ -1,6 +1,6 @@
 package com.duktown.domain.myPage.service;
 
-import com.duktown.domain.penaltyPoints.PenaltyPointsRepository;
+import com.duktown.domain.penaltyPoints.entity.PenaltyPointsRepository;
 import com.duktown.domain.user.entity.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
