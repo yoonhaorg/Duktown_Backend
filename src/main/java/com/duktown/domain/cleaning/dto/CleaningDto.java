@@ -8,22 +8,31 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class CleaningDto extends BaseTimeEntity {
 
+    @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    @Getter
     public static class CreateCleaningDto{
-        private LocalDate date;
-        private String email;
-        public Cleaning toEntity(User user){
-            return Cleaning.builder()
-                    .date(date)
-                    .user(user)
-                    .build();
-        }
 
+        List<CreateCleaningUnit> CleaningUnit;
+
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @Getter
+        public static class CreateCleaningUnit {
+            private LocalDate date;
+            private String email;
+            public  Cleaning toEntity(User user) {
+                return Cleaning.builder()
+                        .date(date)
+                        .user(user)
+                        .build();
+            }
+
+        }
     }
 
     @AllArgsConstructor

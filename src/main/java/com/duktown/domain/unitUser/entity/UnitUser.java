@@ -1,6 +1,9 @@
-package com.duktown.domain.cleaning.entity;
+package com.duktown.domain.unitUser.entity;
 
+import com.duktown.domain.BaseTimeEntity;
+import com.duktown.domain.unit.entity.Unit;
 import com.duktown.domain.user.entity.User;
+import com.duktown.global.type.UnitUserType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,8 +11,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-import java.time.LocalDate;
-
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PRIVATE;
@@ -20,10 +22,11 @@ import static lombok.AccessLevel.PROTECTED;
 @Builder
 @AllArgsConstructor(access = PRIVATE)
 @NoArgsConstructor(access = PROTECTED)
-public class Cleaning {
+@Table(name = "unit_users")
+public class UnitUser extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "cleaning_id")
+    @Column(name = "unit_user_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)
@@ -31,22 +34,12 @@ public class Cleaning {
     private User user;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "check_user_id", nullable = false)
-    private User checkUser;
+    @JoinColumn(name = "unit_id", nullable = false)
+    private Unit unit;
 
+    @Enumerated(STRING)
     @Column(nullable = false)
-    private LocalDate date;
+    private UnitUserType unitUserType;
 
-    //TODO: 벌점
 
-    private Boolean cleaned;
-    private Boolean checked;
-
-    public void updateCleaned(){
-        this.cleaned = true;
-    }
-
-    public void updateChecked(){
-        this.checked =true;
-    }
 }

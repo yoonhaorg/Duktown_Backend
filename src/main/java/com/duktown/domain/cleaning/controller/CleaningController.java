@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/cleaning")
@@ -40,10 +41,11 @@ public class CleaningController {
     // 나의 청소 완료 목록 조회
 
 
-    // 유닛 조장이 청소 날짜 신청
+    // 유닛 조장이 청소 날짜 배정
     @PostMapping("/student/schedule")
     public ResponseEntity createCleaningDate(@RequestBody CleaningDto.CreateCleaningDto createCleaningDto) {
-         cleaningService.createCleaningDate(createCleaningDto);
+        cleaningService.createCleaningDate(createCleaningDto);
+        System.out.println("##############3"+createCleaningDto);
          return ResponseEntity.ok(HttpStatus.CREATED);
     }
 

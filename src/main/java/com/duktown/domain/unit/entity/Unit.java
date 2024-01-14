@@ -16,15 +16,11 @@ import static lombok.AccessLevel.*;
 @Builder
 @AllArgsConstructor(access = PRIVATE)
 @NoArgsConstructor(access = PROTECTED)
-public class Unit {
+public class Unit { // 기숙사 정보
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "unit_id")
     private Long id;
-
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
 
     @Enumerated(value = STRING)
     @Column(nullable = false)

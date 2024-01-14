@@ -10,6 +10,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Component
@@ -19,6 +20,7 @@ public class Post1PageCache {
     private final PostRepository postRepository;
 
     @Scheduled(cron ="30 * * * * *" )
+    @Transactional(readOnly = true)
     public void updateCache(){
         Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Order.desc("createdAt")));
         page1 = postRepository.findAllByCategory(Category.DAILY,pageable);
