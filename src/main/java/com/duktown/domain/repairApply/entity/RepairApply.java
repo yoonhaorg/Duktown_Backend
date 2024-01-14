@@ -43,10 +43,10 @@ public class RepairApply extends BaseTimeEntity {
     //수리요청 내용
     private String content;
 
-    //
+    // 확인 여부
     private Boolean checked;
 
-    //
+    // 해결 여부
     private Boolean solved;
 
     public void update(String title, String content){

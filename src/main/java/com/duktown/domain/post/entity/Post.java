@@ -51,7 +51,7 @@ public class Post extends BaseTimeEntity {
     private List<Comment> comments = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(fetch = LAZY, mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Like> likes = new ArrayList<>();
 
     public void update(String title, String content){

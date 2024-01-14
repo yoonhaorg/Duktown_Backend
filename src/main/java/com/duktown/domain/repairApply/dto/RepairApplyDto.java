@@ -70,6 +70,8 @@ public class RepairApplyDto {
     @Builder
     @AllArgsConstructor
     public static class RepairApplyResponseList{
+
+        private Long id;
         private String content;
         private LocalDate createAt;
         private Boolean checked;
@@ -77,6 +79,7 @@ public class RepairApplyDto {
 
         public static RepairApplyResponseList fromEntity(RepairApply repairApply){
             return RepairApplyResponseList.builder()
+                    .id(repairApply.getId())
                     .checked(repairApply.getChecked())
                     .solved(repairApply.getSolved())
                     .content(repairApply.getContent())
@@ -87,10 +90,13 @@ public class RepairApplyDto {
 
     @Getter
     public static class RepairApplyListResponse{
+
+        private long totalPage; //전체 요청 갯수
         private List<RepairApplyResponseList> content;
 
-        public RepairApplyListResponse(List<RepairApplyResponseList> content){
+        public RepairApplyListResponse(List<RepairApplyResponseList> content, long total){
             this.content = content;
+            this.totalPage = (long) Math.ceil((double) total / 11);
         }
     }
 
