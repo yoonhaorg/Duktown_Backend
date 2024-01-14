@@ -40,8 +40,9 @@ public class SleepoverApplyService {
             request.setPeriod(remainingDays > 0 ? Math.toIntExact(remainingDays) : 0); // 실제 외박 일수를 DTO에 추가
 
             SleepoverApply sleepoverApply = request.toEntity(user);
-            // 외박 가능 일 수 감소
-            user.downAvailablePeriod(request.getPeriod());
+
+            // TODO : 외박 가능 일 수가 0이면 에러 처리 발생
+            user.downAvailablePeriod(request.getPeriod());// 외박 가능 일 수 감소
             sleepoverApplyRepository.save(sleepoverApply);
 
         }else {

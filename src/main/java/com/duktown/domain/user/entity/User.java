@@ -66,8 +66,8 @@ public class User extends BaseTimeEntity {
         availablePeriod = 21;
     };
 
-    public void downAvailablePeriod(Integer availablePeriod){
-        // 외박 가능 일수 초기값 부여
-        this.availablePeriod = availablePeriod ;
+    public void downAvailablePeriod(Integer Period){
+        // 외박 가능 일수 다운
+        this.availablePeriod = availablePeriod-Period ;
     };
 }
