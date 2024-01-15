@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CleaningDto extends BaseTimeEntity {
@@ -17,12 +18,12 @@ public class CleaningDto extends BaseTimeEntity {
     @NoArgsConstructor
     public static class CreateCleaningRequestDto{
 
-        List<CreateCleaningUnit> CleaningUnit;
-
-        @AllArgsConstructor
-        @NoArgsConstructor
-        @Getter
-        public static class CreateCleaningUnit {
+//        List<CreateCleaningUnit> CleaningUnit = new ArrayList<>();
+//
+//        @AllArgsConstructor
+//        @NoArgsConstructor
+//        @Getter
+//        public static class CreateCleaningUnit {
             private LocalDate cleaningDate;
             private String email;
             public  Cleaning toEntity(User user) {
@@ -31,8 +32,7 @@ public class CleaningDto extends BaseTimeEntity {
                         .user(user)
                         .build();
             }
-
-        }
+        //}
     }
 
 

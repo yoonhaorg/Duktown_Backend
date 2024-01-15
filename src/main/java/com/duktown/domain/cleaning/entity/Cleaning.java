@@ -31,7 +31,7 @@ public class Cleaning {
     private User user;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "check_user_id", nullable = false)
+    @JoinColumn(name = "check_user_id", nullable = true)
     private User checkUser;
 
     @Column(nullable = false)

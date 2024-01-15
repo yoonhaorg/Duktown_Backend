@@ -10,6 +10,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
+
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping("/cleaning")
@@ -47,17 +50,18 @@ public class CleaningController {
 
     // 나의 청소 완료 목록 조회
     @GetMapping("")
-    public ResponseEntity<CleaningDto.getCleaningListResponseDto>  getMyCleaningList
-    (@AuthenticationPrincipal CustomUserDetails customUserDetails){
-        CleaningDto.getCleaningListResponseDto myCleanedList = cleaningService.getMyCleanedList(customUserDetails.getId());
-        return ResponseEntity.ok(myCleanedList);
+    public ResponseEntity<CleaningDto.getCleaningListResponseDto>  getMyCleaningList(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        return ResponseEntity.ok().body(
+                cleaningService.getMyCleanedList(customUserDetails.getId()));
     }
 
     // 유닛 조장이 청소 날짜 배정
     @PostMapping("/student/schedule")
+//    public ResponseEntity<?> createCleaningDate(@RequestBody CleaningDto.CreateCleaningRequestDto createCleaningDto) {
     public ResponseEntity<?> createCleaningDate(@RequestBody CleaningDto.CreateCleaningRequestDto createCleaningDto) {
         cleaningService.createCleaningDate(createCleaningDto);
-         return ResponseEntity.ok(HttpStatus.CREATED);
+         return ResponseEntity.status(CREATED).build();
     }
 
 
