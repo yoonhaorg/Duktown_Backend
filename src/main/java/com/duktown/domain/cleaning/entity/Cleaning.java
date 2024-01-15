@@ -37,8 +37,6 @@ public class Cleaning {
     @Column(nullable = false)
     private LocalDate date;
 
-    //TODO: 벌점
-
     private Boolean cleaned;
     private Boolean checked;
 

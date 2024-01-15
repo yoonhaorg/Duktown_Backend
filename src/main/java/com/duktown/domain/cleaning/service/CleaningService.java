@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.duktown.global.exception.CustomErrorType.USER_NOT_FOUND;
 
@@ -26,9 +27,9 @@ public class CleaningService {
     private final UserRepository userRepository;
 
     // 날짜별 청소 조회
-    public CleaningDto.GetCleaningDate getCleanDate(LocalDate date){
+    public CleaningDto.CleaningDateResponseSto getCleanDate(LocalDate date){
         Cleaning cleaningByDate = cleaningRepository.findCleaningByDate(date);
-        return new CleaningDto.GetCleaningDate(cleaningByDate);
+        return new CleaningDto.CleaningDateResponseSto(cleaningByDate);
     }
 
     // 청소 완료
@@ -47,15 +48,24 @@ public class CleaningService {
     }
 
     // 나의 청소 완료 목록 조회
+    public CleaningDto.getCleaningListResponseDto getMyCleanedList(Long userId){
+        User user = userRepository.findById(userId)
+                        .orElseThrow(()->new CustomException(USER_NOT_FOUND));
+        List<Cleaning> cleaningByUserAndCleaned = cleaningRepository.findCleaningByUserAndCleaned(user, true);
+        List<CleaningDto.CleaningResponseDto> cleaningList = cleaningByUserAndCleaned.stream()
+                .map(CleaningDto.CleaningResponseDto::new)
+                .collect(Collectors.toList());
+        return new CleaningDto.getCleaningListResponseDto(cleaningList);
+    }
 
 
     // 유닛 조장이 청소 날짜 신청
     //TODO: 개별, 단체 신청 확인하기
     @Transactional
-    public void createCleaningDate(CleaningDto.CreateCleaningDto createCleaningDto) {
-        List<CleaningDto.CreateCleaningDto.CreateCleaningUnit> cleaningUnits = createCleaningDto.getCleaningUnit();
+    public void createCleaningDate(CleaningDto.CreateCleaningRequestDto createCleaningDto) {
+        List<CleaningDto.CreateCleaningRequestDto.CreateCleaningUnit> cleaningUnits = createCleaningDto.getCleaningUnit();
 
-        for (CleaningDto.CreateCleaningDto.CreateCleaningUnit cleaningUnit : cleaningUnits) {
+        for (CleaningDto.CreateCleaningRequestDto.CreateCleaningUnit cleaningUnit : cleaningUnits) {
             String email = cleaningUnit.getEmail();
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new CustomException(USER_NOT_FOUND));

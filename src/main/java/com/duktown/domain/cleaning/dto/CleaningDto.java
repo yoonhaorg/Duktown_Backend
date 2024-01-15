@@ -15,7 +15,7 @@ public class CleaningDto extends BaseTimeEntity {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class CreateCleaningDto{
+    public static class CreateCleaningRequestDto{
 
         List<CreateCleaningUnit> CleaningUnit;
 
@@ -23,11 +23,11 @@ public class CleaningDto extends BaseTimeEntity {
         @NoArgsConstructor
         @Getter
         public static class CreateCleaningUnit {
-            private LocalDate date;
+            private LocalDate cleaningDate;
             private String email;
             public  Cleaning toEntity(User user) {
                 return Cleaning.builder()
-                        .date(date)
+                        .date(cleaningDate)
                         .user(user)
                         .build();
             }
@@ -35,20 +35,45 @@ public class CleaningDto extends BaseTimeEntity {
         }
     }
 
-    @AllArgsConstructor
+
     @NoArgsConstructor
     @Getter
-    public static class GetCleaningDate{
-        private LocalDate date;
+    public static class CleaningDateResponseSto{
+        private LocalDate cleaningDate;
         private User user;
         private Boolean cleaned;
 
-        public GetCleaningDate(Cleaning cleaning){
-            date = cleaning.getDate();
+        public CleaningDateResponseSto(Cleaning cleaning){
+            cleaningDate = cleaning.getDate();
             user = cleaning.getUser();
             cleaned = cleaning.getCleaned();
         }
     }
+
+    @NoArgsConstructor
+    @Getter
+    public static class CleaningResponseDto{
+        private LocalDate cleaningDate;
+        private Boolean cleaned;
+        private Boolean checked;
+
+        public CleaningResponseDto(Cleaning cleaning){
+            this.cleaningDate = cleaning.getDate();
+            this.cleaned = cleaning.getCleaned();
+            this.checked = cleaning.getChecked();
+        }
+    }
+
+
+    @Getter
+    public static class getCleaningListResponseDto{
+        private List<CleaningResponseDto> content;
+
+        public getCleaningListResponseDto(List<CleaningResponseDto> content){
+            this.content =content;
+        }
+    }
+
 
 
 }
