@@ -2,6 +2,7 @@ package com.duktown.domain.penaltyPoints.entity;
 
 import com.duktown.domain.BaseTimeEntity;
 import com.duktown.domain.user.entity.User;
+import lombok.Getter;
 
 import javax.persistence.*;
 
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 import static javax.persistence.FetchType.LAZY;
 
 // 벌점
+@Getter
 @Entity
 public class PenaltyPoints extends BaseTimeEntity {
     @Id @GeneratedValue
@@ -20,4 +22,5 @@ public class PenaltyPoints extends BaseTimeEntity {
     private String reason;
     private int score;
     private LocalDate date;
+
 }

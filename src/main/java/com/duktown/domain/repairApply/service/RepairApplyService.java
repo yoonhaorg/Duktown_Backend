@@ -92,8 +92,10 @@ public class RepairApplyService {
         List<RepairApplyDto.RepairApplyResponseList> repairApplyResponseList = applys.stream()
                 .map(RepairApplyDto.RepairApplyResponseList::fromEntity)
                 .collect(Collectors.toList());
+        // 전체 갯수
+        Long total = repairApplyRepository.count();
 
-        return new RepairApplyDto.RepairApplyListResponse(repairApplyResponseList);
+        return new RepairApplyDto.RepairApplyListResponse(repairApplyResponseList,total);
     }
 
     //상세조회

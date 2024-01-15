@@ -146,6 +146,11 @@ public class ChatRoomService {
         List<ChatRoomDto.ChatRoomListElementResponse> chatRooms = new ArrayList<>();
 
         for (ChatRoomUser chatRoomUser : chatRoomUsers) {
+            // 나간 채팅방은 조회 x
+            if (chatRoomUser.getChatRoomUserType() == ChatRoomUserType.DELETED) {
+                continue;
+            }
+
             // 참여중인 채팅방 찾기
             ChatRoom chatRoom = chatRoomUser.getChatRoom();
 
