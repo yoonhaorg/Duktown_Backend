@@ -33,7 +33,7 @@ public class Like extends BaseTimeEntity {
     private User user;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "daily_id")
+    @JoinColumn(name = "post_id")
     private Post post;
 
     @ManyToOne(fetch = LAZY)
