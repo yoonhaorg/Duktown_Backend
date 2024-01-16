@@ -60,17 +60,33 @@ public class CommentService {
 
         Delivery delivery = null;
         Post post = null;
+        String userTitle;
         if(request.getDeliveryId() != null){
             delivery = deliveryRepository.findById(request.getDeliveryId())
                     .orElseThrow(() -> new CustomException(DELIVERY_NOT_FOUND));
+
+            //댓글 작성 유저가 해당 게시글에 댓글 단 내역이 없으면 현재 댓글 단 유저 수에 + 1한 값을 익명 숫자로 부여하고,
+            if (!commentRepository.existsByUserIdAndDeliveryId(userId, delivery.getId())) {
+                userTitle = "익명" + (commentRepository.countUniqueUsersByDeliveryId(delivery.getId()) + 1);
+            } else {
+                //댓글 단 내역이 있다면 유저 아이디와 게시글 아이디로 댓글 한 개만 찾아 해당 댓글의 익명 숫자를 현재 댓글 익명 숫자로 부여
+                userTitle = commentRepository.findFirstByUserIdAndDeliveryId(userId, delivery.getId())
+                        .getUserTitle();
+            }
         } else if (request.getPostId() != null) {
             post = postRepository.findById(request.getPostId())
                     .orElseThrow(() -> new CustomException(POST_NOT_FOUND));
+            if (!commentRepository.existsByUserIdAndPostId(userId, post.getId())) {
+                userTitle = "익명" + (commentRepository.countUniqueUsersByPostId(post.getId()) + 1);
+            } else {
+                userTitle = commentRepository.findFirstByUserIdAndPostId(userId, post.getId())
+                        .getUserTitle();
+            }
         } else {
             throw new CustomException(COMMENT_TARGET_NOT_SELECTED);
         }
 
-        Comment comment = request.toEntity(user, delivery, post, parentComment);
+        Comment comment = request.toEntity(user, delivery, post, parentComment, userTitle);
         commentRepository.save(comment);
     }
 

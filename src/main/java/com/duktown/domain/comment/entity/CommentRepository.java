@@ -22,10 +22,10 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     Boolean existsByParentCommentId(Long parentCommentId);
 
-    @Query(value = "select count(*) from comment where delivery_id = :delivery_id and comment.deleted = false", nativeQuery = true)
+    @Query(value = "select count(*) from Comment c where c.delivery.id = :delivery_id and c.deleted = false")
     Long countByDeliveryId(@Param("delivery_id") Long deliveryId);
 
-    @Query(value = "select count(*) from comment where post_id = :post_id and comment.deleted = false", nativeQuery = true)
+    @Query(value = "select count(*) from Comment c where c.post.id = :post_id and c.deleted = false")
     Long countByPostId(@Param("post_id") Long postId);
 
     @Query("select c from Comment c join fetch c.delivery d where c.user.id = :user_id" +
@@ -41,4 +41,18 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query("select c from Comment c join fetch c.post p " +
             "where c.user.id = :user_id and p.category = :category order by p.createdAt desc")
     List<Comment> findAllByUserAndPostAndCategory(@Param("user_id") Long userId, @Param(value = "category") Category category);
+
+    @Query("select count(distinct c.user) from Comment c where c.delivery.id = :delivery_id")
+    Long countUniqueUsersByDeliveryId(@Param("delivery_id") Long deliveryId);
+
+    @Query("select count(distinct c.user) from Comment c where c.post.id = :post_id")
+    Long countUniqueUsersByPostId(@Param("post_id") Long postId);
+
+    Boolean existsByUserIdAndPostId(Long userId, Long postId);
+
+    Boolean existsByUserIdAndDeliveryId(Long userId, Long deliveryId);
+
+    Comment findFirstByUserIdAndPostId(Long userId, Long postId);
+
+    Comment findFirstByUserIdAndDeliveryId(Long userId, Long deliveryId);
 }
