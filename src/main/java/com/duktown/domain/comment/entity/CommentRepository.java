@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
@@ -52,7 +53,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     Boolean existsByUserIdAndDeliveryId(Long userId, Long deliveryId);
 
-    Comment findFirstByUserIdAndPostId(Long userId, Long postId);
+    Optional<Comment> findFirstByUserIdAndPostId(Long userId, Long postId);
 
-    Comment findFirstByUserIdAndDeliveryId(Long userId, Long deliveryId);
+    Optional<Comment> findFirstByUserIdAndDeliveryId(Long userId, Long deliveryId);
 }

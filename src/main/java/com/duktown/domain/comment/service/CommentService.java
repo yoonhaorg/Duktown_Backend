@@ -70,7 +70,7 @@ public class CommentService {
                 userTitle = "익명" + (commentRepository.countUniqueUsersByDeliveryId(delivery.getId()) + 1);
             } else {
                 //댓글 단 내역이 있다면 유저 아이디와 게시글 아이디로 댓글 한 개만 찾아 해당 댓글의 익명 숫자를 현재 댓글 익명 숫자로 부여
-                userTitle = commentRepository.findFirstByUserIdAndDeliveryId(userId, delivery.getId())
+                userTitle = commentRepository.findFirstByUserIdAndDeliveryId(userId, delivery.getId()).orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND))
                         .getUserTitle();
             }
         } else if (request.getPostId() != null) {
@@ -79,7 +79,7 @@ public class CommentService {
             if (!commentRepository.existsByUserIdAndPostId(userId, post.getId())) {
                 userTitle = "익명" + (commentRepository.countUniqueUsersByPostId(post.getId()) + 1);
             } else {
-                userTitle = commentRepository.findFirstByUserIdAndPostId(userId, post.getId())
+                userTitle = commentRepository.findFirstByUserIdAndPostId(userId, post.getId()).orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND))
                         .getUserTitle();
             }
         } else {
