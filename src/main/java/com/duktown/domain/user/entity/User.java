@@ -1,7 +1,9 @@
 package com.duktown.domain.user.entity;
 
 import com.duktown.domain.BaseTimeEntity;
+import com.duktown.domain.unit.entity.Unit;
 import com.duktown.global.type.RoleType;
+import com.duktown.global.type.UnitUserType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -70,4 +72,16 @@ public class User extends BaseTimeEntity {
         // 외박 가능 일수 다운
         this.availablePeriod -= Period;
     };
+
+    // 구현을 위해 추가
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "unit_id", nullable = true)
+    private Unit unit;
+
+    // 유저에 배정 완료
+    public void toAllocation(Unit unit){
+        this.unit = unit;
+    }
+
+
 }

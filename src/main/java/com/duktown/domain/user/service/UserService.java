@@ -1,5 +1,6 @@
 package com.duktown.domain.user.service;
 
+import com.duktown.domain.unit.service.UnitService;
 import com.duktown.domain.emailCert.dto.EmailCertDto;
 import com.duktown.domain.emailCert.entity.EmailCert;
 import com.duktown.domain.emailCert.entity.EmailCertRepository;
@@ -29,6 +30,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
     private final EmailCertRepository emailCertRepository;
+
+    private final UnitService unitService; // 임시용
 
     // 아이디 중복 체크 메서드
     public UserDto.IdCheckResponse idCheck(UserDto.IdCheckRequest idCheckRequest) {

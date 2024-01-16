@@ -29,17 +29,15 @@ public class UnitUser extends BaseTimeEntity {
     @Column(name = "unit_user_id")
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "unit_id", nullable = false)
-    private Unit unit;
-
+//    @ManyToOne(fetch = LAZY)
+//    @JoinColumn(name = "user_id", nullable = false)
+//    private User user;
+//
+//    @ManyToOne(fetch = LAZY)
+//    @JoinColumn(name = "unit_id", nullable = false)
+//    private Unit unit;// 배정 정보
+//
     @Enumerated(STRING)
     @Column(nullable = false)
     private UnitUserType unitUserType;
-
-
 }

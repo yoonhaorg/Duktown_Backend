@@ -7,5 +7,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum UnitUserType {
     // 유닛장, 유닛원
-    Unit_Leader
+    UNIT_LEADER,
+    UNIT_MEMBER
 }

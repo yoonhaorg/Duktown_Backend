@@ -1,8 +1,6 @@
 package com.duktown.domain.profile.dto;
 
-import com.duktown.domain.unit.entity.Unit;
 import com.duktown.domain.user.entity.User;
-import com.duktown.global.type.HallName;
 import com.duktown.global.type.RoleType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -31,35 +31,28 @@ public class UnitInitDB {
                     .floorNumber(1)
                     .buildingNumber(1)
                     .roomNumber(101)
+                    .occupancy(2)
                     .build();
 
             Unit unit3 = Unit.builder()
                     .hallName(HallName.GAON1)
                     .floorNumber(1)
                     .buildingNumber(1)
-                    .roomNumber(101)
+                    .roomNumber(102)
+                    .occupancy(2)
                     .build();
 
             Unit unit4 = Unit.builder()
                     .hallName(HallName.GAON1)
                     .floorNumber(1)
                     .buildingNumber(1)
-                    .roomNumber(102)
-                    .build();
-
-            Unit unit2 = Unit.builder()
-                    .hallName(HallName.GAON2)
-                    .floorNumber(2)
-                    .buildingNumber(2)
-                    .roomNumber(201)
+                    .roomNumber(103)
+                    .occupancy(2)
                     .build();
 
 
-
-
-            // Unit 엔터티를 저장
+            //  엔터티를 저장
             em.persist(unit1);
-            em.persist(unit2);
             em.persist(unit3);
             em.persist(unit4);
         }
