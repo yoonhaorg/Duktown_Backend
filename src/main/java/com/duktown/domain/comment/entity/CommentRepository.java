@@ -22,10 +22,10 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     Boolean existsByParentCommentId(Long parentCommentId);
 
-    @Query(value = "select count(*) from comment where delivery_id = :delivery_id and comment.deleted = false", nativeQuery = true)
+    @Query(value = "select count(*) from Comment c where c.delivery.id = :delivery_id and c.deleted = false")
     Long countByDeliveryId(@Param("delivery_id") Long deliveryId);
 
-    @Query(value = "select count(*) from comment where post_id = :post_id and comment.deleted = false", nativeQuery = true)
+    @Query(value = "select count(*) from Comment c where c.post.id = :post_id and c.deleted = false")
     Long countByPostId(@Param("post_id") Long postId);
 
     @Query("select c from Comment c join fetch c.delivery d where c.user.id = :user_id" +
