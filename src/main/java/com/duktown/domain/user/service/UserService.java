@@ -56,13 +56,13 @@ public class UserService {
         idDuplicateCheck(signupRequest.getLoginId());
 
         // 이메일 인증 여부 체크
-        EmailCert emailCert = emailCertRepository.findByEmail(signupRequest.getEmail()).orElseThrow(
-                () -> new CustomException(EMAIL_CERT_NOT_FOUND)
-        );
-
-        if (!emailCert.getCertified()) {
-            throw new CustomException(EMAIL_CERT_FAILED);
-        }
+//        EmailCert emailCert = emailCertRepository.findByEmail(signupRequest.getEmail()).orElseThrow(
+//                () -> new CustomException(EMAIL_CERT_NOT_FOUND)
+//        );
+//
+//        if (!emailCert.getCertified()) {
+//            throw new CustomException(EMAIL_CERT_FAILED);
+//        }
 
         // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());

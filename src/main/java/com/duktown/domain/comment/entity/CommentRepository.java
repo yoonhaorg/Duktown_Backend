@@ -41,4 +41,18 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query("select c from Comment c join fetch c.post p " +
             "where c.user.id = :user_id and p.category = :category order by p.createdAt desc")
     List<Comment> findAllByUserAndPostAndCategory(@Param("user_id") Long userId, @Param(value = "category") Category category);
+
+    @Query("select count(distinct c.user) from Comment c where c.delivery.id = :delivery_id")
+    Long countUniqueUsersByDeliveryId(@Param("delivery_id") Long deliveryId);
+
+    @Query("select count(distinct c.user) from Comment c where c.post.id = :post_id")
+    Long countUniqueUsersByPostId(@Param("post_id") Long postId);
+
+    Boolean existsByUserIdAndPostId(Long userId, Long postId);
+
+    Boolean existsByUserIdAndDeliveryId(Long userId, Long deliveryId);
+
+    Comment findFirstByUserIdAndPostId(Long userId, Long postId);
+
+    Comment findFirstByUserIdAndDeliveryId(Long userId, Long deliveryId);
 }

@@ -55,13 +55,13 @@ public class CustomExceptionHandler {
     }
 
     // 이외 Error
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ErrorResponse> handleException(Exception e, HttpServletRequest request) {
-//        log.error("[Common Exception] url: {} | errorMessage: {}",
-//                request.getRequestURL(), e.getMessage());
-//
-//        return ResponseEntity
-//                .status(SERVER_INTERNAL_ERROR.getHttpStatus())
-//                .body(new ErrorResponse(SERVER_INTERNAL_ERROR));
-//    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception e, HttpServletRequest request) {
+        log.error("[Common Exception] url: {} | errorMessage: {}",
+                request.getRequestURL(), e.getMessage());
+
+        return ResponseEntity
+                .status(SERVER_INTERNAL_ERROR.getHttpStatus())
+                .body(new ErrorResponse(SERVER_INTERNAL_ERROR));
+    }
 }

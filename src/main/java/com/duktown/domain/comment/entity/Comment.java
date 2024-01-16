@@ -59,6 +59,9 @@ public class Comment extends BaseTimeEntity {
     @Column(nullable = false)
     private Boolean deleted;
 
+    @Column(nullable = false)
+    private long anonymousNumber;
+
     public void update(String content) {
         this.content = content;
     }
