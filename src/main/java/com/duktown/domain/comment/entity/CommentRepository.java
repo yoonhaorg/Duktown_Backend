@@ -43,11 +43,11 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             "where c.user.id = :user_id and p.category = :category order by p.createdAt desc")
     List<Comment> findAllByUserAndPostAndCategory(@Param("user_id") Long userId, @Param(value = "category") Category category);
 
-    @Query("select count(distinct c.user) from Comment c where c.delivery.id = :delivery_id")
-    Long countUniqueUsersByDeliveryId(@Param("delivery_id") Long deliveryId);
+    @Query("select count(distinct c.user) from Comment c where c.delivery.id = :delivery_id and c.user.id <> :writer_id")
+    Long countUniqueUsersByDeliveryIdExceptWriter(@Param("delivery_id") Long deliveryId, @Param("writer_id") Long writerId);
 
-    @Query("select count(distinct c.user) from Comment c where c.post.id = :post_id")
-    Long countUniqueUsersByPostId(@Param("post_id") Long postId);
+    @Query("select count(distinct c.user) from Comment c where c.post.id = :post_id and c.user.id <> :writer_id")
+    Long countUniqueUsersByPostIdExceptWriter(@Param("post_id") Long postId, @Param("writer_id") Long writerId);
 
     Boolean existsByUserIdAndPostId(Long userId, Long postId);
 
