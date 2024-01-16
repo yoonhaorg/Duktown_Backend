@@ -27,7 +27,7 @@ public class CommentDto {
         @NotBlank(message = "댓글 내용은 필수 값입니다.")
         private String content;
 
-        public Comment toEntity(User user, Delivery delivery, Post post, Comment parentComment, long anonymousNumber) {
+        public Comment toEntity(User user, Delivery delivery, Post post, Comment parentComment, String userTitle) {
             return Comment.builder()
                     .user(user)
                     .delivery(delivery)
@@ -35,7 +35,7 @@ public class CommentDto {
                     .parentComment(parentComment)
                     .content(content)
                     .deleted(false)
-                    .anonymousNumber(anonymousNumber)
+                    .userTitle(userTitle)
                     .build();
         }
     }
@@ -64,7 +64,7 @@ public class CommentDto {
     public static class ParentResponse{
         private Long commentId;
         private Long userId;
-        private long anonymousNumber;
+        private String userTitle;
         private String content;
         private Boolean liked;
         private Integer likeCount;
@@ -80,7 +80,7 @@ public class CommentDto {
             return ParentResponse.builder()
                     .commentId(comment.getId())
                     .userId(comment.getUser().getId())
-                    .anonymousNumber(comment.getAnonymousNumber())
+                    .userTitle(comment.getUserTitle())
                     .content(comment.getContent())
                     .liked(likes.stream().anyMatch(l -> l.getComment().getId().equals(comment.getId())))
                     .likeCount(comment.getLikes().size())
@@ -98,7 +98,7 @@ public class CommentDto {
     public static class ChildResponse {
         private Long commentId;
         private Long userId;
-        private long anonymousNumber;
+        private String userTitle;
         private String content;
         private Boolean liked;
         private Integer likeCount;
@@ -109,7 +109,7 @@ public class CommentDto {
             return ChildResponse.builder()
                     .commentId(comment.getId())
                     .userId(comment.getUser().getId())
-                    .anonymousNumber(comment.getAnonymousNumber())
+                    .userTitle(comment.getUserTitle())
                     .content(comment.getContent())
                     .liked(likes.stream().anyMatch(l -> l.getComment().getId().equals(comment.getId())))
                     .likeCount(comment.getLikes().size())
