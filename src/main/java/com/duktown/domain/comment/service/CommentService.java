@@ -65,21 +65,29 @@ public class CommentService {
             delivery = deliveryRepository.findById(request.getDeliveryId())
                     .orElseThrow(() -> new CustomException(DELIVERY_NOT_FOUND));
 
-            //댓글 작성 유저가 해당 게시글에 댓글 단 내역이 없으면 현재 댓글 단 유저 수에 + 1한 값을 익명 숫자로 부여하고,
-            if (!commentRepository.existsByUserIdAndDeliveryId(userId, delivery.getId())) {
-                userTitle = "익명" + (commentRepository.countUniqueUsersByDeliveryId(delivery.getId()) + 1);
-            } else {
-                //댓글 단 내역이 있다면 유저 아이디와 게시글 아이디로 댓글 한 개만 찾아 해당 댓글의 익명 숫자를 현재 댓글 익명 숫자로 부여
-                userTitle = commentRepository.findFirstByUserIdAndDeliveryId(userId, delivery.getId())
+            // 글쓴이라면
+            if (delivery.getUser().getId().equals(userId)) {
+                userTitle = "글쓴이";
+            }
+            // 댓글 작성 유저가 해당 게시글에 댓글 단 내역이 없으면 현재 댓글 단 유저 수에 + 1한 값을 익명 숫자로 부여
+            else if (!commentRepository.existsByUserIdAndDeliveryId(userId, delivery.getId())) {
+                userTitle = "익명" + (commentRepository.countUniqueUsersByDeliveryIdExceptWriter(delivery.getId(), userId) + 1);
+            }
+            // 댓글 단 내역이 있다면 유저 아이디와 게시글 아이디로 댓글 한 개만 찾아 해당 댓글의 익명 숫자를 현재 댓글 익명 숫자로 부여
+            else {
+                userTitle = commentRepository.findFirstByUserIdAndDeliveryId(userId, delivery.getId()).orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND))
                         .getUserTitle();
             }
         } else if (request.getPostId() != null) {
             post = postRepository.findById(request.getPostId())
                     .orElseThrow(() -> new CustomException(POST_NOT_FOUND));
-            if (!commentRepository.existsByUserIdAndPostId(userId, post.getId())) {
-                userTitle = "익명" + (commentRepository.countUniqueUsersByPostId(post.getId()) + 1);
+            // 글쓴이라면
+            if (post.getUser().getId().equals(userId)) {
+                userTitle = "글쓴이";
+            } else if (!commentRepository.existsByUserIdAndPostId(userId, post.getId())) {
+                userTitle = "익명" + (commentRepository.countUniqueUsersByPostIdExceptWriter(post.getId(), userId) + 1);
             } else {
-                userTitle = commentRepository.findFirstByUserIdAndPostId(userId, post.getId())
+                userTitle = commentRepository.findFirstByUserIdAndPostId(userId, post.getId()).orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND))
                         .getUserTitle();
             }
         } else {

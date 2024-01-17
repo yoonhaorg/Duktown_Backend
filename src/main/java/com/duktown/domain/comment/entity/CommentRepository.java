@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
@@ -42,17 +43,17 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             "where c.user.id = :user_id and p.category = :category order by p.createdAt desc")
     List<Comment> findAllByUserAndPostAndCategory(@Param("user_id") Long userId, @Param(value = "category") Category category);
 
-    @Query("select count(distinct c.user) from Comment c where c.delivery.id = :delivery_id")
-    Long countUniqueUsersByDeliveryId(@Param("delivery_id") Long deliveryId);
+    @Query("select count(distinct c.user) from Comment c where c.delivery.id = :delivery_id and c.user.id <> :writer_id")
+    Long countUniqueUsersByDeliveryIdExceptWriter(@Param("delivery_id") Long deliveryId, @Param("writer_id") Long writerId);
 
-    @Query("select count(distinct c.user) from Comment c where c.post.id = :post_id")
-    Long countUniqueUsersByPostId(@Param("post_id") Long postId);
+    @Query("select count(distinct c.user) from Comment c where c.post.id = :post_id and c.user.id <> :writer_id")
+    Long countUniqueUsersByPostIdExceptWriter(@Param("post_id") Long postId, @Param("writer_id") Long writerId);
 
     Boolean existsByUserIdAndPostId(Long userId, Long postId);
 
     Boolean existsByUserIdAndDeliveryId(Long userId, Long deliveryId);
 
-    Comment findFirstByUserIdAndPostId(Long userId, Long postId);
+    Optional<Comment> findFirstByUserIdAndPostId(Long userId, Long postId);
 
-    Comment findFirstByUserIdAndDeliveryId(Long userId, Long deliveryId);
+    Optional<Comment> findFirstByUserIdAndDeliveryId(Long userId, Long deliveryId);
 }
