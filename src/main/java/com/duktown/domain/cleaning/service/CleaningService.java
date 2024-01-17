@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.duktown.global.exception.CustomErrorType.CLEANING_NOT_FOUND;
 import static com.duktown.global.exception.CustomErrorType.USER_NOT_FOUND;
 
 @Service
@@ -28,14 +29,17 @@ public class CleaningService {
 
     // 날짜별 청소 조회
     public CleaningDto.CleaningDateResponseSto getCleanDate(LocalDate date){
-        Cleaning cleaningByDate = cleaningRepository.findCleaningByDate(date);
+        Cleaning cleaningByDate = cleaningRepository.findCleaningByDate(date)
+                .orElseThrow(()-> new CustomException(CLEANING_NOT_FOUND));
         return new CleaningDto.CleaningDateResponseSto(cleaningByDate);
     }
+
 
     // 청소 완료
     @Transactional
     public void CheckCleaning(Long cleaningId){
-        Cleaning cleaning = cleaningRepository.findCleaningById(cleaningId);
+        Cleaning cleaning = cleaningRepository.findCleaningById(cleaningId)
+                        .orElseThrow(()-> new CustomException(CLEANING_NOT_FOUND));
         cleaning.updateCleaned();
     }
 
@@ -43,7 +47,8 @@ public class CleaningService {
     //TODO: 벌점 부여 : 청소 승인 과정에서 벌점 부여
     @Transactional
     public void cleaningApply(Long cleaningId){
-        Cleaning cleaning = cleaningRepository.findCleaningById(cleaningId);
+        Cleaning cleaning = cleaningRepository.findCleaningById(cleaningId)
+                .orElseThrow(()-> new CustomException(CLEANING_NOT_FOUND));
         cleaning.updateCleaned();
     }
 

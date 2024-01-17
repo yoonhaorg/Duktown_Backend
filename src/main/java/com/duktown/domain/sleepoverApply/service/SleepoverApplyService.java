@@ -5,6 +5,7 @@ import com.duktown.domain.sleepoverApply.entity.SleepoverApply;
 import com.duktown.domain.sleepoverApply.entity.SleepoverApplyRepository;
 import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
+import com.duktown.global.exception.CustomErrorType;
 import com.duktown.global.exception.CustomException;
 import com.duktown.global.type.ApprovalType;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,9 @@ public class SleepoverApplyService {
             SleepoverApply sleepoverApply = request.toEntity(user);
 
             // TODO : 외박 가능 일 수가 0이면 에러 처리 발생
+            if(user.getAvailablePeriod().equals(0) && user.getAvailablePeriod() < remainingDays){
+                new CustomException(CustomErrorType.SLEEP_OVER_APPLY_TOTAL_ERROR);
+            }
             user.downAvailablePeriod(request.getPeriod());// 외박 가능 일 수 감소
             sleepoverApplyRepository.save(sleepoverApply);
 

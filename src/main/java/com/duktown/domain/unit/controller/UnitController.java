@@ -12,9 +12,9 @@ public class UnitController {
 
     private final UnitService unitService;
 
-    @GetMapping("/{userId}")
-    public void unitAllocation(@PathVariable Long userId){
-        unitService.assignRoom(userId);
-    }
+//    @GetMapping("/{userId}")
+//    public void unitAllocation(@PathVariable Long userId){
+//        unitService.assignRoom(userId);
+//    }
 
 }

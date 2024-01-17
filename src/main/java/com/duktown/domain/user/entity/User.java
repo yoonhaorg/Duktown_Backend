@@ -2,6 +2,8 @@ package com.duktown.domain.user.entity;
 
 import com.duktown.domain.BaseTimeEntity;
 import com.duktown.domain.unit.entity.Unit;
+import com.duktown.global.exception.CustomErrorType;
+import com.duktown.global.exception.CustomException;
 import com.duktown.global.type.RoleType;
 import com.duktown.global.type.UnitUserType;
 import lombok.AllArgsConstructor;
@@ -65,23 +67,23 @@ public class User extends BaseTimeEntity {
     @PrePersist
     private void baseAvailablePeriod(){
         // 외박 가능 일수 초기값 부여
-        availablePeriod = 21;
-    };
-
-    public void downAvailablePeriod(Integer Period){
-        // 외박 가능 일수 다운
-        this.availablePeriod -= Period;
-    };
-
-    // 구현을 위해 추가
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "unit_id", nullable = true)
-    private Unit unit;
-
-    // 유저에 배정 완료
-    public void toAllocation(Unit unit){
-        this.unit = unit;
+        availablePeriod = 16;
     }
+
+    public void downAvailablePeriod(Integer period){
+        // 외박 가능 일수 다운
+            this.availablePeriod -= period;
+    }
+
+//    // 구현을 위해 추가
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "unit_id", nullable = true)
+//    private Unit unit;
+
+//    // 유저에 배정 완료
+//    public void toAllocation(Unit unit){
+//        this.unit = unit;
+//    }
 
 
 }

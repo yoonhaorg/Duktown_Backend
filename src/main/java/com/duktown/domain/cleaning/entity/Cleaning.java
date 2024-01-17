@@ -1,5 +1,6 @@
 package com.duktown.domain.cleaning.entity;
 
+import com.duktown.domain.cleaningUnit.entity.CleaningUnit;
 import com.duktown.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +10,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -36,6 +39,9 @@ public class Cleaning {
 
     @Column(nullable = false)
     private LocalDate date;
+
+    @OneToMany(fetch = LAZY, mappedBy = "cleaning")
+    private List<CleaningUnit> cleaningUnits = new ArrayList<>();
 
     private Boolean cleaned;
     private Boolean checked;
