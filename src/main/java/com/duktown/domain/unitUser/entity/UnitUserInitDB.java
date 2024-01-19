@@ -78,6 +78,7 @@ public class UnitUserInitDB {
                             .user(dummyUsers[userIndex])
                             .unit(dummyUnits[i])
                             .unitUserType(UnitUserType.UNIT_MEMBER)
+                            .unitNumber(1)
                             .build();
                     em.persist(demoUnitUser);
 

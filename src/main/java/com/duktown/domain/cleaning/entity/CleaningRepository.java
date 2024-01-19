@@ -10,8 +10,8 @@ import java.util.Optional;
 public interface CleaningRepository extends JpaRepository<Cleaning,Long> {
     Optional<Cleaning> findCleaningById(Long cleaningId);
 
-    // 유닛 내 날짜별 청소조회
-    Optional<Cleaning> findCleaningByDate(LocalDate date);
+    //TODO: 유닛 내 날짜별 청소조회 -> 배포용
+    Optional<Cleaning> findCleaningByDateAndCheckUser(LocalDate date, User user);
 
     // 유저 완료한 청소 내역 조회
     List<Cleaning> findCleaningByUserAndCleaned(User user, Boolean cleaned);

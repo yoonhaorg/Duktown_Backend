@@ -31,20 +31,20 @@ public class Cleaning {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private User user; //유저
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "check_user_id", nullable = true)
-    private User checkUser;
+    @JoinColumn(name = "check_user_id", nullable = false)
+    private User checkUser; //사생회
 
     @Column(nullable = false)
     private LocalDate date;
 
     @OneToMany(fetch = LAZY, mappedBy = "cleaning")
-    private List<CleaningUnit> cleaningUnits = new ArrayList<>();
+    private List<CleaningUnit> cleaningUnits = new ArrayList<>(); //유닛그룹
 
-    private Boolean cleaned;
-    private Boolean checked;
+    private Boolean cleaned = false;
+    private Boolean checked = false;
 
     public void updateCleaned(){
         this.cleaned = true;
@@ -53,4 +53,6 @@ public class Cleaning {
     public void updateChecked(){
         this.checked =true;
     }
+
+
 }

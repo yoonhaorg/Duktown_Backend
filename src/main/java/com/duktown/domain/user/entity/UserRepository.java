@@ -14,11 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByLoginId(String loginId);
 
-
-    // 유닛용
-    // 유저 아이디로 배정정보 조회
     Optional<User> findById(Long id);
 
-    // 유닛 ID로 해당 유닛에 속한 유저 조회
-//    List<User> findUsersByUnit_Id(Long unitId);
+
 }

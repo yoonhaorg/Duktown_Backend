@@ -28,8 +28,11 @@ public class CleaningService {
     private final UserRepository userRepository;
 
     // 날짜별 청소 조회
-    public CleaningDto.CleaningDateResponseSto getCleanDate(LocalDate date){
-        Cleaning cleaningByDate = cleaningRepository.findCleaningByDate(date)
+    public CleaningDto.CleaningDateResponseSto getCleanDate(CleaningDto.DateCleaningRequestDto date, Long userId){
+        User user = userRepository.findById(userId)
+                .orElseThrow(()->new CustomException(USER_NOT_FOUND));
+//        Cleaning cleaningByDate = cleaningRepository.findCleaningByDate(date.getCleaningDate())
+        Cleaning cleaningByDate = cleaningRepository.findCleaningByDateAndCheckUser(date.getCleaningDate(),user)
                 .orElseThrow(()-> new CustomException(CLEANING_NOT_FOUND));
         return new CleaningDto.CleaningDateResponseSto(cleaningByDate);
     }
@@ -37,7 +40,7 @@ public class CleaningService {
 
     // 청소 완료
     @Transactional
-    public void CheckCleaning(Long cleaningId){
+    public void cleaningOk(Long cleaningId){
         Cleaning cleaning = cleaningRepository.findCleaningById(cleaningId)
                         .orElseThrow(()-> new CustomException(CLEANING_NOT_FOUND));
         cleaning.updateCleaned();
@@ -46,10 +49,10 @@ public class CleaningService {
     // 청소 승인
     //TODO: 벌점 부여 : 청소 승인 과정에서 벌점 부여
     @Transactional
-    public void cleaningApply(Long cleaningId){
+    public void checkOk(Long cleaningId){
         Cleaning cleaning = cleaningRepository.findCleaningById(cleaningId)
                 .orElseThrow(()-> new CustomException(CLEANING_NOT_FOUND));
-        cleaning.updateCleaned();
+        cleaning.updateChecked();
     }
 
     // 나의 청소 완료 목록 조회

@@ -15,14 +15,12 @@ public class PenaltyPointsDto {
     @Getter
     public static class PenaltyPointsResponseDto{
         private Long id;
-        private Long user;
         private String reason;
         private int score;
         private LocalDate date;
 
         public PenaltyPointsResponseDto(PenaltyPoints penaltyPoints){
             this.id = penaltyPoints.getId();
-            this.user = penaltyPoints.getUser().getId();
             this.reason = penaltyPoints.getReason();
             this.score = penaltyPoints.getScore();
             this.date = penaltyPoints.getDate();

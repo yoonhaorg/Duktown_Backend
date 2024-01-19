@@ -23,7 +23,7 @@ public class PenaltyPoints extends BaseTimeEntity {
     @Id @GeneratedValue
     private Long id;
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true) //TODO: 배포를 위해 null값 허용 및 initDB설정
     private User user;
     private String reason;
     private int score;

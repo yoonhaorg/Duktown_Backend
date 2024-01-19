@@ -24,8 +24,8 @@ public class CleaningController {
      @GetMapping("/schedule")
      public ResponseEntity<CleaningDto.CleaningDateResponseSto> getDateCleaning(
              @AuthenticationPrincipal CustomUserDetails customUserDetails,
-             @RequestParam("date") LocalDate date){
-         CleaningDto.CleaningDateResponseSto cleanDate = cleaningService.getCleanDate(date);
+             @RequestBody CleaningDto.DateCleaningRequestDto date){
+         CleaningDto.CleaningDateResponseSto cleanDate = cleaningService.getCleanDate(date,customUserDetails.getId());
          return ResponseEntity.ok(cleanDate);
      }
 
@@ -35,7 +35,7 @@ public class CleaningController {
     public ResponseEntity<Void> cleaningOk(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long cleaningId){
-        cleaningService.CheckCleaning(cleaningId);
+        cleaningService.cleaningOk(cleaningId);
         return ResponseEntity.ok().build();
     }
 
@@ -44,7 +44,7 @@ public class CleaningController {
     public ResponseEntity<Void> cleaningApply(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long cleaningId){
-        cleaningService.cleaningApply(cleaningId);
+        cleaningService.checkOk(cleaningId);
         return ResponseEntity.ok().build();
     }
 

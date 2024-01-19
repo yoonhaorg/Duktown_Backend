@@ -40,5 +40,7 @@ public class UnitUser extends BaseTimeEntity {
     @Enumerated(STRING)
     @Column(nullable = false)
     private UnitUserType unitUserType;
+
+    private Integer unitNumber; // 유닛구분 12명이 1개의 유닛 0~8호 중 0~3호/4~8호
 }
-// 방 배정
+// 그룹

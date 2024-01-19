@@ -75,15 +75,6 @@ public class User extends BaseTimeEntity {
             this.availablePeriod -= period;
     }
 
-//    // 구현을 위해 추가
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "unit_id", nullable = true)
-//    private Unit unit;
-
-//    // 유저에 배정 완료
-//    public void toAllocation(Unit unit){
-//        this.unit = unit;
-//    }
 
 
 }

@@ -54,7 +54,6 @@ public class Unit {
         return currentPeopleCnt;
     }
 
-//    private Integer unitNumber; // 유닛구분 12명이 1개의 유닛 0~8호 중 0~3호/4~8호
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "unit_user_id", nullable = true)

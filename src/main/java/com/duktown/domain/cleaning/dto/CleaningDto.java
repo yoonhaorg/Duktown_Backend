@@ -6,12 +6,23 @@ import com.duktown.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CleaningDto extends BaseTimeEntity {
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class DateCleaningRequestDto {
+
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        private LocalDate cleaningDate;
+    }
+
 
     @Getter
     @AllArgsConstructor
@@ -40,12 +51,11 @@ public class CleaningDto extends BaseTimeEntity {
     @Getter
     public static class CleaningDateResponseSto{
         private LocalDate cleaningDate;
-        private User user;
+        //private User userid;
         private Boolean cleaned;
 
         public CleaningDateResponseSto(Cleaning cleaning){
             cleaningDate = cleaning.getDate();
-            user = cleaning.getUser();
             cleaned = cleaning.getCleaned();
         }
     }
