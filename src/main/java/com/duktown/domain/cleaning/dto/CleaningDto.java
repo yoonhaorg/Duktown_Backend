@@ -49,14 +49,19 @@ public class CleaningDto extends BaseTimeEntity {
 
     @NoArgsConstructor
     @Getter
-    public static class CleaningDateResponseSto{
+    public static class CleaningDateResponseDto{
+
+        private Long cleaningId;
         private LocalDate cleaningDate;
-        //private User userid;
         private Boolean cleaned;
 
-        public CleaningDateResponseSto(Cleaning cleaning){
+        private Boolean checked;
+
+        public CleaningDateResponseDto(Cleaning cleaning){
+            cleaningId = cleaning.getId();
             cleaningDate = cleaning.getDate();
             cleaned = cleaning.getCleaned();
+            checked = cleaning.getChecked();
         }
     }
 

@@ -20,7 +20,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Builder
 @AllArgsConstructor(access = PRIVATE)
 @NoArgsConstructor(access = PROTECTED)
-public class Semester {
+public class Semester { //학기
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

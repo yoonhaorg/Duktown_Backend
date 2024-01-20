@@ -28,13 +28,13 @@ public class CleaningService {
     private final UserRepository userRepository;
 
     // 날짜별 청소 조회
-    public CleaningDto.CleaningDateResponseSto getCleanDate(CleaningDto.DateCleaningRequestDto date, Long userId){
+    public CleaningDto.CleaningDateResponseDto getCleanDate(CleaningDto.DateCleaningRequestDto date, Long userId){
         User user = userRepository.findById(userId)
                 .orElseThrow(()->new CustomException(USER_NOT_FOUND));
 //        Cleaning cleaningByDate = cleaningRepository.findCleaningByDate(date.getCleaningDate())
         Cleaning cleaningByDate = cleaningRepository.findCleaningByDateAndCheckUser(date.getCleaningDate(),user)
                 .orElseThrow(()-> new CustomException(CLEANING_NOT_FOUND));
-        return new CleaningDto.CleaningDateResponseSto(cleaningByDate);
+        return new CleaningDto.CleaningDateResponseDto(cleaningByDate);
     }
 
 

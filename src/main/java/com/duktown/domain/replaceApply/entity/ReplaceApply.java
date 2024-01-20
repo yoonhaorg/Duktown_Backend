@@ -21,7 +21,7 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor(access = PRIVATE)
 @NoArgsConstructor(access = PROTECTED)
 @Table(name = "replace_apply")
-public class ReplaceApply {
+public class ReplaceApply { // 대타구하기
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "replace_apply_id")

@@ -22,10 +22,10 @@ public class CleaningController {
 
     // 날짜별 청소 조회
      @GetMapping("/schedule")
-     public ResponseEntity<CleaningDto.CleaningDateResponseSto> getDateCleaning(
+     public ResponseEntity<CleaningDto.CleaningDateResponseDto> getDateCleaning(
              @AuthenticationPrincipal CustomUserDetails customUserDetails,
              @RequestBody CleaningDto.DateCleaningRequestDto date){
-         CleaningDto.CleaningDateResponseSto cleanDate = cleaningService.getCleanDate(date,customUserDetails.getId());
+         CleaningDto.CleaningDateResponseDto cleanDate = cleaningService.getCleanDate(date,customUserDetails.getId());
          return ResponseEntity.ok(cleanDate);
      }
 
