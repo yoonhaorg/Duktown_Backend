@@ -6,40 +6,89 @@ import com.duktown.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CleaningDto extends BaseTimeEntity {
 
+    @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    @Getter
-    public static class CreateCleaningDto{
-        private LocalDate date;
-        private String email;
-        public Cleaning toEntity(User user){
-            return Cleaning.builder()
-                    .date(date)
-                    .user(user)
-                    .build();
-        }
+    public static class DateCleaningRequestDto {
 
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        private LocalDate cleaningDate;
     }
 
+
+    @Getter
     @AllArgsConstructor
     @NoArgsConstructor
+    public static class CreateCleaningRequestDto{
+
+//        List<CreateCleaningUnit> CleaningUnit = new ArrayList<>();
+//
+//        @AllArgsConstructor
+//        @NoArgsConstructor
+//        @Getter
+//        public static class CreateCleaningUnit {
+            private LocalDate cleaningDate;
+            private String email;
+            public  Cleaning toEntity(User user) {
+                return Cleaning.builder()
+                        .date(cleaningDate)
+                        .user(user)
+                        .build();
+            }
+        //}
+    }
+
+
+    @NoArgsConstructor
     @Getter
-    public static class GetCleaningDate{
-        private LocalDate date;
-        private User user;
+    public static class CleaningDateResponseDto{
+
+        private Long cleaningId;
+        private LocalDate cleaningDate;
         private Boolean cleaned;
 
-        public GetCleaningDate(Cleaning cleaning){
-            date = cleaning.getDate();
-            user = cleaning.getUser();
+        private Boolean checked;
+
+        public CleaningDateResponseDto(Cleaning cleaning){
+            cleaningId = cleaning.getId();
+            cleaningDate = cleaning.getDate();
             cleaned = cleaning.getCleaned();
+            checked = cleaning.getChecked();
         }
     }
+
+    @NoArgsConstructor
+    @Getter
+    public static class CleaningResponseDto{
+        private LocalDate cleaningDate;
+        private Boolean cleaned;
+        private Boolean checked;
+
+        public CleaningResponseDto(Cleaning cleaning){
+            this.cleaningDate = cleaning.getDate();
+            this.cleaned = cleaning.getCleaned();
+            this.checked = cleaning.getChecked();
+        }
+    }
+
+
+    @Getter
+    public static class getCleaningListResponseDto{
+        private List<CleaningResponseDto> content;
+
+        public getCleaningListResponseDto(List<CleaningResponseDto> content){
+            this.content =content;
+        }
+    }
+
 
 
 }

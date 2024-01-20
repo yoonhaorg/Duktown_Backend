@@ -1,5 +1,6 @@
 package com.duktown.domain.cleaning.entity;
 
+import com.duktown.domain.cleaningUnit.entity.CleaningUnit;
 import com.duktown.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +10,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -28,23 +31,20 @@ public class Cleaning {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private User user; //유저
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "check_user_id", nullable = false)
-    private User checkUser;
+    private User checkUser; //사생회
 
     @Column(nullable = false)
     private LocalDate date;
 
-//    @Column(nullable = false)
-//    private String cleaningArea;
+    @OneToMany(fetch = LAZY, mappedBy = "cleaning")
+    private List<CleaningUnit> cleaningUnits = new ArrayList<>(); //유닛그룹
 
-    // 벌점
-
-    private Boolean cleaned;
-
-    private Boolean checked;
+    private Boolean cleaned = false;
+    private Boolean checked = false;
 
     public void updateCleaned(){
         this.cleaned = true;
@@ -53,4 +53,6 @@ public class Cleaning {
     public void updateChecked(){
         this.checked =true;
     }
+
+
 }

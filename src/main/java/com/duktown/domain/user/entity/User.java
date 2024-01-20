@@ -1,7 +1,11 @@
 package com.duktown.domain.user.entity;
 
 import com.duktown.domain.BaseTimeEntity;
+import com.duktown.domain.unit.entity.Unit;
+import com.duktown.global.exception.CustomErrorType;
+import com.duktown.global.exception.CustomException;
 import com.duktown.global.type.RoleType;
+import com.duktown.global.type.UnitUserType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -63,11 +67,14 @@ public class User extends BaseTimeEntity {
     @PrePersist
     private void baseAvailablePeriod(){
         // 외박 가능 일수 초기값 부여
-        availablePeriod = 21;
-    };
+        availablePeriod = 16;
+    }
 
-    public void downAvailablePeriod(Integer Period){
+    public void downAvailablePeriod(Integer period){
         // 외박 가능 일수 다운
-        this.availablePeriod -= Period;
-    };
+            this.availablePeriod -= period;
+    }
+
+
+
 }

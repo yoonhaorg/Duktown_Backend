@@ -1,14 +1,21 @@
 package com.duktown.domain.user.service;
 
+import com.duktown.domain.cleaningUnit.entity.CleaningUnitInitDB;
+import com.duktown.domain.unit.entity.Unit;
+import com.duktown.domain.unit.entity.UnitRepository;
+import com.duktown.domain.unit.service.UnitService;
 import com.duktown.domain.emailCert.dto.EmailCertDto;
 import com.duktown.domain.emailCert.entity.EmailCert;
 import com.duktown.domain.emailCert.entity.EmailCertRepository;
+import com.duktown.domain.unitUser.entity.UnitUser;
+import com.duktown.domain.unitUser.entity.UnitUserRepository;
 import com.duktown.domain.user.dto.UserDto;
 import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.email.MailService;
 import com.duktown.global.exception.CustomException;
 import com.duktown.global.security.provider.JwtTokenProvider;
+import com.duktown.global.type.UnitUserType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,6 +36,13 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
     private final EmailCertRepository emailCertRepository;
+
+    // 데모버전용
+    private final UnitRepository unitRepository;
+    private final UnitUserRepository unitUserRepository;
+
+    private final CleaningUnitInitDB cleaningUnitInitDB;
+
 
     // 아이디 중복 체크 메서드
     public UserDto.IdCheckResponse idCheck(UserDto.IdCheckRequest idCheckRequest) {
@@ -54,22 +68,29 @@ public class UserService {
 
         // 아이디 중복 체크
         idDuplicateCheck(signupRequest.getLoginId());
-
-        // 이메일 인증 여부 체크
-        EmailCert emailCert = emailCertRepository.findByEmail(signupRequest.getEmail()).orElseThrow(
-                () -> new CustomException(EMAIL_CERT_NOT_FOUND)
-        );
-
-        if (!emailCert.getCertified()) {
-            throw new CustomException(EMAIL_CERT_FAILED);
-        }
+//
+//        // 이메일 인증 여부 체크
+//        EmailCert emailCert = emailCertRepository.findByEmail(signupRequest.getEmail()).orElseThrow(
+//                () -> new CustomException(EMAIL_CERT_NOT_FOUND)
+//        );
+//
+//        if (!emailCert.getCertified()) {
+//            throw new CustomException(EMAIL_CERT_FAILED);
+//        }
 
         // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
 
         // 사용자 등록
         User user = signupRequest.toEntity(encodedPassword);
-        userRepository.save(user);
+        User save = userRepository.save(user);
+
+        //TODO: 유닛 배정(데모버전)
+        Unit unit = unitRepository.findFirstByOrderByIdDesc().orElseThrow(() -> new CustomException(UNIT_NOT_FOUND));
+        unitUserRepository.save(UnitUser.builder().user(user).unit(unit).unitUserType(UnitUserType.UNIT_LEADER).build());
+        //TODO: 청소 배정(데모버전)
+        cleaningUnitInitDB.allocationCleaning(save.getId());
+
 
         String accessToken = jwtTokenProvider.createAccessToken(user.getLoginId(), user.getId(), user.getRoleType());
         String refreshToken = jwtTokenProvider.createRefreshToken(user.getLoginId(), user.getId(), user.getRoleType());

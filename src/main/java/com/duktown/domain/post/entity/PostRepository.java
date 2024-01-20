@@ -15,7 +15,7 @@ public interface PostRepository extends JpaRepository<Post,Long> {
     // 목록 조회 - 페이지네이션, 카테고리
 
     @Query("select p from Post p where p.category = :category order by p.createdAt desc")
-    Slice<Post> findAllByCategory(@Param(value = "category") Category category);
+    Slice<Post> findAllByCategory(@Param(value = "category") Category category,Pageable pageable);
 
     // 일상 0, 장터 1 검색
     @Query("SELECT p FROM Post p WHERE p.category = :category AND (p.title LIKE %:keyword% OR p.content LIKE %:keyword%) ")

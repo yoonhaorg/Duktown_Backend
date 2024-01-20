@@ -1,6 +1,9 @@
-package com.duktown.domain.replaceApply.entity;
+package com.duktown.domain.unitUser.entity;
 
+import com.duktown.domain.BaseTimeEntity;
+import com.duktown.domain.unit.entity.Unit;
 import com.duktown.domain.user.entity.User;
+import com.duktown.global.type.UnitUserType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,8 +11,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-import java.time.LocalDate;
-
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PRIVATE;
@@ -20,11 +22,11 @@ import static lombok.AccessLevel.PROTECTED;
 @Builder
 @AllArgsConstructor(access = PRIVATE)
 @NoArgsConstructor(access = PROTECTED)
-@Table(name = "replace_apply")
-public class ReplaceApply { // 대타구하기
+@Table(name = "unit_users")
+public class UnitUser extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "replace_apply_id")
+    @Column(name = "unit_user_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)
@@ -32,18 +34,13 @@ public class ReplaceApply { // 대타구하기
     private User user;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "replace_user_id", nullable = false)
-    private User replaceUser;
+    @JoinColumn(name = "unit_id", nullable = false)
+    private Unit unit;// 룸 정보
 
+    @Enumerated(STRING)
     @Column(nullable = false)
-    private LocalDate originDate;
+    private UnitUserType unitUserType;
 
-    @Column(nullable = false)
-    private String reason;
-
-    @Column(nullable = false)
-    private LocalDate replaceDate;
-
-    @Column(nullable = false)
-    private Integer state;  // 0 : 대기중, 1 : 승인, 2 : 거절
+    private Integer unitNumber; // 유닛구분 12명이 1개의 유닛 0~8호 중 0~3호/4~8호
 }
+// 그룹

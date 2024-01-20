@@ -64,6 +64,8 @@ public enum CustomErrorType {
     SLEEP_OVER_APPLY_INVALID_REQUEST_TIME(BAD_REQUEST,90002,"22시 이후에는 외박 신청이 불가능합니다."),
     SLEEP_OVER_APPLY_TARGET_ERROR(BAD_REQUEST,90003,"승인 이후에는 수정 불가능합니다."),
 
+    SLEEP_OVER_APPLY_TOTAL_ERROR(BAD_REQUEST,90004,"외박 가능 햇수를 초과했습니다"),
+
     // Chat(10xxxx)
     CHAT_ROOM_NOT_FOUND(NOT_FOUND, 100001, "존재하지 않는 채팅방입니다."),
     NO_PERMISSION_TO_INVITE_CHAT_ROOM(FORBIDDEN, 100002, "채팅방에 초대할 수 있는 권한이 없습니다."),
@@ -75,7 +77,14 @@ public enum CustomErrorType {
     NO_PERMISSION_TO_BLOCK_CHAT_ROOM_USER(FORBIDDEN, 100008, "채팅방 사용자를 차단할 수 있는 권한이 없습니다."),
     BLOCKED_CHAT_ROOM_USER(BAD_REQUEST, 100009, "해당 채팅방에서 차단된 사용자입니다."),
     BLOCKED_FROM_CHAT_ROOM(BAD_REQUEST, 100010, "이용이 제한되어 더이상 참여할 수 없는 채팅방입니다."),
-    DELETED_CHAT_ROOM_USER(BAD_REQUEST, 100011, "채팅방에서 나가기한 사용자입니다.");
+    DELETED_CHAT_ROOM_USER(BAD_REQUEST, 100011, "채팅방에서 나가기한 사용자입니다."),
+
+    // Unit(11xxxx)
+    UNIT_NOT_FOUND(NOT_FOUND, 110001, "존재하지 않는 유닛입니다."),
+    UNIT_USER_NOT_FOUND(NOT_FOUND, 110002, "유닛에 존재하지 않는 사용자입니다."),
+
+    // cleaning(12xxxx)
+    CLEANING_NOT_FOUND(NOT_FOUND,120001,"존재하지 않는 청소입니다.");
 
     private final HttpStatus httpStatus;
     private final int code;

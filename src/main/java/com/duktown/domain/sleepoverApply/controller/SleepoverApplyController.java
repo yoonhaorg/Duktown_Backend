@@ -34,7 +34,7 @@ public class SleepoverApplyController {
     @GetMapping("/student")
     public ResponseEntity<SleepoverApplyDto.ResponseGetSleepoverApplyFromStudent> getSleepoverList(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam(required = false, defaultValue = "1", value = "page") int pageNo
+            @RequestParam(required = false, defaultValue = "1", value = "pageNo") int pageNo
     ){
         return ResponseEntity.ok( sleepoverApplyService.getListSleepoverApply(customUserDetails.getId(),pageNo));
     }
@@ -42,7 +42,7 @@ public class SleepoverApplyController {
     @GetMapping("/manager")
     public ResponseEntity<SleepoverApplyDto.ResponseGetSleepoverApplyFromManager> getSleepoverListFromManager(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam(required = false, defaultValue = "1", value = "page") int pageNo
+            @RequestParam(required = false, defaultValue = "1", value = "pageNo") int pageNo
     ){
         return ResponseEntity.ok( sleepoverApplyService.getListSleepoverApply(pageNo));
     }
