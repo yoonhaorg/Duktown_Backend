@@ -37,16 +37,27 @@ public class ChatService {
     public ChatDto.MessageResponse saveChat(Long chatRoomId, ChatDto.MessageRequest message) {
         ChatRoomUser chatRoomUser = chatRoomUserRepository.findByChatRoomIdAndUserId(chatRoomId, message.getUserId())
                 .orElseThrow(() -> new CustomException(CHAT_ROOM_USER_NOT_FOUND));
+
+        // 나가기했거나 내보내기 된 유저면 채팅 전송 불가
         if (chatRoomUser.getChatRoomUserType() == ChatRoomUserType.DELETED) {
-            throw new CustomException(CANNOT_SEND_WHEN_CHAT_ROOM_OWNER_EXIT);
+            throw new CustomException(DELETED_CHAT_ROOM_USER);
+        } else if (chatRoomUser.getChatRoomUserType() == ChatRoomUserType.BLOCKED) {
+            throw new CustomException(BLOCKED_CHAT_ROOM_USER);
         }
 
         User user = userRepository.findById(message.getUserId()).orElseThrow(() -> new CustomException(CustomErrorType.USER_NOT_FOUND));
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new CustomException(CHAT_ROOM_NOT_FOUND));
         ChatType chatType = ChatType.valueOf(message.getChatType());
 
-        Chat chat = chatRepository.save(message.toEntity(user, chatRoom, chatType));
+        ChatRoomUser chatRoomOwner = chatRoomUserRepository.findByChatRoomIdAndUserId(chatRoomId, chatRoom.getUser().getId())
+                .orElseThrow(() -> new CustomException(CHAT_ROOM_USER_NOT_FOUND));
 
+        // 채팅방 주인이 나가기했으면 채팅 전송 불가
+        if (chatRoomOwner.getChatRoomUserType() == ChatRoomUserType.DELETED) {
+            throw new CustomException(CANNOT_SEND_WHEN_CHAT_ROOM_OWNER_EXIT);
+        }
+
+        Chat chat = chatRepository.save(message.toEntity(user, chatRoom, chatType));
         return ChatDto.MessageResponse.from(chat, chatRoomUser);
     }
 
