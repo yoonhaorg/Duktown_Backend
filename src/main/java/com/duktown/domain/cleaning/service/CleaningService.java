@@ -34,14 +34,15 @@ public class CleaningService {
 
     private final UnitUserRepository unitUserRepository;
 
-    // 날짜별 청소 조회
-    public CleaningDto.CleaningDateResponseDto getCleanDate(CleaningDto.DateCleaningRequestDto date, Long userId){
+    // 기간별 청소 조회
+    public CleaningDto.ListDto getCleanDate(CleaningDto.DateCleaningRequestDto date, Long userId){
         User user = userRepository.findById(userId)
                 .orElseThrow(()->new CustomException(USER_NOT_FOUND));
         // 배포용
-        Cleaning cleaningByDate = cleaningRepository.findCleaningByDateAndCheckUserBetween(date.getStartDate(),date.getEndDate(),user)
-                .orElseThrow(()-> new CustomException(CLEANING_NOT_FOUND));
-        return new CleaningDto.CleaningDateResponseDto(cleaningByDate);
+        List<Cleaning> cleaningBetweenDate = cleaningRepository.findCleaningByDateAndCheckUserBetween(user,date.getStartDate(), date.getEndDate());
+        List<CleaningDto.CleaningDateResponseDto> cleaningDateResponse = cleaningBetweenDate.stream()
+                .map(CleaningDto.CleaningDateResponseDto::new).collect(Collectors.toList());
+        return new CleaningDto.ListDto(cleaningDateResponse);
     }
 
 

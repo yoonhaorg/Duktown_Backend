@@ -22,6 +22,8 @@ public class CleaningDto extends BaseTimeEntity {
 
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         private LocalDate startDate;
+
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         private LocalDate endDate;
     }
 
@@ -66,6 +68,16 @@ public class CleaningDto extends BaseTimeEntity {
             checked = cleaning.getChecked();
         }
     }
+    @NoArgsConstructor
+    @Getter
+    public static class ListDto{
+        List<CleaningDateResponseDto> data;
+        public ListDto(List<CleaningDateResponseDto> data){
+            this.data = data;
+        }
+
+    }
+
 
     @NoArgsConstructor
     @Getter
@@ -83,6 +95,7 @@ public class CleaningDto extends BaseTimeEntity {
 
 
     @Getter
+    @NoArgsConstructor
     public static class getCleaningListResponseDto{
         private List<CleaningResponseDto> content;
 
@@ -98,6 +111,8 @@ public class CleaningDto extends BaseTimeEntity {
         private LocalDate cleaningDate;
     }
 
+    @NoArgsConstructor
+    @Getter
     public static class UserCleaningScheduleResponseDto{
         List<getUserCleaningSchedule> date;
 
@@ -107,7 +122,8 @@ public class CleaningDto extends BaseTimeEntity {
     }
 
 
-
+    @NoArgsConstructor
+    @Getter
     public static class  unitCleaningResponse{
         private Long userId;
         private String UserName;
@@ -118,6 +134,8 @@ public class CleaningDto extends BaseTimeEntity {
         }
     }
 
+    @NoArgsConstructor
+    @Getter
     public static class unitCleaningResponseDto{
         private List<unitCleaningResponse> unit;
 
