@@ -12,6 +12,10 @@ public interface PenaltyPointsRepository extends JpaRepository<PenaltyPoints,Lon
     // 내 벌점 내역 조회
     List<PenaltyPoints> findPenaltyPointsByUser(User user);
 
+// 배포용
+    @Query("SELECT SUM(pp.score) FROM PenaltyPoints pp")
+    Long getTotalPenaltyPoints();
+
     // 벌점 점수 총합
     @Query("SELECT SUM(pp.score) FROM PenaltyPoints pp WHERE pp.user = :user")
     Long getTotalPenaltyPointsByUser(@Param("user") User user);
