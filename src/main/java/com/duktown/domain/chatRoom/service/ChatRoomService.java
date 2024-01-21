@@ -9,6 +9,7 @@ import com.duktown.domain.chatRoom.entity.ChatRoomRepository;
 import com.duktown.domain.chatRoomUser.dto.ChatRoomUserDto;
 import com.duktown.domain.chatRoomUser.entity.ChatRoomUser;
 import com.duktown.domain.chatRoomUser.entity.ChatRoomUserRepository;
+import com.duktown.domain.comment.entity.CommentRepository;
 import com.duktown.domain.delivery.entity.Delivery;
 import com.duktown.domain.delivery.entity.DeliveryRepository;
 import com.duktown.domain.user.entity.User;
@@ -42,6 +43,7 @@ public class ChatRoomService {
     private final SEED seed;
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ChatRepository chatRepository;
+    private final CommentRepository commentRepository;
 
     // 배달팟 채팅방 초대하기
     @Transactional
@@ -52,6 +54,10 @@ public class ChatRoomService {
         // 자기 자신은 초대 불가
         if (user.getId().equals(request.getInviteUserId())) {
             throw new CustomException(CANNOT_INVITE_SELF);
+        }
+
+        if (commentRepository.findAllByDeliveryIdAndUserId(request.getDeliveryId(), request.getInviteUserId()).isEmpty()) {
+            throw new CustomException(DELIVERY_COMMENT_NOT_FOUND);
         }
 
         Delivery delivery = deliveryRepository.findById(request.getDeliveryId()).orElseThrow(() -> new CustomException(DELIVERY_NOT_FOUND));

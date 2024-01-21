@@ -41,8 +41,4 @@ public class ChatRoomUser extends BaseTimeEntity {
     public void changeChatRoomUserType(ChatRoomUserType chatRoomUserType) {
         this.chatRoomUserType = chatRoomUserType;
     }
-
-    public void deleteUser() {
-        userNumber = null;
-    }
 }

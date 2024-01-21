@@ -167,7 +167,6 @@ public class UserService {
         List<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByUserId(userId);
         for (ChatRoomUser chatRoomUser : chatRoomUsers) {
             chatRoomUser.changeChatRoomUserType(ChatRoomUserType.DELETED);
-            chatRoomUser.deleteUser();
 
             String message;
             ChatType chatType;
