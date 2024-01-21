@@ -50,7 +50,7 @@ public enum CustomErrorType {
     // Comment(7xxxx)
     COMMENT_NOT_FOUND(NOT_FOUND, 70001, "존재하지 않는 댓글입니다."),
     PARENT_COMMENT_NOT_FOUND(NOT_FOUND, 70002, "존재하지 않는 상위 댓글입니다."),
-    DELIVERY_COMMENT_NOT_FOUND(NOT_FOUND, 40004, "배달팟에 댓글 단 내역이 존재하지 않습니다."),
+    DELIVERY_COMMENT_NOT_FOUND(NOT_FOUND, 70003, "배달팟에 댓글 단 내역이 존재하지 않습니다."),
 
     COMMENT_TARGET_NOT_SELECTED(BAD_REQUEST, 70003, "댓글을 생성하거나 조회할 대상이 선택되지 않았습니다."),
     COMMENT_DEPTH_ERROR(BAD_REQUEST, 70004, "대댓글에 대댓글을 달 수 없습니다."),
