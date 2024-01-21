@@ -68,7 +68,7 @@ public class LikeService {
         } else if (request.getCommentId() != null) {
             comment = commentRepository.findById(request.getCommentId())
                     .orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
-            if(comment.getDeleted()) {
+            if(comment.isDeleted()) {
                 throw new CustomException(COMMENT_NOT_FOUND);
             }
         } else {

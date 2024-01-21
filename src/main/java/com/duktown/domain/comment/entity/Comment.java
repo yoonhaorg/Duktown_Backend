@@ -57,7 +57,7 @@ public class Comment extends BaseTimeEntity {
     private List<Like> likes = new ArrayList<>();
 
     @Column(nullable = false)
-    private Boolean deleted;
+    private boolean deleted;
 
     @Column(nullable = false)
     private String userTitle;
@@ -67,7 +67,6 @@ public class Comment extends BaseTimeEntity {
     }
 
     public void deleteWithChildComment () {
-        this.userTitle = "(삭제)";
         this.content = "[사용자에 의해 삭제된 댓글입니다.]";
         this.deleted = true;
     }
