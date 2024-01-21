@@ -75,10 +75,27 @@ public class DeliveryService {
             throw new CustomException(HAVE_NO_PERMISSION);
         }
 
+        // 이미 마감된 배달팟은 또 모집종료할 수 없음
+        if (!delivery.getActive()) {
+            throw new CustomException(DELIVERY_ALREADY_CLOSED);
+        }
+
         delivery.closeDelivery();
 
         // 모집 종료 시 배달팟 자동 삭제
         deleteDelivery(userId, deliveryId);
+
+        String message = "글쓴이가 배달팟 인원 모집을 마감했습니다.";
+        Chat chat = Chat.builder()
+                .chatRoom(delivery.getChatRoom())
+                .content(message)
+                .chatType(ChatType.RECRUITMENT_FINISH)
+                .build();
+
+        chatRepository.save(chat);
+
+        ChatDto.MessageResponse messageResponse = ChatDto.MessageResponse.from(chat, null);
+        simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + delivery.getChatRoom().getId(), messageResponse);
     }
 
     // 송금계좌 수정
