@@ -79,8 +79,8 @@ public class CommentDto {
                     .collect(Collectors.toList());
             return ParentResponse.builder()
                     .commentId(comment.getId())
-                    .userId(comment.getUser().getId())
-                    .userTitle(comment.getUserTitle())
+                    .userId(!comment.getUser().isDeleted() ? comment.getUser().getId() : null)
+                    .userTitle(!comment.getUser().isDeleted() ? comment.getUserTitle() : "(알수없음)")
                     .content(comment.getContent())
                     .liked(likes.stream().anyMatch(l -> l.getComment().getId().equals(comment.getId())))
                     .likeCount(comment.getLikes().size())
@@ -108,8 +108,8 @@ public class CommentDto {
         public static ChildResponse from(Comment comment, List<Like> likes, Boolean isWriter) {
             return ChildResponse.builder()
                     .commentId(comment.getId())
-                    .userId(comment.getUser().getId())
-                    .userTitle(comment.getUserTitle())
+                    .userId(!comment.getUser().isDeleted() ? comment.getUser().getId() : null)
+                    .userTitle(!comment.getUser().isDeleted() ? comment.getUserTitle() : "(알수없음)")
                     .content(comment.getContent())
                     .liked(likes.stream().anyMatch(l -> l.getComment().getId().equals(comment.getId())))
                     .likeCount(comment.getLikes().size())

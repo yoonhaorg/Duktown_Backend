@@ -135,8 +135,9 @@ public class ChatRoomService {
 
         Delivery delivery = deliveryRepository.findByChatRoomId(chatRoomId).orElseThrow(() -> new CustomException(DELIVERY_NOT_FOUND));
         ChatRoomUser chatRoomUser = chatRoomUserRepository.findByChatRoomIdAndUserId(chatRoomId, userId).orElseThrow(() -> new CustomException(CHAT_ROOM_USER_NOT_FOUND));
+        Integer chatRoomUserCnt = chatRoomUserRepository.countByChatRoomId(chatRoomId, ChatRoomUserType.ACTIVE);
 
-        return ChatRoomDto.ChatRoomResponse.from(chatRoomUser, delivery, seed.decrypt(delivery.getAccountNumber()));
+        return ChatRoomDto.ChatRoomResponse.from(chatRoomUser, delivery, seed.decrypt(delivery.getAccountNumber()), chatRoomUserCnt);
     }
 
     // 내가 참여중인 채팅방 목록 조회 TODO : 페이징 처리, 안 읽은 개수 표시

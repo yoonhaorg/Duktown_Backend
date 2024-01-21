@@ -73,7 +73,7 @@ public class PostService {
         if(pageNo == 1 && findCategory.equals(Category.DAILY)){
             posts = post1PageCache.getPage1();
         }else {
-            Pageable pageable = PageRequest.of(pageNo - 1, 5, Sort.by(Sort.Order.desc("createdAt")));
+            Pageable pageable = PageRequest.of(pageNo - 1, 10, Sort.by(Sort.Order.desc("createdAt")));
             posts = postRepository.findAllByCategory(findCategory,pageable);
         }
 

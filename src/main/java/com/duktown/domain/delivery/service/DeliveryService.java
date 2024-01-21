@@ -158,7 +158,8 @@ public class DeliveryService {
 
         List<DeliveryDto.DeliveryResponse> content = deliveries
                 .stream()
-                .map(d -> DeliveryDto.DeliveryResponse.from(d, d.getUser().getId().equals(userId)))
+                .map(d -> DeliveryDto.DeliveryResponse.from(d, d.getUser().getId().equals(userId),
+                        chatRoomUserRepository.countByChatRoomId(d.getChatRoom().getId(), ChatRoomUserType.ACTIVE)))
                 .collect(Collectors.toList());
 
         return new DeliveryDto.DeliveryListResponse(content);
@@ -171,8 +172,9 @@ public class DeliveryService {
 
         // 글쓴이인지 여부
         Boolean isWriter = delivery.getUser().getId().equals(userId);
+        Integer peopleCnt = chatRoomUserRepository.countByChatRoomId(delivery.getChatRoom().getId(), ChatRoomUserType.ACTIVE);
 
-        return DeliveryDto.DeliveryResponse.from(delivery, isWriter);
+        return DeliveryDto.DeliveryResponse.from(delivery, isWriter, peopleCnt);
     }
 
     // 삭제
@@ -198,16 +200,16 @@ public class DeliveryService {
 
     // 검색
     public DeliveryDto.DeliveryListResponse searchDeliveryList(Long userId, String keyword) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         List<Delivery> deliveries = deliveryRepository.searchByKeywordOrdered(keyword);
 
         List<DeliveryDto.DeliveryResponse> content = deliveries
                 .stream()
-                .map(d -> DeliveryDto.DeliveryResponse.from(d, d.getUser().getId().equals(userId)))
+                .map(d -> DeliveryDto.DeliveryResponse.from(d, d.getUser().getId().equals(userId),
+                        chatRoomUserRepository.countByChatRoomId(d.getChatRoom().getId(), ChatRoomUserType.ACTIVE)))
                 .collect(Collectors.toList());
 
         return new DeliveryDto.DeliveryListResponse(content);
-
     }
 }

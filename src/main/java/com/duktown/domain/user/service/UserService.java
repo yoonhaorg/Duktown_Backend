@@ -1,9 +1,13 @@
 package com.duktown.domain.user.service;
 
+import com.duktown.domain.chat.dto.ChatDto;
+import com.duktown.domain.chat.entity.Chat;
+import com.duktown.domain.chat.entity.ChatRepository;
+import com.duktown.domain.chatRoomUser.entity.ChatRoomUser;
+import com.duktown.domain.chatRoomUser.entity.ChatRoomUserRepository;
 import com.duktown.domain.cleaningUnit.entity.CleaningUnitInitDB;
 import com.duktown.domain.unit.entity.Unit;
 import com.duktown.domain.unit.entity.UnitRepository;
-import com.duktown.domain.unit.service.UnitService;
 import com.duktown.domain.emailCert.dto.EmailCertDto;
 import com.duktown.domain.emailCert.entity.EmailCert;
 import com.duktown.domain.emailCert.entity.EmailCertRepository;
@@ -15,14 +19,18 @@ import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.email.MailService;
 import com.duktown.global.exception.CustomException;
 import com.duktown.global.security.provider.JwtTokenProvider;
+import com.duktown.global.type.ChatRoomUserType;
+import com.duktown.global.type.ChatType;
 import com.duktown.global.type.UnitUserType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.util.Date;
+import java.util.List;
 
 import static com.duktown.global.exception.CustomErrorType.*;
 
@@ -36,6 +44,9 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
     private final EmailCertRepository emailCertRepository;
+    private final ChatRoomUserRepository chatRoomUserRepository;
+    private final ChatRepository chatRepository;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     // 데모버전용
     private final UnitRepository unitRepository;
@@ -68,15 +79,15 @@ public class UserService {
 
         // 아이디 중복 체크
         idDuplicateCheck(signupRequest.getLoginId());
-//
-//        // 이메일 인증 여부 체크
-//        EmailCert emailCert = emailCertRepository.findByEmail(signupRequest.getEmail()).orElseThrow(
-//                () -> new CustomException(EMAIL_CERT_NOT_FOUND)
-//        );
-//
-//        if (!emailCert.getCertified()) {
-//            throw new CustomException(EMAIL_CERT_FAILED);
-//        }
+
+        // 이메일 인증 여부 체크
+        EmailCert emailCert = emailCertRepository.findByEmail(signupRequest.getEmail()).orElseThrow(
+                () -> new CustomException(EMAIL_CERT_NOT_FOUND)
+        );
+
+        if (!emailCert.getCertified()) {
+            throw new CustomException(EMAIL_CERT_FAILED);
+        }
 
         // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
@@ -142,6 +153,43 @@ public class UserService {
     public void logout(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         user.deleteRefreshToken();
+    }
+
+    @Transactional
+    public void withdraw(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        userRepository.delete(user);
+
+        // 참여중이던 채팅방 전부 나가기
+        List<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByUserId(userId);
+        for (ChatRoomUser chatRoomUser : chatRoomUsers) {
+            chatRoomUser.changeChatRoomUserType(ChatRoomUserType.DELETED);
+            chatRoomUser.deleteUser();
+
+            String message;
+            ChatType chatType;
+            if (chatRoomUser.getChatRoom().getUser().getId().equals(userId)) {
+                message = "글쓴이가 채팅방을 나갔습니다. 더 이상 채팅을 전송할 수 없습니다.";
+                chatType = ChatType.WRITER_EXIT;
+            } else {
+                message = "(알수없음)님이 채팅방을 나갔습니다.";
+                chatType = ChatType.EXIT;
+            }
+
+            Chat chat = Chat.builder()
+                    .chatRoom(chatRoomUser.getChatRoom())
+                    .content(message)
+                    .chatType(chatType)
+                    .build();
+
+            chatRepository.save(chat);
+
+            ChatDto.MessageResponse messageResponse = ChatDto.MessageResponse.from(chat, null);
+            simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoomUser.getChatRoom().getId(), messageResponse);
+        }
+
+        // TODO: 추가 연관관계 해결 - 현재 게시글, 댓글, 배달팟, 채팅방 완료
     }
 
     private void emailDuplicateCheck(String email) {

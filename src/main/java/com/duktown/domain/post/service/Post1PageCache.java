@@ -19,13 +19,16 @@ public class Post1PageCache {
     private Slice<Post> page1;
     private final PostRepository postRepository;
 
-    @Scheduled(cron ="30 * * * * *" )
+    @Scheduled(cron ="30 * * * * *")
     @Transactional(readOnly = true)
     public void updateCache(){
-        Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Order.desc("createdAt")));
-        page1 = postRepository.findAllByCategory(Category.DAILY,pageable);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Order.desc("createdAt")));
+        page1 = postRepository.findAllByCategory(Category.DAILY, pageable);
     }
+
+    @Transactional(readOnly = true)
     public Slice<Post> getPage1(){
+        updateCache();
         return page1;
     }
 }

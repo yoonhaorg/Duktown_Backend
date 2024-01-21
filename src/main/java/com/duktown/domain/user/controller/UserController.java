@@ -71,4 +71,12 @@ public class UserController {
         userService.temporaryPwdEmailSend(request);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/withdrawal")
+    public ResponseEntity<Void> withdraw(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        userService.withdraw(customUserDetails.getId());
+        return ResponseEntity.ok().build();
+    }
 }
