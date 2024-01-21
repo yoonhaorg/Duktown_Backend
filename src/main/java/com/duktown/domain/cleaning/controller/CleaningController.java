@@ -64,5 +64,18 @@ public class CleaningController {
          return ResponseEntity.status(CREATED).build();
     }
 
+    // 청소 유닛 조회
+    @GetMapping("/unit")
+    public ResponseEntity<?> getCleaningUnit(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+         return ResponseEntity.ok().body(cleaningService.myUnit(customUserDetails.getId()));
+    }
 
+    //사생별 청소 일정 조회
+    @GetMapping("/{userId}/schedule")
+    public ResponseEntity<CleaningDto.UserCleaningScheduleResponseDto> getStudentsSchedule(
+            @PathVariable Long userId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        return ResponseEntity.ok().body(
+                cleaningService.StudentSchedule(userId));
+    }
 }
