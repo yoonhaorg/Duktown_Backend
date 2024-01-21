@@ -75,7 +75,7 @@ public class DeliveryDto {
         private Boolean isWriter;
 
 
-        public static DeliveryResponse from(Delivery delivery, Boolean isWriter) {
+        public static DeliveryResponse from(Delivery delivery, Boolean isWriter, Integer peopleCount) {
             return DeliveryResponse.builder()
                     .userId(delivery.getUser().getId())
                     .deliveryId(delivery.getId())
@@ -84,7 +84,7 @@ public class DeliveryDto {
                     .maxPeople(delivery.getMaxPeople())
                     .orderTime(DateUtil.convertToAMPMFormat(delivery.getOrderTime()))
                     .content(delivery.getContent())
-                    .peopleCount(delivery.getChatRoom().getChatRoomUsers().size())
+                    .peopleCount(peopleCount)
                     .commentCount(delivery.getComments().size())
                     .active(delivery.getActive())
                     .isWriter(isWriter)

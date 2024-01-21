@@ -19,7 +19,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,7 +72,7 @@ public class PostService {
         if(pageNo == 1 && findCategory.equals(Category.DAILY)){
             posts = post1PageCache.getPage1();
         }else {
-            Pageable pageable = PageRequest.of(pageNo - 1, 5, Sort.by(Sort.Order.desc("createdAt")));
+            Pageable pageable = PageRequest.of(pageNo - 1, 10, Sort.by(Sort.Order.desc("createdAt")));
             posts = postRepository.findAllByCategory(findCategory,pageable);
         }
 

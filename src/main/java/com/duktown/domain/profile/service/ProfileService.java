@@ -1,5 +1,6 @@
 package com.duktown.domain.profile.service;
 
+import com.duktown.domain.chatRoomUser.entity.ChatRoomUserRepository;
 import com.duktown.domain.comment.entity.Comment;
 import com.duktown.domain.comment.entity.CommentRepository;
 import com.duktown.domain.delivery.dto.DeliveryDto;
@@ -11,10 +12,13 @@ import com.duktown.domain.post.dto.PostDto;
 import com.duktown.domain.post.entity.Post;
 import com.duktown.domain.post.entity.PostRepository;
 import com.duktown.domain.profile.dto.ProfileDto;
+import com.duktown.domain.unitUser.entity.UnitUser;
+import com.duktown.domain.unitUser.entity.UnitUserRepository;
 import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.exception.CustomException;
 import com.duktown.global.type.Category;
+import com.duktown.global.type.ChatRoomUserType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,12 +38,14 @@ public class ProfileService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
+    private final ChatRoomUserRepository chatRoomUserRepository;
+    private final UnitUserRepository unitUserRepository;
 
     public ProfileDto.ProfileResponse getMyProfile(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        UnitUser unitUser = unitUserRepository.findByUserId(userId).orElseThrow(() -> new CustomException(UNIT_USER_NOT_FOUND));
 
-        // TODO: 유닛 정보 추가
-        return ProfileDto.ProfileResponse.from(user);
+        return ProfileDto.ProfileResponse.from(user, unitUser.getUnit(), unitUser.getUnitUserType());
     }
 
     // 내가 작성한 배달팟 조회
@@ -59,7 +65,8 @@ public class ProfileService {
 
         List<DeliveryDto.DeliveryResponse> content = deliveries
                 .stream()
-                .map(d -> DeliveryDto.DeliveryResponse.from(d, d.getUser().getId().equals(userId)))
+                .map(d -> DeliveryDto.DeliveryResponse.from(d, d.getUser().getId().equals(userId),
+                        chatRoomUserRepository.countByChatRoomId(d.getChatRoom().getId(), ChatRoomUserType.ACTIVE)))
                 .collect(Collectors.toList());
 
         return new DeliveryDto.DeliveryListResponse(content);
@@ -83,7 +90,8 @@ public class ProfileService {
 
         List<DeliveryDto.DeliveryResponse> content = deliveries
                 .stream()
-                .map(d -> DeliveryDto.DeliveryResponse.from(d, d.getUser().getId().equals(userId)))
+                .map(d -> DeliveryDto.DeliveryResponse.from(d, d.getUser().getId().equals(userId),
+                        chatRoomUserRepository.countByChatRoomId(d.getChatRoom().getId(), ChatRoomUserType.ACTIVE)))
                 .collect(Collectors.toList());
 
         return new DeliveryDto.DeliveryListResponse(content);

@@ -62,8 +62,8 @@ public class ChatDto {
 
             return MessageResponse.builder()
                     .chatId(chat.getId())
-                    .userId(chat.getUser().getId())
-                    .userNumber(chatRoomUser.getUserNumber())
+                    .userId(!chat.getUser().isDeleted() ? chat.getUser().getId() : null)
+                    .userNumber(!chat.getUser().isDeleted() ? chatRoomUser.getUserNumber() : null)
                     .chatType(chat.getChatType())
                     .message(chat.getContent())
                     .createdAt(chat.getCreatedAt().toString())

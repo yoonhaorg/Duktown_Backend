@@ -50,6 +50,7 @@ public enum CustomErrorType {
     // Comment(7xxxx)
     COMMENT_NOT_FOUND(NOT_FOUND, 70001, "존재하지 않는 댓글입니다."),
     PARENT_COMMENT_NOT_FOUND(NOT_FOUND, 70002, "존재하지 않는 상위 댓글입니다."),
+    DELIVERY_COMMENT_NOT_FOUND(NOT_FOUND, 70003, "배달팟에 댓글 단 내역이 존재하지 않습니다."),
 
     COMMENT_TARGET_NOT_SELECTED(BAD_REQUEST, 70003, "댓글을 생성하거나 조회할 대상이 선택되지 않았습니다."),
     COMMENT_DEPTH_ERROR(BAD_REQUEST, 70004, "대댓글에 대댓글을 달 수 없습니다."),
@@ -78,6 +79,7 @@ public enum CustomErrorType {
     BLOCKED_CHAT_ROOM_USER(BAD_REQUEST, 100009, "해당 채팅방에서 차단된 사용자입니다."),
     BLOCKED_FROM_CHAT_ROOM(BAD_REQUEST, 100010, "이용이 제한되어 더이상 참여할 수 없는 채팅방입니다."),
     DELETED_CHAT_ROOM_USER(BAD_REQUEST, 100011, "채팅방에서 나가기한 사용자입니다."),
+    ALREADY_SAME_NUMBER_CHAT_ROOM_USER_EXISTS(BAD_REQUEST, 100012, "이미 같은 익명 숫자로 초대된 사용자가 존재합니다."),
 
     // Unit(11xxxx)
     UNIT_NOT_FOUND(NOT_FOUND, 110001, "존재하지 않는 유닛입니다."),

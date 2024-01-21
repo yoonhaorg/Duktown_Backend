@@ -9,6 +9,7 @@ import com.duktown.domain.chatRoom.entity.ChatRoomRepository;
 import com.duktown.domain.chatRoomUser.dto.ChatRoomUserDto;
 import com.duktown.domain.chatRoomUser.entity.ChatRoomUser;
 import com.duktown.domain.chatRoomUser.entity.ChatRoomUserRepository;
+import com.duktown.domain.comment.entity.CommentRepository;
 import com.duktown.domain.delivery.entity.Delivery;
 import com.duktown.domain.delivery.entity.DeliveryRepository;
 import com.duktown.domain.user.entity.User;
@@ -42,6 +43,7 @@ public class ChatRoomService {
     private final SEED seed;
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ChatRepository chatRepository;
+    private final CommentRepository commentRepository;
 
     // 배달팟 채팅방 초대하기
     @Transactional
@@ -52,6 +54,10 @@ public class ChatRoomService {
         // 자기 자신은 초대 불가
         if (user.getId().equals(request.getInviteUserId())) {
             throw new CustomException(CANNOT_INVITE_SELF);
+        }
+
+        if (commentRepository.findAllByDeliveryIdAndUserId(request.getDeliveryId(), request.getInviteUserId()).isEmpty()) {
+            throw new CustomException(DELIVERY_COMMENT_NOT_FOUND);
         }
 
         Delivery delivery = deliveryRepository.findById(request.getDeliveryId()).orElseThrow(() -> new CustomException(DELIVERY_NOT_FOUND));
@@ -96,7 +102,12 @@ public class ChatRoomService {
 
         // 초대된 적 없다면 chatRoomUser 등록
         else {
-            chatRoomUser = chatRoomUserRepository.save(request.toEntity(inviteUser, chatRoom));
+            // 기존에 같은 유저넘버로 저장된 사용자가 있으면 등록 불가
+            if (!chatRoomUserRepository.existsByChatRoomIdAndUserNumber(chatRoom.getId(), request.getUserNumber())) {
+                chatRoomUser = chatRoomUserRepository.save(request.toEntity(inviteUser, chatRoom));
+            } else {
+                throw new CustomException(ALREADY_SAME_NUMBER_CHAT_ROOM_USER_EXISTS);
+            }
         }
 
         String message = "익명" + chatRoomUser.getUserNumber() + "님이 들어왔습니다.";
@@ -135,8 +146,9 @@ public class ChatRoomService {
 
         Delivery delivery = deliveryRepository.findByChatRoomId(chatRoomId).orElseThrow(() -> new CustomException(DELIVERY_NOT_FOUND));
         ChatRoomUser chatRoomUser = chatRoomUserRepository.findByChatRoomIdAndUserId(chatRoomId, userId).orElseThrow(() -> new CustomException(CHAT_ROOM_USER_NOT_FOUND));
+        Integer chatRoomUserCnt = chatRoomUserRepository.countByChatRoomId(chatRoomId, ChatRoomUserType.ACTIVE);
 
-        return ChatRoomDto.ChatRoomResponse.from(chatRoomUser, delivery, seed.decrypt(delivery.getAccountNumber()));
+        return ChatRoomDto.ChatRoomResponse.from(chatRoomUser, delivery, seed.decrypt(delivery.getAccountNumber()), chatRoomUserCnt);
     }
 
     // 내가 참여중인 채팅방 목록 조회 TODO : 페이징 처리, 안 읽은 개수 표시

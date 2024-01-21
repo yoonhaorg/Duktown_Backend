@@ -28,7 +28,7 @@ public class ChatRoomDto {
         private String orderTime;
         private String accountNumber;
 
-        public static ChatRoomResponse from(ChatRoomUser chatRoomUser, Delivery delivery, String accountNumber) {
+        public static ChatRoomResponse from(ChatRoomUser chatRoomUser, Delivery delivery, String accountNumber, Integer chatRoomUserCnt) {
             return ChatRoomResponse.builder()
                     .getRequestUserId(chatRoomUser.getUser().getId())
                     .getRequestUserNumber(chatRoomUser.getUserNumber())
@@ -37,7 +37,7 @@ public class ChatRoomDto {
                     .deliveryDeleted(delivery.getDeleted())
                     .title(delivery.getTitle())
                     .maxPeople(delivery.getMaxPeople())
-                    .chatRoomUserCnt(delivery.getChatRoom().getChatRoomUsers().size())
+                    .chatRoomUserCnt(chatRoomUserCnt)
                     .orderTime(DateUtil.convertToAMPMFormat(delivery.getOrderTime()))
                     .accountNumber(accountNumber)
                     .build();
