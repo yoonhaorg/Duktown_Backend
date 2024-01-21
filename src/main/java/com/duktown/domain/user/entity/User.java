@@ -1,17 +1,12 @@
 package com.duktown.domain.user.entity;
 
 import com.duktown.domain.BaseTimeEntity;
-import com.duktown.domain.unit.entity.Unit;
-import com.duktown.global.exception.CustomErrorType;
-import com.duktown.global.exception.CustomException;
 import com.duktown.global.type.RoleType;
-import com.duktown.global.type.UnitUserType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
