@@ -103,10 +103,6 @@ public class CommentService {
     public CommentDto.ListResponse getCommentList(Long userId, Long deliveryId, Long postId){
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        // 배달팟, 게시글 존재 확인
-        deliveryRepository.findById(deliveryId).orElseThrow(() -> new CustomException(DELIVERY_NOT_FOUND));
-        postRepository.findById(postId).orElseThrow(() -> new CustomException(POST_NOT_FOUND));
-
         // null이 아닌 필드가 여러 개일 때(대댓글 경우 제외) -> 잘못된 댓글 요청
         if (Stream.of(
                         deliveryId,
@@ -121,6 +117,8 @@ public class CommentService {
         List<Like> likes;
 
         if(deliveryId != null){
+            // 배달팟 존재 확인
+            deliveryRepository.findById(deliveryId).orElseThrow(() -> new CustomException(DELIVERY_NOT_FOUND));
             comments = commentRepository.findParentCommentsByDeliveryId(deliveryId);
             commentCount = commentRepository.countByDeliveryId(deliveryId);
             likes = likeRepository
@@ -131,6 +129,8 @@ public class CommentService {
                                     .collect(Collectors.toList())
                     );
         } else if (postId != null) {
+            // 게시글 존재 확인
+            postRepository.findById(postId).orElseThrow(() -> new CustomException(POST_NOT_FOUND));
             comments = commentRepository.findParentCommentsByPostId(postId);
             commentCount = commentRepository.countByPostId(postId);
             likes = likeRepository
