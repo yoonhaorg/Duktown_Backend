@@ -38,14 +38,16 @@ public class MyPageService {
         List<PenaltyPoints> penaltyPoints = penaltyPointsRepository.findAll();
 
         //실제 벌점 조회 로직
-//        List<PenaltyPoints> penaltyPoints = penaltyPointsRepository.findPenaltyPointsByUser(user);
+        //List<PenaltyPoints> penaltyPoints = penaltyPointsRepository.findPenaltyPointsByUser(user);
         List<PenaltyPointsDto.PenaltyPointsResponseDto> penaltyPointsResponseDto
                 = penaltyPoints.stream()
                 .map(PenaltyPointsDto.PenaltyPointsResponseDto::new)
                 .collect(Collectors.toList());
 
         // 총합 벌점을 쿼리문으로 계산하여 반환
-        Long totalPenaltyPointsByUser = penaltyPointsRepository.getTotalPenaltyPointsByUser(user);
+        // 배포용:
+        Long totalPenaltyPointsByUser = penaltyPointsRepository.getTotalPenaltyPoints();
+        //Long totalPenaltyPointsByUser = penaltyPointsRepository.getTotalPenaltyPointsByUser(user);
         return new PenaltyPointsDto.PenaltyPointsListResponseDto(penaltyPointsResponseDto,totalPenaltyPointsByUser);
     }
 
