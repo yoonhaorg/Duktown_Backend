@@ -54,8 +54,6 @@ public class UserService {
     private final UnitUserRepository unitUserRepository;
 
     private final CleaningUnitInitDB cleaningUnitInitDB;
-    private final PenaltyPointsInitDB penaltyPointsInitDB;
-
 
     // 아이디 중복 체크 메서드
     public UserDto.IdCheckResponse idCheck(UserDto.IdCheckRequest idCheckRequest) {

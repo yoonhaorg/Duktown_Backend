@@ -21,7 +21,7 @@ public class ChatPreHandler implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
         StompCommand stompCommand = headerAccessor.getCommand();
-        if (stompCommand.equals(StompCommand.CONNECT)) {
+        if (stompCommand == StompCommand.CONNECT) {
             String authorization = String.valueOf(headerAccessor.getNativeHeader("Authorization"));
             if (authorization == null || !authorization.startsWith(TOKEN_HEADER_PREFIX)) {
                 throw new CustomException(CustomErrorType.INVALID_TOKEN);

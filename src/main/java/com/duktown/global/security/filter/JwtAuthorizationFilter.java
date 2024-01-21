@@ -1,8 +1,13 @@
 package com.duktown.global.security.filter;
 
+import com.duktown.global.exception.CustomErrorType;
 import com.duktown.global.exception.ErrorResponse;
 import com.duktown.global.security.provider.JwtTokenProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -32,20 +37,31 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String accessToken = jwtTokenProvider.getToken(request);
 
         if (accessToken != null) {
-            jwtTokenProvider.validateToken(accessToken);
             try {
+                jwtTokenProvider.validateToken(accessToken);
                 Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-            // TODO: ExceptionHandling 수정
-            catch (Exception e) {
-                response.setStatus(UNHANDLED_TOKEN_ERROR.getStatusCode());
-                response.setContentType(APPLICATION_JSON_VALUE);
-                response.setCharacterEncoding("utf-8");
-                ErrorResponse errorResponse = new ErrorResponse(UNHANDLED_TOKEN_ERROR);
-                new ObjectMapper().writeValue(response.getWriter(), errorResponse);
+            } catch (SignatureException | IllegalArgumentException | UnsupportedJwtException | MalformedJwtException e) {
+                handleErrorResponse(response, INVALID_TOKEN);
+            } catch (ExpiredJwtException e) {
+                handleErrorResponse(response, ACCESS_TOKEN_EXPIRED);
+                return;
+            } catch (Exception e) {
+                handleErrorResponse(response, UNHANDLED_TOKEN_ERROR);
+                return;
             }
         }
         filterChain.doFilter(request, response);
+    }
+
+    // TODO: getWriter() has already been called for this response 오류 해결
+    private void handleErrorResponse(HttpServletResponse response, CustomErrorType errorType) throws IOException {
+        if (!response.isCommitted()) {
+            response.setStatus(errorType.getStatusCode());
+            response.setContentType(APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("utf-8");
+            ErrorResponse errorResponse = new ErrorResponse(errorType);
+            new ObjectMapper().writeValue(response.getWriter(), errorResponse);
+        }
     }
 }

@@ -131,7 +131,6 @@ public class JwtTokenProvider {
     }
 
     // Token 유효성 검증 메서드
-    // TODO: ExceptionHandling 수정
     public void validateToken(String token) {
         Jwts.parserBuilder()
                 .setSigningKey(jwtSecretKey)
