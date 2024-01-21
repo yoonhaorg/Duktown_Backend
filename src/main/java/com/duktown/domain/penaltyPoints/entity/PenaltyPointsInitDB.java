@@ -26,7 +26,6 @@ public class PenaltyPointsInitDB {
     @RequiredArgsConstructor
     public static class InitService {
         private final EntityManager em;
-        private final UnitUserRepository unitUserRepository;
 
         public void createInit() {
             PenaltyPoints demoPenaltyPoints = PenaltyPoints.builder()
@@ -47,6 +46,8 @@ public class PenaltyPointsInitDB {
                     .build();
 
             em.persist(demoPenaltyPoints);
+            em.persist(demoPenaltyPoints2);
+            em.persist(demoPenaltyPoints3);
         }
     }
 }

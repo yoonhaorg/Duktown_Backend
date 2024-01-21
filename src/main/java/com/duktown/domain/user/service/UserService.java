@@ -1,6 +1,7 @@
 package com.duktown.domain.user.service;
 
 import com.duktown.domain.cleaningUnit.entity.CleaningUnitInitDB;
+import com.duktown.domain.penaltyPoints.entity.PenaltyPointsInitDB;
 import com.duktown.domain.unit.entity.Unit;
 import com.duktown.domain.unit.entity.UnitRepository;
 import com.duktown.domain.unit.service.UnitService;
@@ -42,6 +43,7 @@ public class UserService {
     private final UnitUserRepository unitUserRepository;
 
     private final CleaningUnitInitDB cleaningUnitInitDB;
+    private final PenaltyPointsInitDB penaltyPointsInitDB;
 
 
     // 아이디 중복 체크 메서드
