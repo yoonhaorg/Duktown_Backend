@@ -96,7 +96,12 @@ public class ChatRoomService {
 
         // 초대된 적 없다면 chatRoomUser 등록
         else {
-            chatRoomUser = chatRoomUserRepository.save(request.toEntity(inviteUser, chatRoom));
+            // 기존에 같은 유저넘버로 저장된 사용자가 있으면 등록 불가
+            if (!chatRoomUserRepository.existsByChatRoomIdAndUserNumber(chatRoom.getId(), request.getUserNumber())) {
+                chatRoomUser = chatRoomUserRepository.save(request.toEntity(inviteUser, chatRoom));
+            } else {
+                throw new CustomException(ALREADY_SAME_NUMBER_CHAT_ROOM_USER_EXISTS);
+            }
         }
 
         String message = "익명" + chatRoomUser.getUserNumber() + "님이 들어왔습니다.";

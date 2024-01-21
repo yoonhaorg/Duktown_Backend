@@ -78,6 +78,7 @@ public enum CustomErrorType {
     BLOCKED_CHAT_ROOM_USER(BAD_REQUEST, 100009, "해당 채팅방에서 차단된 사용자입니다."),
     BLOCKED_FROM_CHAT_ROOM(BAD_REQUEST, 100010, "이용이 제한되어 더이상 참여할 수 없는 채팅방입니다."),
     DELETED_CHAT_ROOM_USER(BAD_REQUEST, 100011, "채팅방에서 나가기한 사용자입니다."),
+    ALREADY_SAME_NUMBER_CHAT_ROOM_USER_EXISTS(BAD_REQUEST, 100012, "이미 같은 익명 숫자로 초대된 사용자가 존재합니다."),
 
     // Unit(11xxxx)
     UNIT_NOT_FOUND(NOT_FOUND, 110001, "존재하지 않는 유닛입니다."),
