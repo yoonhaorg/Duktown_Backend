@@ -4,13 +4,9 @@ import com.duktown.domain.cleaning.dto.CleaningDto;
 import com.duktown.domain.cleaning.service.CleaningService;
 import com.duktown.global.security.service.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
