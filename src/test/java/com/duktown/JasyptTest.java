@@ -9,19 +9,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
+//@SpringBootTest
+//@ExtendWith(SpringExtension.class)
 public class JasyptTest {
-    @Autowired
-    @Qualifier(value = "jasyptEncryptorAES")
-    private StringEncryptor encryptor;
-
-    @Value("${custom.jasypt.datasource.url}")
-    private String url;
-    @Value("${custom.jasypt.datasource.username}")
-    private String username;
-    @Value("${custom.jasypt.datasource.password}")
-    private String password;
+//    @Autowired
+//    @Qualifier(value = "jasyptEncryptorAES")
+//    private StringEncryptor encryptor;
+//
+//    @Value("${custom.jasypt.datasource.url}")
+//    private String url;
+//    @Value("${custom.jasypt.datasource.username}")
+//    private String username;
+//    @Value("${custom.jasypt.datasource.password}")
+//    private String password;
 
 //    @Test()
 //    void jsaypt() {
@@ -30,7 +30,7 @@ public class JasyptTest {
 //        System.out.println(jasyptEncoding(password));
 //    }
 
-    public String jasyptEncoding(String value) {
-        return encryptor.encrypt(value);
-    }
+//    public String jasyptEncoding(String value) {
+//        return encryptor.encrypt(value);
+//    }
 }
