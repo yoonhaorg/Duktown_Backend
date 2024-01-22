@@ -35,7 +35,7 @@ public class CleaningController {
     public ResponseEntity<Void> cleaningOk(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long cleaningId){
-        cleaningService.cleaningOk(cleaningId);
+        cleaningService.cleaningOk(customUserDetails.getId(), cleaningId);
         return ResponseEntity.ok().build();
     }
 
@@ -44,7 +44,7 @@ public class CleaningController {
     public ResponseEntity<Void> cleaningApply(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long cleaningId){
-        cleaningService.checkOk(cleaningId);
+        cleaningService.checkOk(customUserDetails.getId(), cleaningId);
         return ResponseEntity.ok().build();
     }
 
@@ -76,6 +76,6 @@ public class CleaningController {
             @PathVariable Long userId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails){
         return ResponseEntity.ok().body(
-                cleaningService.StudentSchedule(userId));
+                cleaningService.StudentSchedule(customUserDetails.getId(), userId));
     }
 }

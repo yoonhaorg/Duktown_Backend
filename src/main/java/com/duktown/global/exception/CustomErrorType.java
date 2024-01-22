@@ -86,7 +86,8 @@ public enum CustomErrorType {
     UNIT_USER_NOT_FOUND(NOT_FOUND, 110002, "유닛에 존재하지 않는 사용자입니다."),
 
     // cleaning(12xxxx)
-    CLEANING_NOT_FOUND(NOT_FOUND,120001,"존재하지 않는 청소입니다.");
+    CLEANING_NOT_FOUND(NOT_FOUND,120001,"존재하지 않는 청소입니다."),
+    CLEANING_DATE_NOT_TODAY(BAD_REQUEST, 120002, "청소 담당일 당일에만 청소를 완료할 수 있습니다.");
 
     private final HttpStatus httpStatus;
     private final int code;
