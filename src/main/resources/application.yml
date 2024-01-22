@@ -5,9 +5,9 @@ spring:
   datasource:
     # local-mysql-db-test
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ENC(D511Ue3hdf749uMSnR4KnxghKJdREasdHnjS85SqCtBQKaqfg5xua8HlbIuFt1WMyt1o9Y8my0tQDwWM5CUvDNQurmR8OVq6FYS7poqwR0klY7Zh9N5fUvhlvaxE95CJjDvOI/RXUK4g8ZyV/YG1oBJp3dbXD7oGsu0M+DlSm1zKJzOQZMd11fVpKTpLitUjSH/zQ0ZzhSdomqcs1JCA9A==)
-    username: ENC(LwaUlCU/lPuLy/Gj3O6nyO2JXELuy/cUrmqOUZjl0kkgGWslUwEO5AU7XJL2osuA)
-    password: ENC(SSVWhmhOaFjLLf32zoIgMUDBNtJH6r8iFPdzatpR8pvPRe0ucI4fs4D6Tu4SawGB)
+    url: ENC(JVueZoKtXw4kIZwcep06zxINLMkSAlqfMGDvab76y51kJsqpuOWFqEYM/VLpYFrZEvPi95XaSO8w+/wyK3D7256xZJWsnXlzqBavCkaQ9ET74Pv1D1hKugeJOmPgticFJtHhrOFtIqB2FeYKT5Ptk28tc1DnfZ14kaoWxpA/NH/HIro4IaA9ldiFakEVlJjhxajVTPmt81fmLh6zKSDYSickg2hYHZdk8tTFKSrOHFlW3IlZZ3wOkLZwlenD8RkmczVu62y/GI96wAAn5hByzg/QjoZ4DsV65I8Hd4x3b9w=)
+    username: ENC(oHZcnMbXKHW+hkey8ZJce+7N6F3wYmRfiuc0t+bEUYYWR6Dcvgd7zVG+gB0qz9Zm)
+    password: ENC(E8sbVtAaWmW3V6JI8RGGvZW3qArudjsLRK7NzHijB9G3rfk9AQ/oZYLnkmeldxwwyWG1BzR2JNv2C4DiSuhxog==)
   # JPA
   jpa:
     properties:
