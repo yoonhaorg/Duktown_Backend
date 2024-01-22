@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
@@ -20,7 +22,7 @@ public class CleaningController {
      @GetMapping("/schedule")
      public ResponseEntity<CleaningDto.ListDto> getDateCleaning(
              @AuthenticationPrincipal CustomUserDetails customUserDetails,
-             @RequestBody CleaningDto.DateCleaningRequestDto date){
+             @Valid @RequestBody CleaningDto.DateCleaningRequestDto date){
 
          return ResponseEntity.ok().body(cleaningService.getCleanDate(date,customUserDetails.getId()));
      }
