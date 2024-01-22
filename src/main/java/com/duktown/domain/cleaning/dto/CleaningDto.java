@@ -18,21 +18,6 @@ public class CleaningDto extends BaseTimeEntity {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class DateCleaningRequestDto {
-
-        @NotNull(message = "시작 날짜는 필수 값입니다.")
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        private LocalDate startDate;
-
-        @NotNull(message = "종료 날짜는 필수 값입니다.")
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        private LocalDate endDate;
-    }
-
-
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
     public static class CreateCleaningRequestDto{
 
 //        List<CreateCleaningUnit> CleaningUnit = new ArrayList<>();
