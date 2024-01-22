@@ -39,7 +39,7 @@ public class CleaningService {
         User user = userRepository.findById(userId)
                 .orElseThrow(()->new CustomException(USER_NOT_FOUND));
         // 배포용
-        List<Cleaning> cleaningBetweenDate = cleaningRepository.findCleaningByDateAndCheckUserBetween(user,date.getStartDate(), date.getEndDate());
+        List<Cleaning> cleaningBetweenDate = cleaningRepository.findCleaningByDateAndUserBetween(user,date.getStartDate(), date.getEndDate());
         List<CleaningDto.CleaningDateResponseDto> cleaningDateResponse = cleaningBetweenDate.stream()
                 .map(CleaningDto.CleaningDateResponseDto::new).collect(Collectors.toList());
         return new CleaningDto.ListDto(cleaningDateResponse);

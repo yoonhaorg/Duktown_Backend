@@ -15,8 +15,8 @@ public interface CleaningRepository extends JpaRepository<Cleaning,Long> {
     List<Cleaning> findCleaningByUser(User user);
 
     //TODO: 유닛 내 날짜별 청소조회 -> 배포용
-    @Query("SELECT c FROM Cleaning c WHERE c.date BETWEEN :startDate AND :endDate AND c.checkUser = :user")
-    List<Cleaning> findCleaningByDateAndCheckUserBetween(@Param("user") User user,
+    @Query("SELECT c FROM Cleaning c WHERE c.date BETWEEN :startDate AND :endDate AND c.user = :user")
+    List<Cleaning> findCleaningByDateAndUserBetween(@Param("user") User user,
                                                          @Param("startDate") LocalDate startDate,
                                                          @Param("endDate") LocalDate endDate);
 
