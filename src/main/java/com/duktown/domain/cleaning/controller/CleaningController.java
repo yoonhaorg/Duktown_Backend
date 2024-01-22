@@ -4,11 +4,14 @@ import com.duktown.domain.cleaning.dto.CleaningDto;
 import com.duktown.domain.cleaning.service.CleaningService;
 import com.duktown.global.security.service.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import java.time.LocalDate;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -22,9 +25,10 @@ public class CleaningController {
      @GetMapping("/schedule")
      public ResponseEntity<CleaningDto.ListDto> getDateCleaning(
              @AuthenticationPrincipal CustomUserDetails customUserDetails,
-             @Valid @RequestBody CleaningDto.DateCleaningRequestDto date){
+             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate){
 
-         return ResponseEntity.ok().body(cleaningService.getCleanDate(date,customUserDetails.getId()));
+         return ResponseEntity.ok().body(cleaningService.getCleanDate(startDate,endDate,customUserDetails.getId()));
      }
 
 
