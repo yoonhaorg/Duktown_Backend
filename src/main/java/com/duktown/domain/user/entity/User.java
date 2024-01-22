@@ -46,8 +46,6 @@ public class User extends BaseTimeEntity {
 
     private String refreshToken;
 
-    //TODO: 외박 일 수 관련해서 질문하기
-    // 남은 외박 일 수
     @Builder.Default
     private Integer availablePeriod = 16;
 

@@ -2,6 +2,7 @@ package com.duktown.domain.cleaning.dto;
 
 import com.duktown.domain.BaseTimeEntity;
 import com.duktown.domain.cleaning.entity.Cleaning;
+import com.duktown.domain.unitUser.entity.UnitUser;
 import com.duktown.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,7 +21,10 @@ public class CleaningDto extends BaseTimeEntity {
     public static class DateCleaningRequestDto {
 
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        private LocalDate cleaningDate;
+        private LocalDate startDate;
+
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        private LocalDate endDate;
     }
 
 
@@ -50,20 +54,30 @@ public class CleaningDto extends BaseTimeEntity {
     @NoArgsConstructor
     @Getter
     public static class CleaningDateResponseDto{
-
         private Long cleaningId;
+        private Long userId; //담당자
         private LocalDate cleaningDate;
         private Boolean cleaned;
-
         private Boolean checked;
 
         public CleaningDateResponseDto(Cleaning cleaning){
             cleaningId = cleaning.getId();
+            userId= cleaning.getUser().getId();
             cleaningDate = cleaning.getDate();
             cleaned = cleaning.getCleaned();
             checked = cleaning.getChecked();
         }
     }
+    @NoArgsConstructor
+    @Getter
+    public static class ListDto{
+        List<CleaningDateResponseDto> data;
+        public ListDto(List<CleaningDateResponseDto> data){
+            this.data = data;
+        }
+
+    }
+
 
     @NoArgsConstructor
     @Getter
@@ -81,6 +95,7 @@ public class CleaningDto extends BaseTimeEntity {
 
 
     @Getter
+    @NoArgsConstructor
     public static class getCleaningListResponseDto{
         private List<CleaningResponseDto> content;
 
@@ -89,6 +104,45 @@ public class CleaningDto extends BaseTimeEntity {
         }
     }
 
+
+    @Getter
+    @AllArgsConstructor
+    public static class getUserCleaningSchedule{
+        private LocalDate cleaningDate;
+    }
+
+    @NoArgsConstructor
+    @Getter
+    public static class UserCleaningScheduleResponseDto{
+        List<getUserCleaningSchedule> date;
+
+        public UserCleaningScheduleResponseDto(List<getUserCleaningSchedule> date){
+            this.date = date;
+        }
+    }
+
+
+    @NoArgsConstructor
+    @Getter
+    public static class  unitCleaningResponse{
+        private Long userId;
+        private String UserName;
+
+        public unitCleaningResponse(UnitUser unitUser){
+            this.userId = unitUser.getUser().getId();
+            this.UserName = unitUser.getUser().getName();
+        }
+    }
+
+    @NoArgsConstructor
+    @Getter
+    public static class unitCleaningResponseDto{
+        private List<unitCleaningResponse> unit;
+
+        public unitCleaningResponseDto(List<unitCleaningResponse> unit ){
+            this.unit = unit;
+        }
+    }
 
 
 }
