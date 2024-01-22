@@ -23,17 +23,12 @@ public class JasyptTest {
     @Value("${custom.jasypt.datasource.password}")
     private String password;
 
-    @Test
-    void contextLoads() {
-
-    }
-
-    @Test()
-    void jsaypt() {
-        System.out.println(jasyptEncoding(url));
-        System.out.println(jasyptEncoding(username));
-        System.out.println(jasyptEncoding(password));
-    }
+//    @Test()
+//    void jsaypt() {
+//        System.out.println(jasyptEncoding(url));
+//        System.out.println(jasyptEncoding(username));
+//        System.out.println(jasyptEncoding(password));
+//    }
 
     public String jasyptEncoding(String value) {
         return encryptor.encrypt(value);
