@@ -47,12 +47,14 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "parent_comment_id")
     private Comment parentComment;  // 대댓글인 경우
 
+    @Builder.Default
     @OneToMany(mappedBy = "parentComment")
     private List<Comment> childComments = new ArrayList<>();
 
     @Column(nullable = false)
     private String content; // 255자 최대
 
+    @Builder.Default
     @OneToMany(mappedBy = "comment")
     private List<Like> likes = new ArrayList<>();
 

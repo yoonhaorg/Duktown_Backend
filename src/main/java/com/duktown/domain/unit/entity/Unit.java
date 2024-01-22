@@ -44,6 +44,7 @@ public class Unit {
 
     private int currentPeopleCnt; // 현재 인원
 
+    @Builder.Default
     @OneToMany(fetch = LAZY, mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UnitUser> unitUsers = new ArrayList<>(); // 같은 유닛 인원
 

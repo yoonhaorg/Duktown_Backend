@@ -40,10 +40,14 @@ public class Cleaning {
     @Column(nullable = false)
     private LocalDate date;
 
+    @Builder.Default
     @OneToMany(fetch = LAZY, mappedBy = "cleaning")
     private List<CleaningUnit> cleaningUnits = new ArrayList<>(); //유닛그룹
 
+    @Builder.Default
     private Boolean cleaned = false;
+
+    @Builder.Default
     private Boolean checked = false;
 
     public void updateCleaned(){
