@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -20,11 +20,11 @@ public class CleaningDto extends BaseTimeEntity {
     @NoArgsConstructor
     public static class DateCleaningRequestDto {
 
-        @NotBlank(message = "시작 날짜는 필수 값입니다.")
+        @NotNull(message = "시작 날짜는 필수 값입니다.")
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         private LocalDate startDate;
 
-        @NotBlank(message = "종료 날짜는 필수 값입니다.")
+        @NotNull(message = "종료 날짜는 필수 값입니다.")
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         private LocalDate endDate;
     }
