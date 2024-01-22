@@ -20,13 +20,13 @@ import static org.springframework.http.HttpStatus.CREATED;
 public class CleaningController {
     private final CleaningService cleaningService;
 
-    // 날짜별 청소 조회
+    // 기간별 청소 조회
      @GetMapping("/schedule")
-     public ResponseEntity<CleaningDto.CleaningDateResponseDto> getDateCleaning(
+     public ResponseEntity<CleaningDto.ListDto> getDateCleaning(
              @AuthenticationPrincipal CustomUserDetails customUserDetails,
              @RequestBody CleaningDto.DateCleaningRequestDto date){
-         CleaningDto.CleaningDateResponseDto cleanDate = cleaningService.getCleanDate(date,customUserDetails.getId());
-         return ResponseEntity.ok(cleanDate);
+
+         return ResponseEntity.ok().body(cleaningService.getCleanDate(date,customUserDetails.getId()));
      }
 
 
@@ -64,5 +64,18 @@ public class CleaningController {
          return ResponseEntity.status(CREATED).build();
     }
 
+    // 청소 유닛 조회
+    @GetMapping("/unit")
+    public ResponseEntity<CleaningDto.unitCleaningResponseDto> getCleaningUnit(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+         return ResponseEntity.ok().body(cleaningService.myUnit(customUserDetails.getId()));
+    }
 
+    //사생별 청소 일정 조회
+    @GetMapping("/{userId}/schedule")
+    public ResponseEntity<CleaningDto.UserCleaningScheduleResponseDto> getStudentsSchedule(
+            @PathVariable Long userId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        return ResponseEntity.ok().body(
+                cleaningService.StudentSchedule(userId));
+    }
 }

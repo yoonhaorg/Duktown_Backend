@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("unit")
 public class UnitController {
 
-    //삭제해삭제삭제
+
     private final CleaningUnitInitDB unitService;
 
     @GetMapping("/{userId}")
