@@ -6,7 +6,6 @@ import com.duktown.domain.chat.entity.ChatRepository;
 import com.duktown.domain.chatRoomUser.entity.ChatRoomUser;
 import com.duktown.domain.chatRoomUser.entity.ChatRoomUserRepository;
 import com.duktown.domain.cleaningUnit.entity.CleaningUnitInitDB;
-import com.duktown.domain.penaltyPoints.entity.PenaltyPointsInitDB;
 import com.duktown.domain.unit.entity.Unit;
 import com.duktown.domain.unit.entity.UnitRepository;
 import com.duktown.domain.emailCert.dto.EmailCertDto;
