@@ -4,13 +4,11 @@ import com.duktown.domain.cleaning.dto.CleaningDto;
 import com.duktown.domain.cleaning.service.CleaningService;
 import com.duktown.global.security.service.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.util.List;
+import javax.validation.Valid;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -24,7 +22,7 @@ public class CleaningController {
      @GetMapping("/schedule")
      public ResponseEntity<CleaningDto.ListDto> getDateCleaning(
              @AuthenticationPrincipal CustomUserDetails customUserDetails,
-             @RequestBody CleaningDto.DateCleaningRequestDto date){
+             @Valid @RequestBody CleaningDto.DateCleaningRequestDto date){
 
          return ResponseEntity.ok().body(cleaningService.getCleanDate(date,customUserDetails.getId()));
      }
@@ -35,7 +33,7 @@ public class CleaningController {
     public ResponseEntity<Void> cleaningOk(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long cleaningId){
-        cleaningService.cleaningOk(cleaningId);
+        cleaningService.cleaningOk(customUserDetails.getId(), cleaningId);
         return ResponseEntity.ok().build();
     }
 
@@ -44,7 +42,7 @@ public class CleaningController {
     public ResponseEntity<Void> cleaningApply(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long cleaningId){
-        cleaningService.checkOk(cleaningId);
+        cleaningService.checkOk(customUserDetails.getId(), cleaningId);
         return ResponseEntity.ok().build();
     }
 
@@ -76,6 +74,6 @@ public class CleaningController {
             @PathVariable Long userId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails){
         return ResponseEntity.ok().body(
-                cleaningService.StudentSchedule(userId));
+                cleaningService.StudentSchedule(customUserDetails.getId(), userId));
     }
 }

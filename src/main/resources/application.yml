@@ -5,9 +5,9 @@ spring:
   datasource:
     # local-mysql-db-test
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/duktown?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: duktown
-    password: 1234
+    url: ENC(D511Ue3hdf749uMSnR4KnxghKJdREasdHnjS85SqCtBQKaqfg5xua8HlbIuFt1WMyt1o9Y8my0tQDwWM5CUvDNQurmR8OVq6FYS7poqwR0klY7Zh9N5fUvhlvaxE95CJjDvOI/RXUK4g8ZyV/YG1oBJp3dbXD7oGsu0M+DlSm1zKJzOQZMd11fVpKTpLitUjSH/zQ0ZzhSdomqcs1JCA9A==)
+    username: ENC(LwaUlCU/lPuLy/Gj3O6nyO2JXELuy/cUrmqOUZjl0kkgGWslUwEO5AU7XJL2osuA)
+    password: ENC(SSVWhmhOaFjLLf32zoIgMUDBNtJH6r8iFPdzatpR8pvPRe0ucI4fs4D6Tu4SawGB)
   # JPA
   jpa:
     properties:
@@ -20,3 +20,8 @@ logging:
   level:
     com:
       duktown: debug
+
+#jasypt
+jasypt:
+  encryptor:
+    bean: jasyptEncryptorAES

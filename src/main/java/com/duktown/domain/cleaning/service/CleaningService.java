@@ -3,8 +3,6 @@ package com.duktown.domain.cleaning.service;
 import com.duktown.domain.cleaning.dto.CleaningDto;
 import com.duktown.domain.cleaning.entity.Cleaning;
 import com.duktown.domain.cleaning.entity.CleaningRepository;
-import com.duktown.domain.delivery.dto.DeliveryDto;
-import com.duktown.domain.unit.entity.UnitRepository;
 import com.duktown.domain.unitUser.entity.UnitUser;
 import com.duktown.domain.unitUser.entity.UnitUserRepository;
 import com.duktown.domain.user.entity.User;
@@ -18,11 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.duktown.global.exception.CustomErrorType.CLEANING_NOT_FOUND;
-import static com.duktown.global.exception.CustomErrorType.USER_NOT_FOUND;
+import static com.duktown.global.exception.CustomErrorType.*;
 
 @Service
 @RequiredArgsConstructor
@@ -48,16 +44,21 @@ public class CleaningService {
 
     // 청소 완료
     @Transactional
-    public void cleaningOk(Long cleaningId){
+    public void cleaningOk(Long userId, Long cleaningId){
+        userValidate(userId);
         Cleaning cleaning = cleaningRepository.findCleaningById(cleaningId)
                         .orElseThrow(()-> new CustomException(CLEANING_NOT_FOUND));
+        if (cleaning.getDate().getDayOfYear() != LocalDate.now().getDayOfYear()) {
+            throw new CustomException(CLEANING_DATE_NOT_TODAY);
+        }
         cleaning.updateCleaned();
     }
 
     // 청소 승인
     //TODO: 벌점 부여 : 청소 승인 과정에서 벌점 부여
     @Transactional
-    public void checkOk(Long cleaningId){
+    public void checkOk(Long userId, Long cleaningId){
+        userValidate(userId);
         Cleaning cleaning = cleaningRepository.findCleaningById(cleaningId)
                 .orElseThrow(()-> new CustomException(CLEANING_NOT_FOUND));
         cleaning.updateChecked();
@@ -114,12 +115,17 @@ public class CleaningService {
     }
 
     // 사생별 청소 일정 조회
-    public CleaningDto.UserCleaningScheduleResponseDto StudentSchedule(Long studentId){
+    public CleaningDto.UserCleaningScheduleResponseDto StudentSchedule(Long userId, Long studentId){
+        userValidate(userId);
         User user = userRepository.findById(studentId)
                 .orElseThrow(()->new CustomException(USER_NOT_FOUND));
         List<Cleaning> cleaningByUser = cleaningRepository.findCleaningByUser(user);
         List<CleaningDto.getUserCleaningSchedule> schedules = cleaningByUser.stream()
                 .map(c -> new CleaningDto.getUserCleaningSchedule(c.getDate())).collect(Collectors.toList());
         return new CleaningDto.UserCleaningScheduleResponseDto(schedules);
+    }
+
+    private void userValidate(Long userId) {
+        userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
     }
 }

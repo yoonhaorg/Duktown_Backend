@@ -187,7 +187,7 @@ public class CommentService {
             // 하위 댓글 삭제 시 더이상 상위 댓글이 존재하지 않으면 상위 댓글도 완전히 삭제
             if (parentComment != null
                     && !commentRepository.existsByParentCommentId(parentComment.getId())
-                    && parentComment.getDeleted()
+                    && parentComment.isDeleted()
             ) {
                 commentRepository.delete(parentComment);
             }

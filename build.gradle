@@ -56,6 +56,13 @@ dependencies {
 
     // WebSocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // stomp, sockjs
+//    implementation 'org.webjars:stomp-websocket:2.3.4'
+//    implementation 'org.webjars:sockjs-client:1.5.1'
+
+    //jasypt
+    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
 }
 
 tasks.named('test') {
