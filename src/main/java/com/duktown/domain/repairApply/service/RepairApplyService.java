@@ -57,7 +57,7 @@ public class RepairApplyService {
             throw new CustomException(HAVE_NO_PERMISSION);
         }
 
-        updateApply.update(apply.getRoomNumber(), apply.getContent());
+        updateApply.update(apply.getContent());
         repairApplyRepository.save(updateApply);
     }
 
