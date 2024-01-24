@@ -57,7 +57,7 @@ public class RepairApplyService {
             throw new CustomException(HAVE_NO_PERMISSION);
         }
 
-        updateApply.update(apply.getContent());
+        updateApply.update(apply.getPosition(), apply.getContent());
         repairApplyRepository.save(updateApply);
     }
 

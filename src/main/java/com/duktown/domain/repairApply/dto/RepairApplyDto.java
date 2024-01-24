@@ -23,6 +23,9 @@ public class RepairApplyDto {
         @Max(value = 2, message = "카테고리는 0에서 2사이의 정수 값입니다.")
         private Integer hallName;
 
+        @NotBlank(message = "위치는 필수 입력값입니다.")
+        private String position;
+
         @NotBlank(message = "내용은 필수 입력값입니다")
         private String content;
 
@@ -45,6 +48,7 @@ public class RepairApplyDto {
         private Long id;
         private Long userId;
         private Integer hallName;
+        private String position;
         private String content;
         private Boolean checked;
         private Boolean solved;
@@ -54,6 +58,7 @@ public class RepairApplyDto {
             this.id = apply.getId();
             this.userId = apply.getUser().getId();
             this.hallName = apply.getHallName().getValue();
+            this.position = apply.getPosition();
             this.content = apply.getContent();
             this.checked = apply.getChecked();
             this.solved = apply.getSolved();
