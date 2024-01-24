@@ -67,7 +67,7 @@ public class SleepoverApplyDto {
             startDate = sleepoverApply.getStartDate();
             endDate= sleepoverApply.getEndDate();
             period= sleepoverApply.getPeriod();
-            address=  sleepoverApply.getAddress().getStreetAddress() + sleepoverApply.getAddress().getStreetAddress();
+            address=  sleepoverApply.getAddress().getStreetAddress() + " "+sleepoverApply.getAddress().getDetailAddress();
             reason =sleepoverApply.getReason();
             userId = sleepoverApply.getUser().getId();
 
