@@ -74,19 +74,19 @@ public class UserService {
         * 전 과정 없이 이 요청만 단독으로 들어오는 경우를 예방하기 위해 signup 요청때도 다시 한번 중복 체크를 수행한다.
         */
         // 이메일 중복 체크
-        emailDuplicateCheck(signupRequest.getEmail());
-
-        // 아이디 중복 체크
-        idDuplicateCheck(signupRequest.getLoginId());
-
-        // 이메일 인증 여부 체크
-        EmailCert emailCert = emailCertRepository.findByEmail(signupRequest.getEmail()).orElseThrow(
-                () -> new CustomException(EMAIL_CERT_NOT_FOUND)
-        );
-
-        if (!emailCert.getCertified()) {
-            throw new CustomException(EMAIL_CERT_FAILED);
-        }
+//        emailDuplicateCheck(signupRequest.getEmail());
+//
+//        // 아이디 중복 체크
+//        idDuplicateCheck(signupRequest.getLoginId());
+//
+//        // 이메일 인증 여부 체크
+//        EmailCert emailCert = emailCertRepository.findByEmail(signupRequest.getEmail()).orElseThrow(
+//                () -> new CustomException(EMAIL_CERT_NOT_FOUND)
+//        );
+//
+//        if (!emailCert.getCertified()) {
+//            throw new CustomException(EMAIL_CERT_FAILED);
+//        }
 
         // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());

@@ -79,24 +79,14 @@ public class CleaningService {
     // 유닛 조장이 청소 날짜 신청 //TODO: 개별, 단체 신청 확인하기
     @Transactional
     public void createCleaningDate(CleaningDto.CreateCleaningRequestDto createCleaningDto) {
-//        List<CleaningDto.CreateCleaningRequestDto.CreateCleaningUnit> cleaningUnits = createCleaningDto.getCleaningUnit();
-//
-//        for (CleaningDto.CreateCleaningRequestDto.CreateCleaningUnit cleaningUnit : cleaningUnits) {
-//            String email = cleaningUnit.getEmail();
-//            User user = userRepository.findByEmail(email)
-//                    .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-//
-//            Cleaning cleaning = cleaningUnit.toEntity(user);
-//            cleaningRepository.save(cleaning);
-//        }
 
-            String email = createCleaningDto.getEmail();
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-
-            Cleaning cleaning = createCleaningDto.toEntity(user);
-            cleaningRepository.save(cleaning);
+        List<Cleaning> cleaningList = createCleaningDto.getCleaningUnit().stream()
+                .map(cc -> Cleaning.createCleaning(cc.getCleaningDate()
+                        , userRepository.findById(cc.getUserId()).orElseThrow(() -> new CustomException(USER_NOT_FOUND))))
+                .collect(Collectors.toList());
+        cleaningRepository.saveAll(cleaningList);
     }
+
 
     //청소 유닛 조회
     public CleaningDto.unitCleaningResponseDto myUnit(Long userId){
