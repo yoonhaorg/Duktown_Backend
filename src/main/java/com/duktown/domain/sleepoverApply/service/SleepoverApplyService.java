@@ -80,8 +80,8 @@ public class SleepoverApplyService {
             // 다음 날짜로 이동
             currentDate = currentDate.plusDays(1);
         }
-
-        return remainingDays;
+        // endDate는 날짜계산에서 제거
+        return remainingDays -1;
     }
 
 
