@@ -1,7 +1,5 @@
 package com.duktown.domain.penaltyPoints.entity;
 
-import com.duktown.domain.unitUser.entity.UnitUserRepository;
-import com.duktown.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
