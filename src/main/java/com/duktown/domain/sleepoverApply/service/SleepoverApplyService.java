@@ -73,11 +73,11 @@ public class SleepoverApplyService {
                 startDate.getDayOfWeek() != DayOfWeek.FRIDAY &&
                 startDate.getDayOfWeek() != DayOfWeek.SATURDAY &&
                 startDate.getDayOfWeek() != DayOfWeek.SUNDAY) {
-            return remainingDays = 1;
+            return 1;
         } else if (startDate.isEqual(endDate) && (startDate.getDayOfWeek() == DayOfWeek.FRIDAY ||
                 startDate.getDayOfWeek() == DayOfWeek.SATURDAY ||
                 startDate.getDayOfWeek() == DayOfWeek.SUNDAY)) {
-            return remainingDays = 0;
+            return 0;
         }
 
         LocalDate currentDate = startDate;
