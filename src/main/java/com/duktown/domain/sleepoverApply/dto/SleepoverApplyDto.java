@@ -24,7 +24,7 @@ public class SleepoverApplyDto {
         @FutureOrPresent(message = "외박 신청 날짜는 현재 시간 이후거나 동일해야 합니다.")
         private LocalDate startDate; //외박 시작 날짜
         @NotNull
-        @Future(message = "귀가 날짜는 미래여야 합니다.")
+        @FutureOrPresent(message = "귀가 현재 날짜이거나 미래여야 합니다.")
         private LocalDate endDate; //돌아오는 날짜
 
         @Min(value = 1)
@@ -67,7 +67,7 @@ public class SleepoverApplyDto {
             startDate = sleepoverApply.getStartDate();
             endDate= sleepoverApply.getEndDate();
             period= sleepoverApply.getPeriod();
-            address=  sleepoverApply.getAddress().getStreetAddress() + sleepoverApply.getAddress().getStreetAddress();
+            address=  sleepoverApply.getAddress().getStreetAddress() + " " + sleepoverApply.getAddress().getDetailAddress();
             reason =sleepoverApply.getReason();
             userId = sleepoverApply.getUser().getId();
 
@@ -112,7 +112,7 @@ public class SleepoverApplyDto {
             startDate = sleepoverApply.getStartDate();
             endDate= sleepoverApply.getEndDate();
             period= sleepoverApply.getPeriod();
-            address=  sleepoverApply.getAddress().getStreetAddress() + sleepoverApply.getAddress().getStreetAddress();
+            address=  sleepoverApply.getAddress().getStreetAddress() + sleepoverApply.getAddress().getDetailAddress();
             createdAt =sleepoverApply.getCreatedAt();
         }
 
