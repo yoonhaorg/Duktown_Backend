@@ -34,6 +34,7 @@ public class RepairApplyDto {
             return RepairApply.builder()
                     .user(user)
                     .hallName(hallName)
+                    .position(position)
                     .content(content)
                     .checked(false)
                     .solved(false)
