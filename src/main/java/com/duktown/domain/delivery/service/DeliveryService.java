@@ -43,6 +43,10 @@ public class DeliveryService {
 
     @Transactional
     public void createDelivery(Long userId, DeliveryDto.CreateRequest request) {
+        if (request.getTitle().length() > 20) {
+            throw new CustomException(DELIVERY_TITLE_TOO_LONG);
+        }
+
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         // 배달팟 생성
         Delivery delivery = deliveryRepository.save(request.toEntity(user, seed.encrypt(request.getAccountNumber())));

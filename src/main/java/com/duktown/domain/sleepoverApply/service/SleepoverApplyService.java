@@ -58,10 +58,7 @@ public class SleepoverApplyService {
     private boolean processRequests(LocalDate startDate) {
         LocalDateTime currentTime = LocalDateTime.now();
         // 외박 시작 날짜와 신청 날짜가 같으면서 신청 로직 currentTime이 22시 이후인 경우 외박 신청 거부
-        if (startDate.isEqual(currentTime.toLocalDate()) && currentTime.getHour()>= 22) {
-            return false;
-        }
-        return true;
+        return !startDate.isEqual(currentTime.toLocalDate()) || currentTime.getHour() < 22;
     }
 
     // 외박 시작 신청 시작일 종료일 계산 내부 메서드

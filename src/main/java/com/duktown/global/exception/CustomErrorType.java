@@ -37,10 +37,12 @@ public enum CustomErrorType {
     DELIVERY_NOT_FOUND(NOT_FOUND, 40001, "존재하지 않는 배달팟입니다."),
     INVALID_DELIVERY_SORTBY_VALUE(BAD_REQUEST, 40002, "잘못된 정렬조건입니다."),
     DELIVERY_ALREADY_CLOSED(BAD_REQUEST, 40003, "모집 마감된 배달팟입니다."),
+    DELIVERY_TITLE_TOO_LONG(BAD_REQUEST, 40004, "제목 길이가 너무 깁니다. 제목은 20자까지만 작성할 수 있습니다."),
 
     // Post (5xxxx)
     POST_NOT_FOUND(NOT_FOUND, 50001, "존재하지 않는 게시글입니다."),
     INVALID_POST_CATEGORY_VALUE(BAD_REQUEST,50002, "잘못된 카테고리입니다."),
+    POST_TITLE_TOO_LONG(BAD_REQUEST, 50003, "제목 길이가 너무 깁니다. 제목은 20자까지만 작성할 수 있습니다."),
 
     // Cert (6xxxx) 인증 오류
     UNABLE_TO_SEND_EMAIL(INTERNAL_SERVER_ERROR, 60001, "이메일을 전송할 수 없습니다."),
@@ -51,10 +53,10 @@ public enum CustomErrorType {
     COMMENT_NOT_FOUND(NOT_FOUND, 70001, "존재하지 않는 댓글입니다."),
     PARENT_COMMENT_NOT_FOUND(NOT_FOUND, 70002, "존재하지 않는 상위 댓글입니다."),
     DELIVERY_COMMENT_NOT_FOUND(NOT_FOUND, 70003, "배달팟에 댓글 단 내역이 존재하지 않습니다."),
-
-    COMMENT_TARGET_NOT_SELECTED(BAD_REQUEST, 70003, "댓글을 생성하거나 조회할 대상이 선택되지 않았습니다."),
-    COMMENT_DEPTH_ERROR(BAD_REQUEST, 70004, "대댓글에 대댓글을 달 수 없습니다."),
-    COMMENT_TARGET_ERROR(BAD_REQUEST, 70005, "댓글을 생성하거나 조회할 대상은 하나만 선택할 수 있습니다."),
+    COMMENT_TARGET_NOT_SELECTED(BAD_REQUEST, 70004, "댓글을 생성하거나 조회할 대상이 선택되지 않았습니다."),
+    COMMENT_DEPTH_ERROR(BAD_REQUEST, 70005, "대댓글에 대댓글을 달 수 없습니다."),
+    COMMENT_TARGET_ERROR(BAD_REQUEST, 70006, "댓글을 생성하거나 조회할 대상은 하나만 선택할 수 있습니다."),
+    COMMENT_TOO_LONG(BAD_REQUEST, 70007, "댓글 길이가 너무 깁니다. 255자까지만 작성할 수 있습니다."),
 
     // Like(8xxxx)
     LIKE_TARGET_NOT_SELECTED(BAD_REQUEST, 80001, "좋아요할 대상이 선택되지 않았습니다."),

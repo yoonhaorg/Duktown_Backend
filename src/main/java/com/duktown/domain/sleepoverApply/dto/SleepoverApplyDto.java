@@ -1,6 +1,5 @@
 package com.duktown.domain.sleepoverApply.dto;
 
-import com.duktown.domain.BaseTimeEntity;
 import com.duktown.domain.sleepoverApply.entity.Address;
 import com.duktown.domain.sleepoverApply.entity.SleepoverApply;
 import com.duktown.domain.user.entity.User;
