@@ -36,7 +36,7 @@ public class SleepoverApplyService {
 
         //외박 시작 날짜 + 현재 로직 시간을 기반으로 22시 체크
         if(processRequests(request.getStartDate())){
-            long remainingDays = calculateRemainingDaysExcludingWeekends(request.getStartDate(), request.getEndDate());
+            long remainingDays = calculateRemainingDaysExcludingWeekends(request.getStartDate(), (request.getEndDate().minusDays(1)));
 
             request.setPeriod(remainingDays > 0 ? Math.toIntExact(remainingDays) : 0); // 실제 외박 일수를 DTO에 추가
 
@@ -44,7 +44,7 @@ public class SleepoverApplyService {
 
             // TODO : 외박 가능 일 수가 0이면 에러 처리 발생
             if(user.getAvailablePeriod().equals(0) && user.getAvailablePeriod() < remainingDays){
-                new CustomException(CustomErrorType.SLEEP_OVER_APPLY_TOTAL_ERROR);
+                throw new CustomException(CustomErrorType.SLEEP_OVER_APPLY_TOTAL_ERROR);
             }
             user.downAvailablePeriod(request.getPeriod());// 외박 가능 일 수 감소
             sleepoverApplyRepository.save(sleepoverApply);
@@ -80,8 +80,8 @@ public class SleepoverApplyService {
             // 다음 날짜로 이동
             currentDate = currentDate.plusDays(1);
         }
-        // endDate는 날짜계산에서 제거
-        return remainingDays -1;
+
+        return remainingDays;
     }
 
 
