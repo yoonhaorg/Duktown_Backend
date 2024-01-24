@@ -12,6 +12,7 @@ import com.duktown.domain.chatRoomUser.entity.ChatRoomUserRepository;
 import com.duktown.domain.comment.entity.CommentRepository;
 import com.duktown.domain.delivery.entity.Delivery;
 import com.duktown.domain.delivery.entity.DeliveryRepository;
+import com.duktown.domain.delivery.service.DeliveryService;
 import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
 import com.duktown.global.exception.CustomException;
@@ -44,6 +45,8 @@ public class ChatRoomService {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ChatRepository chatRepository;
     private final CommentRepository commentRepository;
+
+    private final DeliveryService deliveryService;
 
     // 배달팟 채팅방 초대하기
     @Transactional
@@ -229,6 +232,11 @@ public class ChatRoomService {
                 .build();
 
         chatRepository.save(chat);
+
+        // 채팅방 주인이면 배달팟 삭제
+        if (chatRoom.getUser().getId().equals(userId)) {
+            deliveryService.deleteDelivery(userId, chatRoom.getDelivery().getId());
+        }
 
         ChatDto.MessageResponse messageResponse = ChatDto.MessageResponse.from(chat, null);
         simpMessagingTemplate.convertAndSend("/sub/chatRoom/" + chatRoom.getId(), messageResponse);

@@ -34,6 +34,11 @@ public class CommentService {
     private final LikeRepository likeRepository;
 
     public void createComment(Long userId, CommentDto.CreateRequest request){
+        // 댓글 길이 255자 제한
+        if (request.getContent().length() > 255) {
+            throw new CustomException(COMMENT_TOO_LONG);
+        }
+
         // null이 아닌 필드가 여러 개일 때(대댓글 경우 제외) -> 잘못된 댓글 요청
         if (Stream.of(
                         request.getDeliveryId(),

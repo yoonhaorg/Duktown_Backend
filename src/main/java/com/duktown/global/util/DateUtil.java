@@ -46,7 +46,7 @@ public class DateUtil {
 
         String msg;
 
-        if (diffTime / HOUR < 24) {
+        if (diffTime / HOUR < 24 && dateTime.getDayOfYear() == now.getDayOfYear()) {
             msg = DateTimeFormatter.ofPattern("hh:mm a").format(dateTime);
         } else if (dateTime.getYear() == now.getYear()) {
             msg = DateTimeFormatter.ofPattern("MM/dd hh:mm a").format(dateTime);

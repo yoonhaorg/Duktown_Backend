@@ -38,6 +38,10 @@ public class PostService {
 
     // 생성
     public void createPost(Long userId, PostDto.PostRequest request){
+        if (request.getTitle().length() > 20) {
+            throw new CustomException(POST_TITLE_TOO_LONG);
+        }
+
         User user = userRepository.findById(userId)
                 .orElseThrow(()->new CustomException(USER_NOT_FOUND));
 
