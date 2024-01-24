@@ -36,7 +36,7 @@ public class SleepoverApplyService {
 
         //외박 시작 날짜 + 현재 로직 시간을 기반으로 22시 체크
         if(processRequests(request.getStartDate())){
-            long remainingDays = calculateRemainingDaysExcludingWeekends(request.getStartDate(), (request.getEndDate().minusDays(1)));
+            long remainingDays = calculateRemainingDaysExcludingWeekends(request.getStartDate(), request.getEndDate());
 
             request.setPeriod(remainingDays > 0 ? Math.toIntExact(remainingDays) : 0); // 실제 외박 일수를 DTO에 추가
 
@@ -68,8 +68,20 @@ public class SleepoverApplyService {
     public long calculateRemainingDaysExcludingWeekends(LocalDate startDate, LocalDate endDate) {
         long remainingDays = 0;
 
+        // 시작일과 종료일이 같은 경우도 고려
+        if (startDate.isEqual(endDate) &&
+                startDate.getDayOfWeek() != DayOfWeek.FRIDAY &&
+                startDate.getDayOfWeek() != DayOfWeek.SATURDAY &&
+                startDate.getDayOfWeek() != DayOfWeek.SUNDAY) {
+            return remainingDays = 1;
+        } else if (startDate.isEqual(endDate) && (startDate.getDayOfWeek() == DayOfWeek.FRIDAY ||
+                startDate.getDayOfWeek() == DayOfWeek.SATURDAY ||
+                startDate.getDayOfWeek() == DayOfWeek.SUNDAY)) {
+            return remainingDays = 0;
+        }
+
         LocalDate currentDate = startDate;
-        while (!currentDate.isAfter(endDate)) {
+        while (!currentDate.isAfter(endDate.minusDays(1))) {
             // 금,토,일이 아니면 카운트
             if (currentDate.getDayOfWeek() != DayOfWeek.FRIDAY &&
                     currentDate.getDayOfWeek() != DayOfWeek.SATURDAY &&
@@ -79,6 +91,7 @@ public class SleepoverApplyService {
 
             // 다음 날짜로 이동
             currentDate = currentDate.plusDays(1);
+
         }
 
         return remainingDays;
