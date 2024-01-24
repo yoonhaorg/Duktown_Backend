@@ -2,6 +2,7 @@ package com.duktown.domain.cleaningUnit.entity;
 
 import com.duktown.domain.cleaning.entity.Cleaning;
 import com.duktown.domain.unit.entity.Unit;
+import com.duktown.domain.unitUser.entity.UnitUser;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,6 +27,6 @@ public class CleaningUnit {
     private Cleaning cleaning;// 청소
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "unit_id", nullable = false)
-    private Unit unit;// 유닛 그룹 12명
+    @JoinColumn(name = "unit_user_id", nullable = false)
+    private UnitUser unitUser;// 유닛 그룹 12명
 }

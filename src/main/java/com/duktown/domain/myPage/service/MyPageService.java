@@ -35,7 +35,7 @@ public class MyPageService {
                 .orElseThrow(()-> new CustomException(CustomErrorType.USER_NOT_FOUND));
 
         // (데모버전용 벌점 조회)
-        List<PenaltyPoints> penaltyPoints = penaltyPointsRepository.findAll();
+        List<PenaltyPoints> penaltyPoints = penaltyPointsRepository.findAllByOrderByDateDesc();
 
         //실제 벌점 조회 로직
         //List<PenaltyPoints> penaltyPoints = penaltyPointsRepository.findPenaltyPointsByUser(user);

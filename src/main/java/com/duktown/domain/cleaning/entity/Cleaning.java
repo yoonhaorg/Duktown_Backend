@@ -33,6 +33,7 @@ public class Cleaning {
     @JoinColumn(name = "user_id", nullable = false)
     private User user; //유저
 
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "check_user_id", nullable = false)
     private User checkUser; //사생회
@@ -56,6 +57,15 @@ public class Cleaning {
 
     public void updateChecked(){
         this.checked =true;
+    }
+
+    // 비즈니스 로직 //
+    public static Cleaning createCleaning(LocalDate newDate, User user){
+        Cleaning cleaning = new Cleaning();
+        cleaning.date = newDate;
+        cleaning.user = user;
+        cleaning.checkUser = user;
+        return cleaning;
     }
 
 

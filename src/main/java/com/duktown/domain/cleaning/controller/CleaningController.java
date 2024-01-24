@@ -60,7 +60,6 @@ public class CleaningController {
 
     // 유닛 조장이 청소 날짜 배정
     @PostMapping("/student/schedule")
-//    public ResponseEntity<?> createCleaningDate(@RequestBody CleaningDto.CreateCleaningRequestDto createCleaningDto) {
     public ResponseEntity<?> createCleaningDate(@RequestBody CleaningDto.CreateCleaningRequestDto createCleaningDto) {
         cleaningService.createCleaningDate(createCleaningDto);
          return ResponseEntity.status(CREATED).build();
@@ -78,6 +77,6 @@ public class CleaningController {
             @PathVariable Long userId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails){
         return ResponseEntity.ok().body(
-                cleaningService.StudentSchedule(customUserDetails.getId(), userId));
+                cleaningService.StudentSchedule(customUserDetails.getId()));
     }
 }

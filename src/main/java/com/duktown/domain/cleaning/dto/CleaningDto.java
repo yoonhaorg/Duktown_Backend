@@ -20,21 +20,16 @@ public class CleaningDto extends BaseTimeEntity {
     @NoArgsConstructor
     public static class CreateCleaningRequestDto{
 
-//        List<CreateCleaningUnit> CleaningUnit = new ArrayList<>();
-//
-//        @AllArgsConstructor
-//        @NoArgsConstructor
-//        @Getter
-//        public static class CreateCleaningUnit {
+        List<CreateCleaningUnit> cleaningUnit;
+
+
+        @NoArgsConstructor
+        @Getter
+        public static class CreateCleaningUnit {
             private LocalDate cleaningDate;
-            private String email;
-            public  Cleaning toEntity(User user) {
-                return Cleaning.builder()
-                        .date(cleaningDate)
-                        .user(user)
-                        .build();
+            private Long userId;
             }
-        //}
+
     }
 
 
