@@ -45,7 +45,7 @@ public class CleaningService {
     // 청소 완료
     @Transactional
     public void cleaningOk(Long userId, Long cleaningId){
-        userValidate(userId);
+        userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         Cleaning cleaning = cleaningRepository.findCleaningById(cleaningId)
                         .orElseThrow(()-> new CustomException(CLEANING_NOT_FOUND));
         if (cleaning.getDate().getDayOfYear() != LocalDate.now().getDayOfYear()) {
@@ -58,7 +58,7 @@ public class CleaningService {
     //TODO: 벌점 부여 : 청소 승인 과정에서 벌점 부여
     @Transactional
     public void checkOk(Long userId, Long cleaningId){
-        userValidate(userId);
+        userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         Cleaning cleaning = cleaningRepository.findCleaningById(cleaningId)
                 .orElseThrow(()-> new CustomException(CLEANING_NOT_FOUND));
         cleaning.updateChecked();
@@ -79,10 +79,9 @@ public class CleaningService {
     // 유닛 조장이 청소 날짜 신청 //TODO: 개별, 단체 신청 확인하기
     @Transactional
     public void createCleaningDate(CleaningDto.CreateCleaningRequestDto createCleaningDto) {
-
         List<Cleaning> cleaningList = createCleaningDto.getCleaningUnit().stream()
-                .map(cc -> Cleaning.createCleaning(cc.getCleaningDate()
-                        , userRepository.findById(cc.getUserId()).orElseThrow(() -> new CustomException(USER_NOT_FOUND))))
+                .map(cc -> Cleaning.createCleaning(cc.getCleaningDate(),
+                        userRepository.findById(cc.getUserId()).orElseThrow(() -> new CustomException(USER_NOT_FOUND))))
                 .collect(Collectors.toList());
         cleaningRepository.saveAll(cleaningList);
     }
@@ -105,8 +104,7 @@ public class CleaningService {
     }
 
     // 사생별 청소 일정 조회
-    public CleaningDto.UserCleaningScheduleResponseDto StudentSchedule(Long userId, Long studentId){
-        userValidate(userId);
+    public CleaningDto.UserCleaningScheduleResponseDto StudentSchedule(Long studentId){
         User user = userRepository.findById(studentId)
                 .orElseThrow(()->new CustomException(USER_NOT_FOUND));
         List<Cleaning> cleaningByUser = cleaningRepository.findCleaningByUser(user);
@@ -115,7 +113,5 @@ public class CleaningService {
         return new CleaningDto.UserCleaningScheduleResponseDto(schedules);
     }
 
-    private void userValidate(Long userId) {
-        userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-    }
+
 }

@@ -77,6 +77,6 @@ public class CleaningController {
             @PathVariable Long userId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails){
         return ResponseEntity.ok().body(
-                cleaningService.StudentSchedule(customUserDetails.getId(), userId));
+                cleaningService.StudentSchedule(customUserDetails.getId()));
     }
 }
