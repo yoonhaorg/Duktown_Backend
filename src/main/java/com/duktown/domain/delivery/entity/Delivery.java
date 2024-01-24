@@ -7,6 +7,7 @@ import com.duktown.domain.user.entity.User;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class Delivery extends BaseTimeEntity {
     @Column(length = 20, nullable = false)
     private String title;
 
+    @Size(min = 2)
     @Column(nullable = false)
     private Integer maxPeople;
 
