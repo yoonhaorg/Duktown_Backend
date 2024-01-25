@@ -36,8 +36,9 @@ public class RepairApply extends BaseTimeEntity {
     //기숙사 종류 (국제/가온1관/가온2관..)
     private HallName hallName;
 
-    //기숙사 호수
-    private String roomNumber;
+    //기숙사 위치
+    @Column(nullable = false)
+    private String position;
 
     @Column(columnDefinition = "longtext", nullable = false)
     //수리요청 내용
@@ -49,8 +50,8 @@ public class RepairApply extends BaseTimeEntity {
     // 해결 여부
     private Boolean solved;
 
-    public void update(String title, String content){
-        this.roomNumber =roomNumber;
+    public void update(String position, String content){
+        this.position = position;
         this.content =content;
     }
 

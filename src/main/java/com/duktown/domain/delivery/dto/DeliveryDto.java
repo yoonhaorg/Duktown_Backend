@@ -25,7 +25,7 @@ public class DeliveryDto {
         private String title;
 
         @NotNull(message = "모집인원은 필수 값입니다.")
-        @Min(value = 1, message = "모집인원의 최소 값은 1 이상이어야 합니다.")
+        @Min(value = 2, message = "모집인원의 최소 값은 2 이상이어야 합니다.")
         private int maxPeople;
 
         @NotNull(message = "주문 예정 시각은 필수 값입니다.")

@@ -1,7 +1,5 @@
 package com.duktown.domain.penaltyPoints.entity;
 
-import com.duktown.domain.unitUser.entity.UnitUserRepository;
-import com.duktown.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +33,7 @@ public class PenaltyPointsInitDB {
                     .build();
 
             PenaltyPoints demoPenaltyPoints2 = PenaltyPoints.builder()
-                    .date(LocalDate.of(2024, 11, 19))
+                    .date(LocalDate.of(2023, 11, 19))
                     .score(3)
                     .reason("청소 당번이 청소를 하지 않은 경우")
                     .build();
