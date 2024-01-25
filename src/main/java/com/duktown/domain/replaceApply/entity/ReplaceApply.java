@@ -29,21 +29,22 @@ public class ReplaceApply { // 대타구하기
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private User user; //신청인
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "replace_user_id", nullable = false)
-    private User replaceUser;
+    private User replaceUser; // 받는 사람
 
     @Column(nullable = false)
-    private LocalDate originDate;
+    private LocalDate originDate; // 신청인 날짜
 
     @Column(nullable = false)
     private String reason;
 
     @Column(nullable = false)
-    private LocalDate replaceDate;
+    private LocalDate replaceDate; // 교환 날짜
 
+    @Builder.Default
     @Column(nullable = false)
-    private Integer state;  // 0 : 대기중, 1 : 승인, 2 : 거절
+    private int state = 0;   // 0 : 대기중, 1 : 승인, 2 : 거절
 }

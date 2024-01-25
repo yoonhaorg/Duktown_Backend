@@ -26,6 +26,9 @@ public class CleaningDto extends BaseTimeEntity {
         @NoArgsConstructor
         @Getter
         public static class CreateCleaningUnit {
+
+            @NotNull(message = "날짜는 필수값입니다")
+            @DateTimeFormat(pattern = "yyyy-MM-dd")
             private LocalDate cleaningDate;
             private Long userId;
             }

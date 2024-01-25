@@ -45,7 +45,7 @@ public class CleaningService {
     // 청소 완료
     @Transactional
     public void cleaningOk(Long userId, Long cleaningId){
-        userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        userValidate(userId);
         Cleaning cleaning = cleaningRepository.findCleaningById(cleaningId)
                         .orElseThrow(()-> new CustomException(CLEANING_NOT_FOUND));
         if (cleaning.getDate().getDayOfYear() != LocalDate.now().getDayOfYear()) {
@@ -58,7 +58,7 @@ public class CleaningService {
     //TODO: 벌점 부여 : 청소 승인 과정에서 벌점 부여
     @Transactional
     public void checkOk(Long userId, Long cleaningId){
-        userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        userValidate(userId);
         Cleaning cleaning = cleaningRepository.findCleaningById(cleaningId)
                 .orElseThrow(()-> new CustomException(CLEANING_NOT_FOUND));
         cleaning.updateChecked();
@@ -114,4 +114,7 @@ public class CleaningService {
     }
 
 
+    private void userValidate(Long userId) {
+        userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+    }
 }
