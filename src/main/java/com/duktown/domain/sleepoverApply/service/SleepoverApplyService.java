@@ -5,7 +5,6 @@ import com.duktown.domain.sleepoverApply.entity.SleepoverApply;
 import com.duktown.domain.sleepoverApply.entity.SleepoverApplyRepository;
 import com.duktown.domain.user.entity.User;
 import com.duktown.domain.user.entity.UserRepository;
-import com.duktown.global.exception.CustomErrorType;
 import com.duktown.global.exception.CustomException;
 import com.duktown.global.type.ApprovalType;
 import lombok.RequiredArgsConstructor;
@@ -33,23 +32,24 @@ public class SleepoverApplyService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-
         //외박 시작 날짜 + 현재 로직 시간을 기반으로 22시 체크
         if(processRequests(request.getStartDate())){
+            // 외박일수 계산
             long remainingDays = calculateRemainingDaysExcludingWeekends(request.getStartDate(), request.getEndDate());
 
             request.setPeriod(remainingDays > 0 ? Math.toIntExact(remainingDays) : 0); // 실제 외박 일수를 DTO에 추가
 
             SleepoverApply sleepoverApply = request.toEntity(user);
 
-            // TODO : 외박 가능 일 수가 0이면 에러 처리 발생
-            if(user.getAvailablePeriod().equals(0) && user.getAvailablePeriod() < remainingDays){
-                throw new CustomException(CustomErrorType.SLEEP_OVER_APPLY_TOTAL_ERROR);
+            // 외박 가능 일 수가 0이거나, 외박신청일수가 외박가능일수보다 크면 예외 발생
+            if(user.getAvailablePeriod().equals(0) || user.getAvailablePeriod() < request.getPeriod()){
+                throw new CustomException(SLEEP_OVER_APPLY_TOTAL_ERROR);
             }
+
             user.downAvailablePeriod(request.getPeriod());// 외박 가능 일 수 감소
             sleepoverApplyRepository.save(sleepoverApply);
 
-        }else {
+        } else {
             throw new CustomException(SLEEP_OVER_APPLY_INVALID_REQUEST_TIME);
         }
 
