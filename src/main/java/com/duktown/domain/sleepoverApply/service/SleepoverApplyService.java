@@ -46,6 +46,8 @@ public class SleepoverApplyService {
                 throw new CustomException(SLEEP_OVER_APPLY_TOTAL_ERROR);
             }
 
+            // TODO: 겹치는 날짜로 신청내역이 있으면 외박신청 안되도록 수정
+
             user.downAvailablePeriod(request.getPeriod());// 외박 가능 일 수 감소
             sleepoverApplyRepository.save(sleepoverApply);
 

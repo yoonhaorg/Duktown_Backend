@@ -205,6 +205,8 @@ public class ChatRoomService {
 
         // 차단된 유저는 나가기해도 채팅방을 나갔습니다가 보내지면 안 된다
         if (chatRoomUser.getChatRoomUserType() == ChatRoomUserType.BLOCKED) {
+            // 상태만 DELETED로 변경
+            chatRoomUser.changeChatRoomUserType(ChatRoomUserType.DELETED);
             return;
         }
 
