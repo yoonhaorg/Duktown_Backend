@@ -76,4 +76,14 @@ public class CleaningController {
     public ResponseEntity<CleaningDto.UserCleaningScheduleResponseDto> getStudentsSchedule(
             @PathVariable Long userId) {
          return ResponseEntity.ok().body(cleaningService.StudentSchedule(userId));}
+
+    // 로그인한 유저 청소 일정 조회
+    @GetMapping("/my/schedule")
+    public ResponseEntity<CleaningDto.UserCleaningScheduleResponseDto> getMySchedule(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        return ResponseEntity.ok(
+                cleaningService.MySchedule(customUserDetails.getId())
+        );
+    }
 }

@@ -105,6 +105,14 @@ public class CleaningService {
 
     // 사생별 청소 일정 조회
     public CleaningDto.UserCleaningScheduleResponseDto StudentSchedule(Long studentId){
+        return getUserCleaningScheduleResponseDto(studentId);
+    }
+
+    public CleaningDto.UserCleaningScheduleResponseDto MySchedule(Long userId) {
+        return getUserCleaningScheduleResponseDto(userId);
+    }
+
+    private CleaningDto.UserCleaningScheduleResponseDto getUserCleaningScheduleResponseDto(Long studentId) {
         User user = userRepository.findById(studentId)
                 .orElseThrow(()->new CustomException(USER_NOT_FOUND));
         List<Cleaning> cleaningByUser = cleaningRepository.findCleaningByUser(user);
@@ -112,7 +120,6 @@ public class CleaningService {
                 .map(c -> new CleaningDto.getUserCleaningSchedule(c.getDate())).collect(Collectors.toList());
         return new CleaningDto.UserCleaningScheduleResponseDto(schedules);
     }
-
 
     private void userValidate(Long userId) {
         userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
