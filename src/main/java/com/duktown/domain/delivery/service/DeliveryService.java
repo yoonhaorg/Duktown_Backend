@@ -202,21 +202,24 @@ public class DeliveryService {
     @Transactional
     public void deleteDelivery(Long userId, Long deliveryId) {
         userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        Delivery delivery = deliveryRepository.findById(deliveryId).orElseThrow(() -> new CustomException(DELIVERY_NOT_FOUND));
+        Delivery delivery = deliveryRepository.findById(deliveryId).orElse(null);
 
-        if (!userId.equals(delivery.getUser().getId())) {
-            throw new CustomException(HAVE_NO_PERMISSION);
+        // 배달팟이 null이면 이미 삭제된 것이므로 삭제 과정 x
+        if (delivery != null) {
+            if (!userId.equals(delivery.getUser().getId())) {
+                throw new CustomException(HAVE_NO_PERMISSION);
+            }
+
+            // 댓글 먼저 삭제
+            List<Comment> comments = commentRepository.findAllByDeliveryId(delivery.getId());
+            if (comments != null) {
+                List<Long> commentIds = comments.stream().map(Comment::getId).collect(Collectors.toList());
+                commentRepository.deleteAllById(commentIds);
+            }
+
+            // 배달팟 삭제(deleted = true)
+            delivery.delete();
         }
-
-        // 댓글 먼저 삭제
-        List<Comment> comments = commentRepository.findAllByDeliveryId(delivery.getId());
-        if (comments != null) {
-            List<Long> commentIds = comments.stream().map(Comment::getId).collect(Collectors.toList());
-            commentRepository.deleteAllById(commentIds);
-        }
-
-        // 배달팟 삭제(deleted = true)
-        delivery.delete();
     }
 
     // 검색
