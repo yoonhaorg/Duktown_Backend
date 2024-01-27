@@ -157,15 +157,12 @@ public class ChatRoomService {
     // 내가 참여중인 채팅방 목록 조회 TODO : 페이징 처리, 안 읽은 개수 표시
     public ChatRoomDto.ChatRoomListResponse getChatRoomList(Long userId) {
         userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        List<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByUserId(userId);
+
+        // 채팅방 유저 유저 아이디와 유저타입이 삭제가 아닌 것으로 전부 조회
+        List<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByUserIdAndChatRoomUserTypeNotDeleted(userId, ChatRoomUserType.DELETED);
         List<ChatRoomDto.ChatRoomListElementResponse> chatRooms = new ArrayList<>();
 
         for (ChatRoomUser chatRoomUser : chatRoomUsers) {
-            // 나간 채팅방은 조회 x
-            if (chatRoomUser.getChatRoomUserType() == ChatRoomUserType.DELETED) {
-                continue;
-            }
-
             // 참여중인 채팅방 찾기
             ChatRoom chatRoom = chatRoomUser.getChatRoom();
 
