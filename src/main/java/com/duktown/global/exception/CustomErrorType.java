@@ -67,6 +67,7 @@ public enum CustomErrorType {
     SLEEP_OVER_APPLY_INVALID_REQUEST_TIME(BAD_REQUEST,90002,"22시 이후에는 외박 신청이 불가능합니다."),
     SLEEP_OVER_APPLY_TARGET_ERROR(BAD_REQUEST,90003,"승인 이후에는 수정 불가능합니다."),
     SLEEP_OVER_APPLY_TOTAL_ERROR(BAD_REQUEST,90004,"외박 가능 횟수를 초과했습니다"),
+    SLEEP_OVER_APPLY_OVERLAPPING_DATE_ERROR(BAD_REQUEST,90005,"외박 신청 기간이 이전 내역과 중복되어 신청이 불가능합니다."),
 
     // Chat(10xxxx)
     CHAT_ROOM_NOT_FOUND(NOT_FOUND, 100001, "존재하지 않는 채팅방입니다."),
