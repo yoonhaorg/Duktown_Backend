@@ -92,6 +92,7 @@ public class ProfileService {
                 .stream()
                 .map(d -> DeliveryDto.DeliveryResponse.from(d, d.getUser().getId().equals(userId),
                         chatRoomUserRepository.countByChatRoomId(d.getChatRoom().getId(), ChatRoomUserType.ACTIVE)))
+                .distinct()
                 .collect(Collectors.toList());
 
         return new DeliveryDto.DeliveryListResponse(content);
@@ -127,7 +128,7 @@ public class ProfileService {
                 .findAny().orElseThrow(() -> new CustomException(INVALID_POST_CATEGORY_VALUE));
 
         List<Post> posts = commentRepository.findAllByUserAndPostAndCategory(userId, findCategory)
-                .stream().map(Comment::getPost).collect(Collectors.toList());
+                .stream().map(Comment::getPost).distinct().collect(Collectors.toList());
         List<Like> likes = likeRepository
                 .findAllByUserAndPostIn(
                         user.getId(),
