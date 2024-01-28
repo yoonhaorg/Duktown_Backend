@@ -23,7 +23,7 @@ import static lombok.AccessLevel.*;
 @NoArgsConstructor(access = PROTECTED)
 @Table(name = "users")
 @SQLDelete(sql = "UPDATE users SET deleted = true, deleted_at = CURRENT_TIMESTAMP, " +
-        "name = '(탈퇴한 회원)', email = null, login_id = null, " +
+        "name = '(탈퇴한 회원)', email = null, " +
         "password = null, refresh_token = null, role_type = null, available_period = null " +
         "WHERE user_id = ?")
 public class User extends BaseTimeEntity {
