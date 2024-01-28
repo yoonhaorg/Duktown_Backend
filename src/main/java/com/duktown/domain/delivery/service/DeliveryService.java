@@ -160,6 +160,9 @@ public class DeliveryService {
 
         // 계좌번호 삭제 TODO: 필요에 따라 삭제
 //        delivery.updateAccountNumber(seed.encrypt(""));
+
+        // 주문 완료 시 배달팟 자동 삭제
+        deleteDelivery(userId, deliveryId);
     }
 
     // 목록 조회
