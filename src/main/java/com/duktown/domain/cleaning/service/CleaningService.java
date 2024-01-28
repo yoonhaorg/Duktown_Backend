@@ -91,12 +91,7 @@ public class CleaningService {
     public CleaningDto.unitCleaningResponseDto myUnit(Long userId){
         // 기본 4개 유닛 정보 받아오기 (데모버전용)
         List<UnitUser> unitUsers = unitUserRepository.findFirst11ByOrderByCreatedAtAsc();
-        UnitUser unitUser = unitUserRepository.findByUserId(userId).orElseThrow(() -> new CustomException(CustomErrorType.UNIT_USER_NOT_FOUND));
-
-        // 하나의 리스트로 합치기
-        List<UnitUser> combinedList = new ArrayList<>(unitUsers);
-        combinedList.add(unitUser);
-        List<CleaningDto.unitCleaningResponse> unitCleaning = combinedList.stream()
+        List<CleaningDto.unitCleaningResponse> unitCleaning = unitUsers.stream()
                 .map(CleaningDto.unitCleaningResponse::new)
                 .collect(Collectors.toList());
         return new CleaningDto.unitCleaningResponseDto(unitCleaning);
